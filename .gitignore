@@ -17,6 +17,7 @@ outputs/
 logs/
 wandb/
 lightning_logs/
+research/raw/
 
 # кропы, кадры, видео
 *.mp4
@@ -36,6 +37,7 @@ venv/
 
 # среда
 .env
+.lattice/
 .DS_Store
 Thumbs.db
 .idea/
@@ -43,3 +45,6 @@ Thumbs.db
 
 # черновики notebooks оставляем в репозитории, но без выводов:
 # перед коммитом чистить через nbstripout
+
+# локальный индекс кода содержит абсолютный путь рабочего каталога
+.codebase-memory/

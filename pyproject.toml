@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "falcon-vehicle-reid"
+version = "0.1.0"
+description = "Reproducible vehicle re-identification baseline for LCT 2026 business task 7"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24,<3", "Pillow>=10,<13"]
+
+[project.optional-dependencies]
+onnx = ["onnxruntime>=1.18,<2"]
+
+[project.scripts]
+vehicle-reid = "vehicle_reid.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
