@@ -1,0 +1,45 @@
+# данные и веса — НИКОГДА в git (см. PROJECT.md, раздел «НЕ ДЕЛАТЬ»)
+data/
+datasets/
+*.pth
+*.pt
+*.ckpt
+*.onnx
+*.safetensors
+*.npy
+*.npz
+*.faiss
+*.index
+
+# результаты прогонов
+runs/
+outputs/
+logs/
+wandb/
+lightning_logs/
+
+# кропы, кадры, видео
+*.mp4
+*.avi
+*.mkv
+crops/
+frames/
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+*.egg-info/
+
+# среда
+.env
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# черновики notebooks оставляем в репозитории, но без выводов:
+# перед коммитом чистить через nbstripout

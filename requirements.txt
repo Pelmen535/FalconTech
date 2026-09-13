@@ -1,0 +1,7 @@
+# зависимости; torch ставится отдельно, см. README
+numpy
+opencv-python
+pillow
+faiss-cpu
+pyyaml
+tqdm
