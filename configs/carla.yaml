@@ -1,0 +1,13 @@
+# VeRi-CARLA (синтетика). После scripts/prepare_carla.py проверь папки и pattern.
+name: carla
+dataset:
+  root: data/VeRi_CARLA_dataset
+  # имена файлов вида "<vehicleID>_<cameraID>..." — скрипт подготовки печатает примеры,
+  # если формат другой, поправь регулярку (именованные группы vid и cam обязательны)
+  pattern: '^(?P<vid>\d+)_(?P<cam>\d+)'
+  splits:
+    query: query
+    gallery: gallery
+    train: train
+runs_dir: runs
+results_dir: results

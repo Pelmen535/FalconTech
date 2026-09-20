@@ -1,0 +1,59 @@
+# Проверки, которые должны проходить на любой машине, а не только на нашей.
+# Запускается на каждый push и pull request. Ничего не публикует и никуда не деплоит.
+name: checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    name: тесты и проверки формата
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Веса лежат в Git LFS: без них тест паритета сервиса и конкурсного CLI
+          # просто пропустится, и проверка станет слабее, чем выглядит.
+          lfs: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: зависимости
+        run: |
+          python -m pip install --upgrade pip
+          # CPU-сборка torch: GPU в CI нет, а тестам он и не нужен.
+          pip install torch==2.3.1 torchvision==0.18.1 --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt
+          pip install -r requirements-service.txt
+
+      - name: pytest
+        run: python -m pytest tests -q
+
+      - name: форма артефактов сдачи
+        # Датасета в репозитории нет, но CSV входа лежат в фикстурах тестов, и этого
+        # достаточно, чтобы проверить форму трёх файлов сдачи: покрытие запросов,
+        # порядок строк embeddings.npy, ровно десять кандидатов, формат candidates.csv.
+        run: python scripts/check_submission.py --submission submission --data tests/service/fixtures/inputs_csv
+
+      - name: логи в UTF-8
+        run: python scripts/normalize_logs.py
+
+  image:
+    name: сборка конкурсного образа
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      # Образ собирается ровно той командой, которую выполняет жюри. Внутри сборки
+      # работают pip check, инвентаризация весов против лимита 2 ГБ и разбор рецепта,
+      # поэтому успешная сборка — это уже содержательная проверка, а не формальность.
+      - name: docker build
+        run: docker build -t vreid:1.0 .
+      - name: что реально установлено в образе
+        run: docker run --rm --entrypoint python vreid:1.0 /app/scripts/image_report.py

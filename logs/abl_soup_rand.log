@@ -1,0 +1,62 @@
+[hackathon] train.csv: 9556 bbox, 1541 vehicle_id, 9556 кадров
+[hackathon] камеры из CSV: 96 шт. — псевдокамера не нужна
+[hackathon] протокол «track», fit: 7655 bbox / 1233 id; val query: 1213 (без пары: 243), gallery: 688
+[val] маска «rand», боксов в кеше 10728/11416
+[models] ft:soup_b336_val: vit_base_patch14_dinov2.lvd142m, D=1536, input=336, device=cuda
+
+extract[query]:   0%|          | 0/19 [00:00<?, ?batch/s]
+extract[query]:   5%|▌         | 1/19 [00:19<05:48, 19.37s/batch]
+extract[query]:  11%|█         | 2/19 [00:19<02:18,  8.17s/batch]
+extract[query]:  16%|█▌        | 3/19 [00:20<01:13,  4.59s/batch]
+extract[query]:  21%|██        | 4/19 [00:20<00:43,  2.90s/batch]
+extract[query]:  26%|██▋       | 5/19 [00:20<00:28,  2.00s/batch]
+extract[query]:  32%|███▏      | 6/19 [00:21<00:18,  1.42s/batch]
+extract[query]:  37%|███▋      | 7/19 [00:21<00:12,  1.05s/batch]
+extract[query]:  42%|████▏     | 8/19 [00:21<00:08,  1.24batch/s]
+extract[query]:  47%|████▋     | 9/19 [00:22<00:07,  1.29batch/s]
+extract[query]:  53%|█████▎    | 10/19 [00:22<00:05,  1.60batch/s]
+extract[query]:  58%|█████▊    | 11/19 [00:22<00:04,  1.91batch/s]
+extract[query]:  63%|██████▎   | 12/19 [00:23<00:03,  2.18batch/s]
+extract[query]:  68%|██████▊   | 13/19 [00:24<00:03,  1.74batch/s]
+extract[query]:  74%|███████▎  | 14/19 [00:24<00:02,  2.00batch/s]
+extract[query]:  79%|███████▉  | 15/19 [00:24<00:01,  2.26batch/s]
+extract[query]:  84%|████████▍ | 16/19 [00:25<00:01,  2.47batch/s]
+extract[query]:  89%|████████▉ | 17/19 [00:25<00:00,  2.11batch/s]
+extract[query]:  95%|█████████▍| 18/19 [00:25<00:00,  2.34batch/s]
+extract[query]: 100%|██████████| 19/19 [00:26<00:00,  2.56batch/s]
+extract[query]: 100%|██████████| 19/19 [00:27<00:00,  1.46s/batch]
+[extract] query: 22.8 мс/кроп всего = 5.3 сеть + 17.5 чтение кадров с диска
+[extract] query: (1213, 1536) → runs\hack\ft_soup_b336_val\val_query_track_mask-rand.npz
+
+extract[gallery]:   0%|          | 0/11 [00:00<?, ?batch/s]
+extract[gallery]:   9%|▉         | 1/11 [00:19<03:16, 19.68s/batch]
+extract[gallery]:  18%|█▊        | 2/11 [00:19<01:14,  8.28s/batch]
+extract[gallery]:  27%|██▋       | 3/11 [00:20<00:37,  4.63s/batch]
+extract[gallery]:  36%|███▋      | 4/11 [00:20<00:20,  2.92s/batch]
+extract[gallery]:  45%|████▌     | 5/11 [00:21<00:13,  2.23s/batch]
+extract[gallery]:  55%|█████▍    | 6/11 [00:21<00:07,  1.60s/batch]
+extract[gallery]:  64%|██████▎   | 7/11 [00:22<00:04,  1.17s/batch]
+extract[gallery]:  73%|███████▎  | 8/11 [00:22<00:02,  1.12batch/s]
+extract[gallery]:  82%|████████▏ | 9/11 [00:23<00:01,  1.27batch/s]
+extract[gallery]:  91%|█████████ | 10/11 [00:23<00:00,  1.55batch/s]
+extract[gallery]: 100%|██████████| 11/11 [00:23<00:00,  1.90batch/s]
+extract[gallery]: 100%|██████████| 11/11 [00:25<00:00,  2.30s/batch]
+[extract] gallery: 36.7 мс/кроп всего = 5.0 сеть + 31.8 чтение кадров с диска
+[extract] gallery: (688, 1536) → runs\hack\ft_soup_b336_val\val_gallery_track_mask-rand.npz
+[track] МЕТРИКА ЖЮРИ (убрано только vid+cam): rank1= 69.5%  rank5= 87.7%  rank10= 93.0%  mAP@10= 71.8%  (queries 970/970, gallery 688)
+строгий cross-cam (диагностика, завышает): rank1= 71.8%  rank5= 88.7%  rank10= 93.1%  mAP@10= 73.7%  (queries 970/970, gallery 688)
+bits: tau=0.204, max 9.4 бит при галерее 688
+     4.2–  5.0 бит  n=  175  rank-1 =  62.9%
+     5.0–  5.3 бит  n=  205  rank-1 =  72.7%
+     5.3–  5.6 бит  n=  201  rank-1 =  72.1%
+     5.6–  6.0 бит  n=  235  rank-1 =  75.3%
+     6.0–  6.4 бит  n=  193  rank-1 =  74.6%
+     6.4–  9.4 бит  n=  175  rank-1 =  76.6%
+режим отказа: запросов 1213, без пары 243, mINP=70.5%
+  top1       порог=0.577  балл= 97.0  F1= 96.2%  P= 99.3%  R= 93.3%  TNR= 98.8%  accept=  75%
+  margin     порог=0.175  балл= 93.7  F1= 91.5%  P= 99.6%  R= 84.5%  TNR= 98.8%  accept=  68%
+  bits       порог=4.034  балл= 61.6  F1= 87.9%  P= 78.5%  R=100.0%  TNR=  0.0%  accept= 100%
+  top1+bits  порог=0.688  балл= 97.0  F1= 96.3%  P= 99.4%  R= 93.3%  TNR= 98.8%  accept=  75%
+  → лучшая уверенность: top1+bits   (камера запроса не маскируется — как на тесте)
+[val] → results\hack_ft_soup_b336_val_val_mask-rand.json
+[W918 19:00:59.000000000 CudaIPCTypes.cpp:16] Producer process has been terminated before all shared CUDA tensors released. See Note [Sharing CUDA tensors]

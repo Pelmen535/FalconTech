@@ -1,0 +1,120 @@
+[models] ft:baseline_seed0: vit_base_patch14_dinov2.lvd142m, D=1536, input=336, device=cuda
+
+extract[calibration_query]:   0%|          | 0/5 [00:00<?, ?batch/s]
+extract[calibration_query]:  20%|██        | 1/5 [00:06<00:25,  6.44s/batch]
+extract[calibration_query]:  40%|████      | 2/5 [00:06<00:08,  2.74s/batch]
+extract[calibration_query]:  60%|██████    | 3/5 [00:06<00:03,  1.55s/batch]
+extract[calibration_query]:  80%|████████  | 4/5 [00:06<00:00,  1.00batch/s]
+extract[calibration_query]: 100%|██████████| 5/5 [00:07<00:00,  1.31batch/s]
+extract[calibration_query]: 100%|██████████| 5/5 [00:08<00:00,  1.62s/batch]
+[extract] calibration_query: 52.8 мс/кроп всего = 8.8 сеть + 44.0 чтение кадров с диска
+
+extract[calibration_gallery]:   0%|          | 0/10 [00:00<?, ?batch/s]
+extract[calibration_gallery]:  10%|█         | 1/10 [00:05<00:52,  5.80s/batch]
+extract[calibration_gallery]:  20%|██        | 2/10 [00:06<00:20,  2.56s/batch]
+extract[calibration_gallery]:  30%|███       | 3/10 [00:06<00:10,  1.46s/batch]
+extract[calibration_gallery]:  40%|████      | 4/10 [00:06<00:06,  1.14s/batch]
+extract[calibration_gallery]:  50%|█████     | 5/10 [00:08<00:05,  1.17s/batch]
+extract[calibration_gallery]:  60%|██████    | 6/10 [00:08<00:03,  1.08batch/s]
+extract[calibration_gallery]:  70%|███████   | 7/10 [00:08<00:02,  1.46batch/s]
+extract[calibration_gallery]:  80%|████████  | 8/10 [00:09<00:01,  1.32batch/s]
+extract[calibration_gallery]:  90%|█████████ | 9/10 [00:10<00:00,  1.56batch/s]
+extract[calibration_gallery]: 100%|██████████| 10/10 [00:10<00:00,  1.97batch/s]
+extract[calibration_gallery]: 100%|██████████| 10/10 [00:11<00:00,  1.12s/batch]
+[extract] calibration_gallery: 35.6 мс/кроп всего = 4.7 сеть + 30.9 чтение кадров с диска
+[submit] candidates.csv: отказов 33/154 → release_calibrated_v1\validation\calibration_candidates.csv
+[submit] submission.csv (154 запросов, top-10) → release_calibrated_v1\validation\calibration_submission.csv
+
+extract[holdout_query]:   0%|          | 0/5 [00:00<?, ?batch/s]
+extract[holdout_query]:  20%|██        | 1/5 [00:06<00:24,  6.22s/batch]
+extract[holdout_query]:  40%|████      | 2/5 [00:06<00:07,  2.66s/batch]
+extract[holdout_query]:  60%|██████    | 3/5 [00:06<00:03,  1.51s/batch]
+extract[holdout_query]:  80%|████████  | 4/5 [00:06<00:00,  1.03batch/s]
+extract[holdout_query]: 100%|██████████| 5/5 [00:07<00:00,  1.16batch/s]
+extract[holdout_query]: 100%|██████████| 5/5 [00:08<00:00,  1.65s/batch]
+[extract] holdout_query: 53.7 мс/кроп всего = 5.0 сеть + 48.7 чтение кадров с диска
+
+extract[holdout_gallery]:   0%|          | 0/10 [00:00<?, ?batch/s]
+extract[holdout_gallery]:  10%|█         | 1/10 [00:06<00:56,  6.22s/batch]
+extract[holdout_gallery]:  20%|██        | 2/10 [00:06<00:21,  2.65s/batch]
+extract[holdout_gallery]:  30%|███       | 3/10 [00:06<00:10,  1.51s/batch]
+extract[holdout_gallery]:  40%|████      | 4/10 [00:06<00:05,  1.03batch/s]
+extract[holdout_gallery]:  50%|█████     | 5/10 [00:08<00:06,  1.38s/batch]
+extract[holdout_gallery]:  60%|██████    | 6/10 [00:08<00:03,  1.04batch/s]
+extract[holdout_gallery]:  70%|███████   | 7/10 [00:09<00:02,  1.44batch/s]
+extract[holdout_gallery]:  80%|████████  | 8/10 [00:09<00:01,  1.93batch/s]
+extract[holdout_gallery]:  90%|█████████ | 9/10 [00:10<00:00,  1.39batch/s]
+extract[holdout_gallery]: 100%|██████████| 10/10 [00:11<00:00,  1.14s/batch]
+[extract] holdout_gallery: 36.8 мс/кроп всего = 4.8 сеть + 32.0 чтение кадров с диска
+[submit] candidates.csv: отказов 34/154 → release_calibrated_v1\validation\holdout_candidates.csv
+[submit] submission.csv (154 запросов, top-10) → release_calibrated_v1\validation\holdout_submission.csv
+{
+  "calibration": {
+    "TP": 119,
+    "FP": 2,
+    "FN": 3,
+    "TN": 30,
+    "FP_no_match": 1,
+    "F1": 0.9794238683127572,
+    "TNR": 0.967741935483871,
+    "objective": 0.9759192884640913,
+    "no_match_queries": 31,
+    "queries": 154,
+    "ranking": {
+      "rank1": 0.7723577235772358,
+      "rank5": 0.926829268292683,
+      "rank10": 0.967479674796748,
+      "mAP": 0.8229042457091237,
+      "cutoff": 10,
+      "n_query_valid": 123,
+      "n_query_total": 154,
+      "n_gallery": 314
+    },
+    "serialized_candidates": {
+      "TP": 119,
+      "FP": 2,
+      "FN": 3,
+      "TN": 30,
+      "FP_no_match": 1,
+      "F1": 0.9794238683127572,
+      "TNR": 0.967741935483871,
+      "objective": 0.9759192884640913,
+      "no_match_queries": 31,
+      "queries": 154
+    }
+  },
+  "holdout": {
+    "TP": 115,
+    "FP": 5,
+    "FN": 6,
+    "TN": 28,
+    "FP_no_match": 3,
+    "F1": 0.9543568464730291,
+    "TNR": 0.9032258064516129,
+    "objective": 0.9390175344666041,
+    "no_match_queries": 31,
+    "queries": 154,
+    "ranking": {
+      "rank1": 0.7642276422764228,
+      "rank5": 0.9349593495934959,
+      "rank10": 0.967479674796748,
+      "mAP": 0.7970404783412913,
+      "cutoff": 10,
+      "n_query_valid": 123,
+      "n_query_total": 154,
+      "n_gallery": 309
+    },
+    "serialized_candidates": {
+      "TP": 115,
+      "FP": 5,
+      "FN": 6,
+      "TN": 28,
+      "FP_no_match": 3,
+      "F1": 0.9543568464730291,
+      "TNR": 0.9032258064516129,
+      "objective": 0.9390175344666041,
+      "no_match_queries": 31,
+      "queries": 154
+    }
+  }
+}

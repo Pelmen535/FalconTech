@@ -1,0 +1,12 @@
+{
+  "backbone": "ft:release",
+  "threads": 8,
+  "dim": 2048,
+  "device": "cpu",
+  "batch": 16,
+  "params_M": 303.6,
+  "ms_per_image_b1": 1056.76,
+  "ms_per_image_b16": 1175.62,
+  "fps_batch": 0.9,
+  "ms_preprocess": 5.1
+}

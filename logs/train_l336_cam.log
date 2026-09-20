@@ -1,0 +1,30 @@
+[hackathon] train.csv: 9556 bbox, 1541 vehicle_id, 9556 кадров
+[hackathon] камеры из CSV: 96 шт. — псевдокамера не нужна
+[hackathon] протокол «track», fit: 7655 bbox / 1233 id; val query: 1193 (без пары: 186), gallery: 708
+[train] кропы fit: 7655 (0 c)
+[train] vit_large_patch14_dinov2.lvd142m, D=2048, id=1233, device=cuda
+[train] авто-батч: оценка по P=2: 2.20 ГБ на машину (×K=4), база 1.1 ГБ, бюджет 12.7 ГБ → пробую P=5
+[train] авто-батч: P=5 (×K=4 = 20 кропов), пик 11.1 ГБ из 15.9
+[train] сэмплер: camera-aware (кадры одной машины — с разных камер)
+[val] до обучения: rank1=  8.1%  rank5= 18.0%  rank10= 24.3%  mAP= 11.2%  (queries 1007/1007, gallery 708)
+[ep 01] loss=15.583 rank1= 36.6%  rank5= 60.2%  rank10= 71.7%  mAP= 41.7%  (queries 1007/1007, gallery 708) (433 c)
+[ep 02] loss=12.258 rank1= 52.1%  rank5= 75.8%  rank10= 83.9%  mAP= 56.3%  (queries 1007/1007, gallery 708) (503 c)
+[ep 03] loss=8.508 rank1= 62.6%  rank5= 81.2%  rank10= 88.4%  mAP= 65.4%  (queries 1007/1007, gallery 708) (446 c)
+[ep 04] loss=5.803 rank1= 66.7%  rank5= 85.0%  rank10= 91.7%  mAP= 69.9%  (queries 1007/1007, gallery 708) (402 c)
+[ep 05] loss=3.831 rank1= 69.9%  rank5= 87.2%  rank10= 92.7%  mAP= 73.1%  (queries 1007/1007, gallery 708) (539 c)
+[ep 06] loss=2.674 rank1= 67.6%  rank5= 87.2%  rank10= 92.3%  mAP= 71.3%  (queries 1007/1007, gallery 708) (435 c)
+[ep 07] loss=1.965 rank1= 70.9%  rank5= 88.3%  rank10= 93.6%  mAP= 74.3%  (queries 1007/1007, gallery 708) (380 c)
+[ep 08] loss=1.348 rank1= 71.0%  rank5= 88.3%  rank10= 93.9%  mAP= 74.5%  (queries 1007/1007, gallery 708) (365 c)
+[ep 09] loss=0.948 rank1= 72.5%  rank5= 90.1%  rank10= 94.8%  mAP= 76.3%  (queries 1007/1007, gallery 708) (365 c)
+[ep 10] loss=0.677 rank1= 73.6%  rank5= 90.4%  rank10= 94.6%  mAP= 76.8%  (queries 1007/1007, gallery 708) (365 c)
+[ep 11] loss=0.490 rank1= 72.9%  rank5= 90.2%  rank10= 95.9%  mAP= 77.1%  (queries 1007/1007, gallery 708) (366 c)
+[ep 12] loss=0.381 rank1= 75.0%  rank5= 90.8%  rank10= 95.2%  mAP= 78.2%  (queries 1007/1007, gallery 708) (367 c)
+[ep 13] loss=0.259 rank1= 74.8%  rank5= 90.0%  rank10= 95.8%  mAP= 78.3%  (queries 1007/1007, gallery 708) (366 c)
+[ep 14] loss=0.199 rank1= 75.5%  rank5= 90.3%  rank10= 95.4%  mAP= 78.4%  (queries 1007/1007, gallery 708) (366 c)
+[ep 15] loss=0.138 rank1= 74.7%  rank5= 90.9%  rank10= 95.6%  mAP= 78.6%  (queries 1007/1007, gallery 708) (366 c)
+[ep 16] loss=0.103 rank1= 74.5%  rank5= 91.4%  rank10= 95.1%  mAP= 78.2%  (queries 1007/1007, gallery 708) (365 c)
+[ep 17] loss=0.089 rank1= 74.9%  rank5= 91.3%  rank10= 95.6%  mAP= 78.7%  (queries 1007/1007, gallery 708) (365 c)
+[ep 18] loss=0.078 rank1= 74.5%  rank5= 91.7%  rank10= 95.6%  mAP= 78.5%  (queries 1007/1007, gallery 708) (365 c)
+[ep 19] loss=0.077 rank1= 75.1%  rank5= 91.7%  rank10= 95.3%  mAP= 78.7%  (queries 1007/1007, gallery 708) (365 c)
+[ep 20] loss=0.070 rank1= 74.8%  rank5= 91.6%  rank10= 95.6%  mAP= 78.6%  (queries 1007/1007, gallery 708) (365 c)
+[train] лучший mAP=78.7% (эпоха 17) → weights\hack_dinov2_l_336_cam\best.pt

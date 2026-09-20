@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Связанные одной цепью · Безномерная идентификация ТС</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>%F0%9F%9A%97</text></svg>">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<main>
+
+<header>
+  <div>
+    <div class="eyebrow">Связанные одной цепью</div>
+    <h1>Безномерная идентификация транспортного средства</h1>
+    <p class="muted">Загрузите кадр, выделите автомобиль рамкой и найдите его наблюдения в галерее.
+      Номерной знак не используется: решение опирается только на внешний вид кузова.</p>
+  </div>
+  <div class="status-block">
+    <div id="health" class="status" role="status">Подключение…</div>
+    <a class="status link" href="/docs" target="_blank" rel="noopener">OpenAPI · Swagger</a>
+  </div>
+</header>
+
+<div id="message" class="notice hidden" role="status" aria-live="polite"></div>
+
+<nav class="tabs" aria-label="Разделы">
+  <button id="tab-search" aria-selected="true" type="button">Поиск</button>
+  <button id="tab-gallery" aria-selected="false" type="button">Галерея <span id="gallery-count">0</span></button>
+  <button id="tab-scale" aria-selected="false" type="button">Масштабируемость</button>
+  <button id="tab-about" aria-selected="false" type="button">О решении</button>
+</nav>
+
+<!-- ------------------------------------------------------------------ поиск -->
+<section id="search-section" class="layout" aria-label="Поиск">
+  <form id="search-form" class="panel">
+    <h2>Запрос</h2>
+    <label>Кадр с автомобилем
+      <input id="query-file" type="file" accept="image/jpeg,image/png,image/webp" required></label>
+    <button id="use-demo" class="full ghost hidden" type="button">Взять демонстрационный кадр</button>
+
+    <div class="canvas-wrap hidden" id="query-canvas-wrap">
+      <canvas id="query-preview" aria-label="Выделите автомобиль рамкой"></canvas>
+      <div class="hint">Потяните мышью по кадру, чтобы выделить автомобиль</div>
+    </div>
+
+    <details id="query-box-details">
+      <summary>Координаты рамки, пиксели исходного кадра</summary>
+      <div class="fields" id="query-box">
+        <label>X<input name="x" type="number" min="0" step="any" required></label>
+        <label>Y<input name="y" type="number" min="0" step="any" required></label>
+        <label>Ширина<input name="w" type="number" min="0.01" step="any" required></label>
+        <label>Высота<input name="h" type="number" min="0.01" step="any" required></label>
+      </div>
+      <label>Идентификатор исходного кадра, необязательно
+        <input id="query-id" placeholder="image_id" autocomplete="off"></label>
+      <small>Укажите ID, если этот же кадр уже лежит в галерее: он будет исключён из выдачи.</small>
+    </details>
+
+    <fieldset class="modes">
+      <legend>Режим поиска</legend>
+      <label class="radio"><input type="radio" name="mode" value="exact" checked>
+        <span><strong>Точный</strong> — полный перебор галереи, ответ совпадает с конкурсным CLI</span></label>
+      <label class="radio"><input type="radio" name="mode" value="ann">
+        <span><strong>ANN</strong> — шортлист HNSW, затем тот же точный косинус и ре-ранжирование</span></label>
+    </fieldset>
+
+    <button class="primary full" type="submit">Найти автомобиль</button>
+    <p class="summary">Для поиска нужны минимум 10 доступных наблюдений. Первый запрос загружает модель.</p>
+  </form>
+
+  <div class="panel">
+    <div class="row">
+      <h2>Результат</h2>
+      <div class="export hidden" id="export-buttons">
+        <button id="export-csv" type="button">Выгрузить CSV</button>
+        <button id="export-json" type="button">Выгрузить JSON</button>
+      </div>
+    </div>
+    <div id="result-info" class="hidden"></div>
+    <div id="result-empty" class="empty">Загрузите кадр и запустите поиск.<br>
+      Здесь появятся десять кандидатов и решение об отказе.</div>
+    <div id="results" class="grid"></div>
+  </div>
+</section>
+
+<!-- ---------------------------------------------------------------- галерея -->
+<section id="gallery-section" class="hidden" aria-label="Управление галереей">
+  <div class="layout">
+    <div>
+      <form id="add-form" class="panel">
+        <h2>Добавить наблюдение</h2>
+        <label>Кадр<input id="add-file" type="file" accept="image/jpeg,image/png,image/webp" required></label>
+        <div class="canvas-wrap hidden" id="add-canvas-wrap">
+          <canvas id="add-preview" aria-label="Выделите автомобиль рамкой"></canvas>
+          <div class="hint">Потяните мышью по кадру, чтобы выделить автомобиль</div>
+        </div>
+        <details>
+          <summary>Координаты рамки</summary>
+          <div class="fields" id="add-box">
+            <label>X<input name="x" type="number" min="0" step="any" required></label>
+            <label>Y<input name="y" type="number" min="0" step="any" required></label>
+            <label>Ширина<input name="w" type="number" min="0.01" step="any" required></label>
+            <label>Высота<input name="h" type="number" min="0.01" step="any" required></label>
+          </div>
+        </details>
+        <label>ID наблюдения, необязательно<input id="add-id" placeholder="будет создан автоматически" autocomplete="off"></label>
+        <button class="primary full" type="submit">Добавить в галерею</button>
+      </form>
+
+      <form id="import-form" class="panel spaced">
+        <h3>Импорт галереи из ZIP</h3>
+        <label>Архив<input id="archive-file" type="file" accept=".zip,application/zip" required></label>
+        <p class="summary">В ZIP: <code>test_gallery.csv</code> со столбцами <code>image_id,x,y,w,h</code>
+          и папка <code>images/</code>. Имя файла совпадает с <code>image_id</code>.</p>
+        <button class="full" type="submit">Импортировать ZIP</button>
+        <small>Векторы считаются на сервере. На CPU большой архив обрабатывается долго.</small>
+      </form>
+    </div>
+
+    <div class="panel">
+      <div class="row"><h2>Наблюдения</h2>
+        <div class="export">
+          <button id="load-demo-gallery" class="hidden" type="button">Загрузить демо-галерею</button>
+          <button id="refresh-gallery" type="button">Обновить</button>
+        </div>
+      </div>
+      <p class="summary">Кадры, рамки и векторы хранятся в СУБД и переживают перезапуск сервиса.</p>
+      <div id="gallery-empty" class="empty hidden">Галерея пуста. Добавьте кадр или импортируйте ZIP.</div>
+      <div id="gallery" class="grid"></div>
+      <div class="pagination">
+        <button id="prev" type="button">Назад</button>
+        <span id="page-info" class="muted"></span>
+        <button id="next" type="button">Далее</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- --------------------------------------------------------- масштабируемость -->
+<section id="scale-section" class="hidden" aria-label="Масштабируемость">
+  <div class="panel">
+    <h2>Поиск при городских объёмах</h2>
+    <p class="muted">Поиск по галерее не входит в замер производительности жюри — туда входят чтение,
+      кроп, препроцессинг, forward и нормализация. Этот раздел отвечает на другой вопрос:
+      что произойдёт, когда галерея вырастет с 750 наблюдений до миллиона.</p>
+    <div id="index-live" class="kv"></div>
+    <h3 class="spaced">Измерения</h3>
+    <div id="scale-table"></div>
+    <p class="summary" id="scale-source"></p>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ о решении -->
+<section id="about-section" class="hidden" aria-label="О решении">
+  <div class="layout">
+    <div class="panel">
+      <h2>Что загружено сейчас</h2>
+      <div id="about-model" class="kv"></div>
+      <h3 class="spaced">Порог отказа</h3>
+      <p class="muted">Порог заморожен в <code>release/recipe.json</code> и не подбирается во время
+        работы. Он выбран ниже оптимума валидации сознательно: в нашей валидации у почти каждого
+        запроса есть кадр той же камеры (почти дубликат, медиана косинуса 0.908), а закрытый тест
+        гарантирует только кросс-камерную пару. Без дубликатов медиана падает до 0.505, и высокий
+        порог начинает отказывать тем, кому надо отвечать. Обоснование и таблица — в README.</p>
+      <h3 class="spaced">Номерной знак</h3>
+      <p class="muted">Номера в данных уже анонимизированы. Абляция с контролем равной площади
+        показала опору на зону номера 0.02 п.п. при разбросе прогонов 0.2–0.3 п.п. Это видно и
+        глазами: откройте «Почему похоже» у любого кандидата — зона номера не подсвечена.</p>
+    </div>
+    <div class="panel">
+      <h2>Интерфейсы</h2>
+      <ul class="links">
+        <li><a href="/docs" target="_blank" rel="noopener">Swagger UI — интерактивная спецификация</a></li>
+        <li><a href="/openapi.json" target="_blank" rel="noopener">openapi.json — машинное описание API</a></li>
+        <li><a href="/health" target="_blank" rel="noopener">/health — состояние процесса</a></li>
+        <li><a href="/v1/index/stats" target="_blank" rel="noopener">/v1/index/stats — индекс и масштабируемость</a></li>
+      </ul>
+      <h3 class="spaced">Доступ</h3>
+      <div class="auth">
+        <label>Ключ доступа, если задан на сервере
+          <input id="api-key" type="password" autocomplete="off" placeholder="X-API-Key" spellcheck="false"></label>
+        <button id="connect" type="button">Подключиться</button>
+      </div>
+      <small>Ключ хранится только в памяти этой вкладки и нужен лишь при привязке к нелокальному адресу.</small>
+    </div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ объяснение -->
+<dialog id="explain-dialog">
+  <form method="dialog" class="dialog-head">
+    <h2 id="explain-title">Почему похоже</h2>
+    <button class="ghost" value="close" type="submit">Закрыть</button>
+  </form>
+  <div id="explain-body">
+    <p class="muted">Считается точное разложение косинуса по участкам обоих кадров.
+      Зелёный — участок добавил сходства больше обычного, красный — меньше.</p>
+    <div id="explain-content" class="explain-grid"></div>
+  </div>
+</dialog>
+
+<footer>
+  Косинус — сырая мера сходства, не вероятность. Порядок кандидатов может отличаться от порядка
+  косинуса: ранжирование выполняется после ре-ранжирования k-reciprocal. Отказ означает, что ни один
+  кандидат не прошёл порог, а не доказательство отсутствия автомобиля в городе.
+</footer>
+
+</main>
+<script src="/static/app.js"></script>
+</body>
+</html>

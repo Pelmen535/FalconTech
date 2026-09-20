@@ -1,0 +1,18 @@
+name: toy_hack
+dataset:
+  root: data/toy_hack
+  images_dir: images
+  train_csv: train.csv
+  test_query_csv: test_query.csv
+  test_gallery_csv: test_gallery.csv
+  test_csv: test.csv
+  pseudo_camera: auto
+  pseudo_camera_threshold: 0.35
+  val_frac: 0.25
+  distractor_frac: 0.2
+  queries_per_id: 1
+  seed: 0
+crop: {pad: 0.08}
+refusal: {min_tnr: null}
+runs_dir: runs
+results_dir: results

@@ -1,0 +1,9 @@
+C:\Program Files\Python314\Lib\zipfile\__init__.py:1721: UserWarning: Duplicate name: 'handoff/MANIFEST.sha256.json'
+  return self._open_to_write(zinfo, force_zip64=force_zip64)
+{
+  "path": "E:\\\u0425\u0430\u043a\u0430\u0442\u043e\u043d\\handoff_competition_v2.zip",
+  "files": 137,
+  "bytes": 510421419,
+  "mb": 486.8,
+  "sha256": "36b4b47bad410e5af38b2e599b8ac0d3cd6333e526452ac53f0635c18dcff13a"
+}

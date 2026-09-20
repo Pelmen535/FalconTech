@@ -1,0 +1,247 @@
+{
+  "dataset": "hack",
+  "backbone": "ens_ft_hack_dinov2_b_336_cam+ft_hack_dinov2_b_448_cam",
+  "members": [
+    "ft:weights/hack_dinov2_b_336_cam/best.pt",
+    "ft:weights/hack_dinov2_b_448_cam/best.pt"
+  ],
+  "weights": [
+    1.0,
+    1.0
+  ],
+  "dim": 3072,
+  "protocol": "track",
+  "refusal_mask_cam": false,
+  "cross_camera": {
+    "rank1": 0.7010309278350515,
+    "rank5": 0.8721649484536083,
+    "rank10": 0.9247422680412372,
+    "mAP": 0.7240792355315551,
+    "cutoff": 10,
+    "n_query_valid": 970,
+    "n_query_total": 970,
+    "n_gallery": 688
+  },
+  "postprocess": {
+    "rows": [
+      {
+        "name": "base",
+        "rank1": 0.7010309278350515,
+        "rank5": 0.8721649484536083,
+        "rank10": 0.9247422680412372,
+        "mAP": 0.7240792355315551,
+        "cutoff": 10,
+        "n_query_valid": 970,
+        "n_query_total": 970,
+        "n_gallery": 688
+      },
+      {
+        "name": "dba k=1",
+        "rank1": 0.7082474226804124,
+        "rank5": 0.8783505154639175,
+        "rank10": 0.9298969072164949,
+        "mAP": 0.7320174275895924,
+        "cutoff": 10,
+        "n_query_valid": 970,
+        "n_query_total": 970,
+        "n_gallery": 688
+      },
+      {
+        "name": "dba k=2",
+        "rank1": 0.7164948453608248,
+        "rank5": 0.8783505154639175,
+        "rank10": 0.9329896907216495,
+        "mAP": 0.7415074728631429,
+        "cutoff": 10,
+        "n_query_valid": 970,
+        "n_query_total": 970,
+        "n_gallery": 688
+      },
+      {
+        "name": "dba k=3",
+        "rank1": 0.7072164948453609,
+        "rank5": 0.8752577319587629,
+        "rank10": 0.9298969072164949,
+        "mAP": 0.739447246768123,
+        "cutoff": 10,
+        "n_query_valid": 970,
+        "n_query_total": 970,
+        "n_gallery": 688
+      },
+      {
+        "name": "dba k=5",
+        "rank1": 0.722680412371134,
+        "rank5": 0.8670103092783505,
+        "rank10": 0.9329896907216495,
+        "mAP": 0.7506248568155784,
+        "cutoff": 10,
+        "n_query_valid": 970,
+        "n_query_total": 970,
+        "n_gallery": 688
+      },
+      {
+        "name": "k-recip 6/2",
+        "rank1": 0.7350515463917526,
+        "rank5": 0.8731958762886598,
+        "rank10": 0.9268041237113402,
+        "mAP": 0.7597226313205695,
+        "cutoff": 10,
+        "n_query_valid": 970,
+        "n_query_total": 970,
+        "n_gallery": 688
+      },
+      {
+        "name": "k-recip 10/3",
+        "rank1": 0.7309278350515463,
+        "rank5": 0.8701030927835052,
+        "rank10": 0.9278350515463918,
+        "mAP": 0.7605007977417771,
+        "cutoff": 10,
+        "n_query_valid": 970,
+        "n_query_total": 970,
+        "n_gallery": 688
+      },
+      {
+        "name": "k-recip 15/4",
+        "rank1": 0.7175257731958763,
+        "rank5": 0.8711340206185567,
+        "rank10": 0.9298969072164949,
+        "mAP": 0.7543723885888833,
+        "cutoff": 10,
+        "n_query_valid": 970,
+        "n_query_total": 970,
+        "n_gallery": 688
+      },
+      {
+        "name": "k-recip 20/6",
+        "rank1": 0.7195876288659794,
+        "rank5": 0.8680412371134021,
+        "rank10": 0.9216494845360824,
+        "mAP": 0.7509940271641303,
+        "cutoff": 10,
+        "n_query_valid": 970,
+        "n_query_total": 970,
+        "n_gallery": 688
+      },
+      {
+        "name": "dba k=5 + k-recip 6/2",
+        "rank1": 0.7309278350515463,
+        "rank5": 0.8649484536082475,
+        "rank10": 0.9298969072164949,
+        "mAP": 0.7591367615774832,
+        "cutoff": 10,
+        "n_query_valid": 970,
+        "n_query_total": 970,
+        "n_gallery": 688
+      },
+      {
+        "name": "dba k=5 + k-recip 10/3",
+        "rank1": 0.7402061855670103,
+        "rank5": 0.856701030927835,
+        "rank10": 0.9268041237113402,
+        "mAP": 0.761436119293078,
+        "cutoff": 10,
+        "n_query_valid": 970,
+        "n_query_total": 970,
+        "n_gallery": 688
+      },
+      {
+        "name": "dba k=5 + k-recip 15/4",
+        "rank1": 0.7278350515463917,
+        "rank5": 0.865979381443299,
+        "rank10": 0.9257731958762887,
+        "mAP": 0.7557471226749577,
+        "cutoff": 10,
+        "n_query_valid": 970,
+        "n_query_total": 970,
+        "n_gallery": 688
+      },
+      {
+        "name": "dba k=5 + k-recip 20/6",
+        "rank1": 0.7247422680412371,
+        "rank5": 0.8597938144329897,
+        "rank10": 0.9216494845360824,
+        "mAP": 0.7507109174712266,
+        "cutoff": 10,
+        "n_query_valid": 970,
+        "n_query_total": 970,
+        "n_gallery": 688
+      }
+    ],
+    "best_dba_k": 5,
+    "best": "dba k=5 + k-recip 10/3"
+  },
+  "bits": {
+    "calibration": {
+      "tau": 0.1773790717124939,
+      "recall": 0.95,
+      "n_pairs": 970,
+      "best_match_sim_median": 0.4444118142127991
+    }
+  },
+  "refusal": {
+    "n_query": 1213,
+    "n_no_match": 243,
+    "mINP": 0.6943808564570885,
+    "best_confidence": "top1+bits",
+    "best": {
+      "threshold": 0.6732240904191863,
+      "precision": 0.9955947136563876,
+      "recall": 0.9338842975206612,
+      "f1": 0.9637526652452025,
+      "tnr": 0.9917695473251029,
+      "accept_rate": 0.7485572959604286,
+      "jury_score": 0.9721577298691726
+    },
+    "by_confidence": {
+      "top1": {
+        "chosen": {
+          "threshold": 0.5635407567024231,
+          "precision": 0.9933920704845814,
+          "recall": 0.9318181818181818,
+          "f1": 0.9616204690831557,
+          "tnr": 0.9835390946502057,
+          "accept_rate": 0.7485572959604286,
+          "jury_score": 0.9681960567532707
+        },
+        "pr_auc": 0.9974872677722915
+      },
+      "margin": {
+        "chosen": {
+          "threshold": 0.12714286148548126,
+          "precision": 0.9863325740318907,
+          "recall": 0.8927835051546392,
+          "f1": 0.9372294372294372,
+          "tnr": 0.9506172839506173,
+          "accept_rate": 0.7238252267106348,
+          "jury_score": 0.9412457912457912
+        },
+        "pr_auc": 0.9931133517721309
+      },
+      "bits": {
+        "chosen": {
+          "threshold": 4.178337241258513,
+          "precision": 0.7848837209302325,
+          "recall": 0.9926470588235294,
+          "f1": 0.8766233766233765,
+          "tnr": 0.00823045267489712,
+          "accept_rate": 0.9925803792250618,
+          "jury_score": 0.6161054994388326
+        },
+        "pr_auc": 0.7579457870301858
+      },
+      "top1+bits": {
+        "chosen": {
+          "threshold": 0.6732240904191863,
+          "precision": 0.9955947136563876,
+          "recall": 0.9338842975206612,
+          "f1": 0.9637526652452025,
+          "tnr": 0.9917695473251029,
+          "accept_rate": 0.7485572959604286,
+          "jury_score": 0.9721577298691726
+        },
+        "pr_auc": 0.9976721790240433
+      }
+    }
+  }
+}

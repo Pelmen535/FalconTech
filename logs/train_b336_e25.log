@@ -1,0 +1,48 @@
+[train] throttle=0.18: после каждого шага пауза 18% от времени шага
+[hackathon] train.csv: 9556 bbox, 1541 vehicle_id, 9556 кадров
+[hackathon] камеры из CSV: 96 шт. — псевдокамера не нужна
+[hackathon] fit: 7655 bbox / 1233 id; val query: 308 (без пары: 62), gallery: 1271
+[train] кропы fit: 7655 (0 c)
+python : Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate l
+imits and faster downloads.
+строка:1 знак:1
++ python -m vreid.train --config configs/hackathon.yaml --backbone dino ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Warning: You ar...ster downloads.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[train] vit_base_patch14_dinov2.lvd142m, D=1536, id=1233, device=cuda
+[train] авто-батч: оценка по P=2: 0.95 ГБ на машину (×K=4), база 0.3 ГБ, бюджет 12.7 ГБ → пробую P=13
+[train] авто-батч: P=13 (×K=4 = 52 кропов), пик 11.3 ГБ из 15.9
+[val] до обучения: rank1=  8.9%  rank5= 13.8%  rank10= 21.5%  mAP=  9.2%  (queries 246/246, gallery 1271)
+E:\Хакатон\vreid\train.py:501: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorc
+h 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failur
+e to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https:/
+/pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  scaler.step(opt); scaler.update(); sched.step(); step += 1
+[ep 01] loss=15.862 rank1= 26.0%  rank5= 40.7%  rank10= 48.8%  mAP= 25.6%  (queries 246/246, gallery 1271) (191 c)
+[ep 02] loss=12.864 rank1= 36.6%  rank5= 54.9%  rank10= 65.0%  mAP= 38.2%  (queries 246/246, gallery 1271) (191 c)
+[ep 03] loss=9.339 rank1= 50.4%  rank5= 69.1%  rank10= 76.8%  mAP= 48.7%  (queries 246/246, gallery 1271) (192 c)
+[ep 04] loss=6.787 rank1= 54.9%  rank5= 70.7%  rank10= 79.7%  mAP= 53.3%  (queries 246/246, gallery 1271) (192 c)
+[ep 05] loss=4.638 rank1= 54.1%  rank5= 73.6%  rank10= 80.9%  mAP= 54.2%  (queries 246/246, gallery 1271) (192 c)
+[ep 06] loss=3.253 rank1= 60.6%  rank5= 76.8%  rank10= 80.1%  mAP= 58.0%  (queries 246/246, gallery 1271) (192 c)
+[ep 07] loss=2.304 rank1= 63.4%  rank5= 77.6%  rank10= 83.7%  mAP= 59.9%  (queries 246/246, gallery 1271) (192 c)
+[ep 08] loss=1.670 rank1= 60.6%  rank5= 78.9%  rank10= 87.0%  mAP= 60.0%  (queries 246/246, gallery 1271) (192 c)
+[ep 09] loss=1.242 rank1= 61.8%  rank5= 77.6%  rank10= 83.7%  mAP= 59.7%  (queries 246/246, gallery 1271) (192 c)
+[ep 10] loss=0.905 rank1= 64.2%  rank5= 82.1%  rank10= 85.8%  mAP= 62.4%  (queries 246/246, gallery 1271) (192 c)
+[ep 11] loss=0.697 rank1= 66.3%  rank5= 81.3%  rank10= 87.0%  mAP= 64.1%  (queries 246/246, gallery 1271) (192 c)
+[ep 12] loss=0.518 rank1= 67.5%  rank5= 80.9%  rank10= 85.8%  mAP= 65.3%  (queries 246/246, gallery 1271) (192 c)
+[ep 13] loss=0.433 rank1= 65.0%  rank5= 81.7%  rank10= 85.8%  mAP= 64.2%  (queries 246/246, gallery 1271) (192 c)
+[ep 14] loss=0.331 rank1= 68.3%  rank5= 81.3%  rank10= 85.0%  mAP= 65.9%  (queries 246/246, gallery 1271) (191 c)
+[ep 15] loss=0.254 rank1= 69.5%  rank5= 82.9%  rank10= 86.6%  mAP= 66.3%  (queries 246/246, gallery 1271) (193 c)
+[ep 16] loss=0.224 rank1= 66.7%  rank5= 80.9%  rank10= 85.4%  mAP= 64.5%  (queries 246/246, gallery 1271) (196 c)
+[ep 17] loss=0.162 rank1= 67.5%  rank5= 81.7%  rank10= 85.0%  mAP= 65.9%  (queries 246/246, gallery 1271) (207 c)
+[ep 18] loss=0.150 rank1= 68.3%  rank5= 82.5%  rank10= 85.0%  mAP= 66.2%  (queries 246/246, gallery 1271) (207 c)
+[ep 19] loss=0.115 rank1= 69.5%  rank5= 81.7%  rank10= 86.2%  mAP= 67.2%  (queries 246/246, gallery 1271) (206 c)
+[ep 20] loss=0.109 rank1= 67.9%  rank5= 83.7%  rank10= 86.2%  mAP= 67.0%  (queries 246/246, gallery 1271) (639 c)
+[ep 21] loss=0.093 rank1= 68.7%  rank5= 84.6%  rank10= 87.0%  mAP= 66.9%  (queries 246/246, gallery 1271) (979 c)
+[ep 22] loss=0.087 rank1= 69.9%  rank5= 83.7%  rank10= 87.4%  mAP= 67.7%  (queries 246/246, gallery 1271) (1325 c)
+[ep 23] loss=0.081 rank1= 69.5%  rank5= 83.3%  rank10= 87.0%  mAP= 67.8%  (queries 246/246, gallery 1271) (612 c)
+[ep 24] loss=0.076 rank1= 69.5%  rank5= 83.3%  rank10= 87.4%  mAP= 67.7%  (queries 246/246, gallery 1271) (209 c)
+[ep 25] loss=0.073 rank1= 69.1%  rank5= 83.3%  rank10= 87.8%  mAP= 67.7%  (queries 246/246, gallery 1271) (208 c)
+[train] лучший mAP=67.8% (эпоха 23) → weights\hack_dinov2_b_336_e25\best.pt

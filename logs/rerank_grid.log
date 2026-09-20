@@ -1,0 +1,6 @@
+[grid] ft_soup_b336_fit: 93 точек
+[grid] ft_soup_b336_val: 93 точек
+[grid] лучшее на ft_soup_b336_fit: 3/2/0.2 = 74.331, на ft_soup_b336_val даёт 75.969
+[grid] лучшее на ft_soup_b336_val: 3/2/0.2 = 75.969, на ft_soup_b336_fit даёт 74.331
+[grid] в рецепте 6/2/0.3: 73.765 / 74.876
+[grid] → results\rerank_grid.json

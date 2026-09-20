@@ -1,0 +1,10 @@
+# torch/torchvision ставятся отдельно под свою CUDA (у Николая уже стоят)
+timm>=1.0
+faiss-cpu>=1.8        # на GPU-машине можно faiss-gpu, но flat-индекс и на CPU быстрый
+numpy
+pillow
+tqdm
+pyyaml
+scikit-learn
+pytest
+opencv-python-headless    # детектор зоны анонимизации номера (vreid/plate.py); в бою не нужен

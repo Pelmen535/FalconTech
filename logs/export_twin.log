@@ -1,0 +1,6 @@
+[release] model.pt 164 МБ (fp16), лимит ТЗ — 2048 МБ
+[release] frozen threshold 0.5500; evaluate emitted CSV with scripts/refusal_audit.py
+[release] source validation point 0.6026: F1=96.2%, TNR=98.4% (not a measurement of this exported recipe)
+[release] отказов в рабочей точке: 25.1% (используется абсолютный порог)
+[release] val mAP@10 по правилу жюри 70.7% (строгий cross-cam для сравнения 73.0%, протокол track)
+[release] → release_soup/model.pt, release_soup/recipe.json

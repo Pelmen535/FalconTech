@@ -1,0 +1,3 @@
+[submit] submission.csv (1110 запросов, top-10) → results\cached_replay.json\submission.csv
+[submit] candidates.csv: отказов 69/1110 → results\cached_replay.json\candidates.csv
+{"n_query": 1110, "n_gallery": 750, "embeddings_sha256": "ffcea632e4f4050140fcde81cd48a9c38a759c04f54b20295100024377eb12fe", "recipe_sha256": "6ced3ed0b1155a8f21136267eed6e1c9f8cee3733c889205b54e41c545570b83", "top1_changes": 0, "changed_rank_cells": 0, "acceptance_changes": 0, "old_accepted": 1041, "new_accepted": 1041, "candidate_id_changes": 0, "scope": "Cached ranking regression only; no new extraction, accuracy or GPU performance measurement."}

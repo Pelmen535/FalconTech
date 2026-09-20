@@ -1,0 +1,32 @@
+# Данные организаторов (реальный формат, проверено 15.09): images/ + train.csv (с camera_id) +
+# test_query.csv / test_gallery.csv. Один кадр — одно ТС, 1920x1080.
+name: hack
+dataset:
+  root: Данные
+  images_dir: images
+  train_csv: train.csv
+  test_query_csv: test_query.csv
+  test_gallery_csv: test_gallery.csv
+  bbox_format: xywh
+  pseudo_camera: auto             # auto: camera_id из CSV, если есть; иначе кластеризация по фону
+  pseudo_camera_threshold: 0.35
+  val_frac: 0.2                   # доля vehicle_id в локальной валидации (~308 машин)
+  # протокол локальной валидации:
+  #   track — как тест организаторов (восстановлено по test_query/test_gallery): галерея = 1 кадр на трек
+  #           (id × камера), запрос = остальные кадры; дистракторы = машины, целиком убранные из галереи;
+  #           камера запроса при оценке отказа НЕ маскируется (на тесте камер нет)
+  #   id    — старый: 1 запрос на id, остальное в галерею, маска своей камеры (сравнение со старыми цифрами)
+  protocol: track
+  distractor_frac: 0.13           # даёт ~20% запросов без пары — столько open-set в закрытом тесте (ответ Q-17)
+  queries_per_id: 1               # только для protocol: id
+  seed: 0
+crop:
+  pad: 0.05
+  mask_plate: false            # фиксированная маска промахивалась мимо пластины и закрывала бампер; номера уже пикселизованы организаторами
+refusal:
+  # Жюри считает балл как 0.7·F1 + 0.3·TNR на уровне запроса (ответ Q-14/Q-15), поэтому порог
+  # выбираем прямо по этой сумме, а не по F1 с ограничением на TNR.
+  objective: 0.7 f1 + 0.3 tnr
+  min_tnr: null
+runs_dir: runs
+results_dir: results

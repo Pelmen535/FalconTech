@@ -1,0 +1,120 @@
+# Весь продукт одной командой (ТЗ §6):
+#
+#     docker compose up --build            прототип: база + инференс + веб-клиент
+#     открыть http://localhost:8080        интерфейс, http://localhost:8080/docs — OpenAPI
+#
+#     docker compose run --rm predict      конкурсный прогон: /data -> /out, три файла сдачи
+#
+# Три независимых компонента, как требует раздел «микросервисная архитектура»:
+#   db    PostgreSQL с расширением pgvector — векторы и метаданные галереи;
+#   api   инференс: ядро vreid, веса релиза, HTTP-контракт и OpenAPI;
+#   web   тонкий клиент: статическая страница и единственный публикуемый порт.
+# Наружу выходит только web. База и инференс общаются по внутренней сети compose.
+#
+# Пути к данным и выходу задаются в .env (DATA_DIR, OUT_DIR) или правятся здесь.
+# Локальная сборка на карте sm_120 (RTX 50xx): значения BASE_IMAGE/PIP_FLAGS/REQUIREMENTS
+# в .env — см. .env.example.
+
+# Имя проекта задано явно: compose выводит его из имени папки, а папка может называться
+# как угодно — например, кириллицей, и тогда имя выходит пустым и запуск падает.
+name: vreid
+
+x-build-args: &build-args
+  BASE_IMAGE: ${BASE_IMAGE:-pytorch/pytorch@sha256:fc47f8018254e6df30f48c48f2db1c758d44de21a8c553de1a1c451a65baa70a}
+  PIP_FLAGS: ${PIP_FLAGS:-}
+  REQUIREMENTS: ${REQUIREMENTS:-requirements-infer.txt}
+
+x-gpu: &gpu
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu]
+
+services:
+
+  # ------------------------------------------------------------------ база данных
+  db:
+    # Тег с версией, не latest (ответ 39). Образ содержит PostgreSQL 16 и pgvector.
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: vreid
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vreid}
+      POSTGRES_DB: vreid
+      # Локаль и кодировка заданы явно: иначе содержимое зависит от настроек хоста.
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    volumes:
+      - gallery-db:/var/lib/postgresql/data
+    ports:
+      # Только на локальную петлю: база должна быть доступна для осмотра psql и для
+      # тестов хранилища, но не для сети вокруг машины.
+      - "127.0.0.1:${DB_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vreid -d vreid"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  # --------------------------------------------------------------------- инференс
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.service
+      args: *build-args
+    image: vreid-api:1.1
+    <<: *gpu
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      VREID_DEVICE: ${VREID_DEVICE:-cuda}
+      VREID_DATABASE_URL: postgresql://vreid:${POSTGRES_PASSWORD:-vreid}@db:5432/vreid
+      # Пустой ключ — доступ без заголовка. Наружу api не публикуется, публикуется web.
+      VREID_API_KEY: ${VREID_API_KEY:-}
+    volumes:
+      - gallery-files:/var/lib/vreid
+    # DataLoader передаёт батчи через /dev/shm; в контейнере его по умолчанию 64 МБ.
+    shm_size: 2gb
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8765/health', timeout=5).status==200 else 1)\""]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 60s
+    restart: unless-stopped
+
+  # ------------------------------------------------------------------ тонкий клиент
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    image: vreid-web:1.1
+    depends_on:
+      api:
+        condition: service_started
+    ports:
+      - "${WEB_PORT:-8080}:8080"
+    restart: unless-stopped
+
+  # ----------------------------------------------------- конкурсный batch-инференс
+  # Отдельный профиль: поднимать его вместе с сервисом не нужно, он отрабатывает и выходит.
+  predict:
+    profiles: ["predict"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args: *build-args
+    # Тег фиксированный: организаторы запретили ссылаться на latest (ответ 39)
+    image: vreid:1.0
+    <<: *gpu
+    shm_size: 2gb
+    volumes:
+      - ${DATA_DIR:-./Данные}:/data:ro
+      - ${OUT_DIR:-./submission}:/out
+
+volumes:
+  gallery-db:
+  gallery-files:

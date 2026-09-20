@@ -1,0 +1,34 @@
+[hackathon] train.csv: 9556 bbox, 1541 vehicle_id, 9556 кадров
+[hackathon] камеры из CSV: 96 шт. — псевдокамера не нужна
+[hackathon] протокол «track», fit: 7655 bbox / 1233 id; val query: 1213 (без пары: 243), gallery: 688
+[track] МЕТРИКА ЖЮРИ (убрано только vid+cam): rank1= 69.2%  rank5= 86.7%  rank10= 92.4%  mAP@10= 71.8%  (queries 970/970, gallery 688)
+строгий cross-cam (диагностика, завышает): rank1= 71.6%  rank5= 87.8%  rank10= 93.3%  mAP@10= 73.8%  (queries 970/970, gallery 688)
+bits: tau=0.185, max 9.4 бит при галерее 688
+     4.0–  5.0 бит  n=  185  rank-1 =  60.5%
+     5.0–  5.3 бит  n=  176  rank-1 =  76.1%
+     5.3–  5.5 бит  n=  210  rank-1 =  76.2%
+     5.5–  5.8 бит  n=  232  rank-1 =  70.7%
+     5.8–  6.3 бит  n=  233  rank-1 =  74.7%
+     6.3–  9.4 бит  n=  184  rank-1 =  73.9%
+постобработка (метрика жюри):
+   base                         mAP= 71.8%  rank1= 69.2%  rank5= 86.7%
+   dba k=1                      mAP= 72.9%  rank1= 70.3%  rank5= 88.4%
+   dba k=2                      mAP= 73.5%  rank1= 70.1%  rank5= 88.2%
+   dba k=3                      mAP= 74.2%  rank1= 70.7%  rank5= 87.8%
+   dba k=5                      mAP= 74.7%  rank1= 71.9%  rank5= 86.4%
+   k-recip 6/2                  mAP= 75.4%  rank1= 72.1%  rank5= 88.2%
+   k-recip 10/3                 mAP= 73.6%  rank1= 68.7%  rank5= 87.5%
+   k-recip 15/4                 mAP= 74.1%  rank1= 69.8%  rank5= 87.4%
+   k-recip 20/6                 mAP= 73.8%  rank1= 70.1%  rank5= 87.6%
+   dba k=5 + k-recip 6/2        mAP= 75.8%  rank1= 72.8%  rank5= 87.0%  ← лучшее
+   dba k=5 + k-recip 10/3       mAP= 75.0%  rank1= 72.0%  rank5= 87.2%
+   dba k=5 + k-recip 15/4       mAP= 74.9%  rank1= 71.8%  rank5= 87.2%
+   dba k=5 + k-recip 20/6       mAP= 75.4%  rank1= 72.2%  rank5= 87.8%
+   (разница < ~0.7 п.п. при 970 запросах — шум; выбирай самое простое из лучших)
+режим отказа: запросов 1213, без пары 243, mINP=70.7%
+  top1       порог=0.560  балл= 97.0  F1= 96.7%  P= 99.1%  R= 94.3%  TNR= 97.9%  accept=  76%
+  margin     порог=0.162  балл= 93.7  F1= 92.4%  P= 99.1%  R= 86.5%  TNR= 96.7%  accept=  70%
+  bits       порог=3.967  балл= 61.7  F1= 88.1%  P= 78.7%  R=100.0%  TNR=  0.0%  accept= 100%
+  top1+bits  порог=0.684  балл= 97.0  F1= 96.3%  P= 99.4%  R= 93.3%  TNR= 98.8%  accept=  75%
+  → лучшая уверенность: top1   (камера запроса не маскируется — как на тесте)
+[val] → results\hack_ft_hack_dinov2_b_336_distill20_val.json

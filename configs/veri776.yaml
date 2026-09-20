@@ -1,0 +1,11 @@
+# VeRi-776 (реальные камеры). Файлы: 0002_c002_00030600_0.jpg
+name: veri776
+dataset:
+  root: data/VeRi
+  pattern: '^(?P<vid>\d{4})_c(?P<cam>\d{3})_'
+  splits:
+    query: image_query
+    gallery: image_test
+    train: image_train
+runs_dir: runs
+results_dir: results

@@ -1,0 +1,16 @@
+# HTTP adapter dependencies; torch/timm/Pillow/NumPy come from the existing core environment.
+fastapi==0.115.12
+starlette==0.46.2
+pydantic==2.13.5
+pydantic-core==2.46.5
+annotated-types==0.8.0
+typing-inspection==0.4.4
+uvicorn==0.34.2
+python-multipart==0.0.20
+anyio==4.15.1
+click==8.5.0
+h11==0.16.0
+# Needed for the local smoke client and automated HTTP tests.
+httpx==0.28.1
+httpcore==1.0.9
+

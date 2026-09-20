@@ -1,0 +1,6 @@
+[soup] «backbone»: усреднено 174 тензоров, скопировано без изменений 0
+[soup] «bnneck»: усреднено 4 тензоров, скопировано без изменений 1
+[soup] 3 моделей -> weights\soup_b336_all\best.pt (328 МБ)
+        weights/hack_dinov2_b_336_all/best.pt
+        weights/hack_dinov2_b_336_all_s2/best.pt
+        weights/hack_dinov2_b_336_all_s3/best.pt

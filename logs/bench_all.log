@@ -1,0 +1,13 @@
+[models] ft:release_all: vit_base_patch14_dinov2.lvd142m, D=1536, input=336, device=cuda
+[bench] 200 ТС, вход 336, устройство cuda, TTA flip=False, быстрый декод=True
+[bench] из них чтение+декод+кроп+препроцессинг: 14.6 мс/ТС (одним потоком)
+[bench] латентность batch=1: медиана 23.8 мс, среднее 24.3, 90% 29.1 → балл 100%
+[bench] batch= 1:   97.7 кроп/с ( 10.2 мс/ТС)
+[bench] batch= 8:  175.8 кроп/с (  5.7 мс/ТС)
+[bench] batch=16:  152.4 кроп/с (  6.6 мс/ТС)
+[bench] batch=32:  129.0 кроп/с (  7.7 мс/ТС)
+[bench] лучший FPS 175.8 при batch=8 → балл 100%
+[bench] ИТОГО за производительность: 20.0 из 20 баллов (латентность 10.0/10, пропускная 10.0/10)
+[bench] воркеров 8; у жюри 2×Xeon Gold 6338 (64 ядра) — там пакетный режим будет быстрее
+[bench] → results\bench_full.json
+[W918 06:15:51.000000000 CudaIPCTypes.cpp:16] Producer process has been terminated before all shared CUDA tensors released. See Note [Sharing CUDA tensors]

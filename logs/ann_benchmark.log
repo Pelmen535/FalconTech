@@ -1,0 +1,16 @@
+[ann] модель распределения построена по 3761 настоящим векторам, D=1536
+[ann] N=10000 ...
+[ann]   exact          0.167 мс/запрос  recall@10=1.000  top1=1.000        59 МиБ
+[ann]   faiss_flat     0.116 мс/запрос  recall@10=1.000  top1=1.000        59 МиБ
+[ann]   ivfpq          0.039 мс/запрос  recall@10=0.487  top1=0.879         2 МиБ
+[ann]   pca_hnsw       0.115 мс/запрос  recall@10=0.834  top1=1.000        10 МиБ
+[ann] N=100000 ...
+[ann]   exact          1.663 мс/запрос  recall@10=1.000  top1=1.000       586 МиБ
+[ann]   faiss_flat     1.199 мс/запрос  recall@10=1.000  top1=1.000       586 МиБ
+[ann]   ivfpq          0.164 мс/запрос  recall@10=0.441  top1=0.883        18 МиБ
+[ann]   pca_hnsw       0.248 мс/запрос  recall@10=0.752  top1=0.992        98 МиБ
+[ann] N=1000000 ...
+[ann]   exact         16.954 мс/запрос  recall@10=1.000  top1=1.000      5859 МиБ
+[ann]   ivfpq          1.344 мс/запрос  recall@10=0.397  top1=0.934       183 МиБ
+[ann]   pca_hnsw       0.451 мс/запрос  recall@10=0.584  top1=0.824       977 МиБ
+[ann] → results\ann_scalability.json

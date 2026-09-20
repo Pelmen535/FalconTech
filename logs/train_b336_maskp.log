@@ -1,0 +1,41 @@
+[hackathon] train.csv: 9556 bbox, 1541 vehicle_id, 9556 кадров
+[hackathon] камеры из CSV: 96 шт. — псевдокамера не нужна
+[hackathon] протокол «track», fit: 7655 bbox / 1233 id; val query: 1213 (без пары: 243), gallery: 688
+[train] кропы fit: 7655 (0 c)
+[train] vit_base_patch14_dinov2.lvd142m, D=1536, id=1233, device=cuda
+[train] дистилляция от weights/hack_dinov2_l_336_cam/best.pt: D учителя 2048, вес 20.0
+[train] аугментация «номер закрыт» с p=0.5, боксов в кеше 11416
+[train] сэмплер: camera-aware (кадры одной машины — с разных камер)
+[val] до обучения: rank1=  8.9%  rank5= 16.4%  rank10= 22.3%  mAP= 10.0%  (queries 970/970, gallery 688)
+python : E:\Хакатон\vreid\train.py:579: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step
+()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_schedul
+er.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See
+ more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+строка:1 знак:1
++ python -m vreid.train --config configs/hackathon.yaml --backbone dino ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (E:\Хакатон\vrei...t-learning-rate:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  scaler.step(opt); scaler.update(); sched.step(); step += 1
+[ep 01] loss=16.333 rank1= 35.6%  rank5= 58.1%  rank10= 69.0%  mAP= 40.4%  (queries 970/970, gallery 688) (269 c)
+[ep 02] loss=12.547 rank1= 49.4%  rank5= 72.4%  rank10= 79.2%  mAP= 52.6%  (queries 970/970, gallery 688) (267 c)
+[ep 03] loss=8.739 rank1= 56.6%  rank5= 77.5%  rank10= 85.8%  mAP= 59.2%  (queries 970/970, gallery 688) (266 c)
+[ep 04] loss=5.873 rank1= 61.0%  rank5= 80.3%  rank10= 86.3%  mAP= 63.3%  (queries 970/970, gallery 688) (267 c)
+[ep 05] loss=4.025 rank1= 62.4%  rank5= 81.6%  rank10= 88.5%  mAP= 65.2%  (queries 970/970, gallery 688) (267 c)
+[ep 06] loss=2.971 rank1= 64.0%  rank5= 83.1%  rank10= 88.4%  mAP= 66.7%  (queries 970/970, gallery 688) (266 c)
+[ep 07] loss=2.057 rank1= 66.1%  rank5= 83.2%  rank10= 89.0%  mAP= 68.4%  (queries 970/970, gallery 688) (266 c)
+[ep 08] loss=1.477 rank1= 67.3%  rank5= 84.3%  rank10= 90.2%  mAP= 69.9%  (queries 970/970, gallery 688) (266 c)
+[ep 09] loss=1.173 rank1= 67.7%  rank5= 84.4%  rank10= 90.1%  mAP= 70.5%  (queries 970/970, gallery 688) (266 c)
+[ep 10] loss=0.902 rank1= 66.4%  rank5= 85.9%  rank10= 91.3%  mAP= 70.0%  (queries 970/970, gallery 688) (266 c)
+[ep 11] loss=0.699 rank1= 68.8%  rank5= 85.7%  rank10= 92.0%  mAP= 71.6%  (queries 970/970, gallery 688) (269 c)
+[ep 12] loss=0.576 rank1= 68.4%  rank5= 85.8%  rank10= 91.6%  mAP= 71.4%  (queries 970/970, gallery 688) (317 c)
+[ep 13] loss=0.504 rank1= 70.0%  rank5= 86.6%  rank10= 92.4%  mAP= 72.8%  (queries 970/970, gallery 688) (318 c)
+[ep 14] loss=0.437 rank1= 69.9%  rank5= 86.8%  rank10= 92.3%  mAP= 72.8%  (queries 970/970, gallery 688) (276 c)
+[ep 15] loss=0.404 rank1= 69.7%  rank5= 86.8%  rank10= 92.5%  mAP= 72.8%  (queries 970/970, gallery 688) (266 c)
+[ep 16] loss=0.353 rank1= 70.6%  rank5= 87.0%  rank10= 92.6%  mAP= 73.5%  (queries 970/970, gallery 688) (266 c)
+[ep 17] loss=0.346 rank1= 71.1%  rank5= 86.8%  rank10= 92.8%  mAP= 73.9%  (queries 970/970, gallery 688) (267 c)
+[ep 18] loss=0.320 rank1= 71.9%  rank5= 87.2%  rank10= 92.6%  mAP= 74.5%  (queries 970/970, gallery 688) (267 c)
+[ep 19] loss=0.316 rank1= 72.0%  rank5= 87.1%  rank10= 93.0%  mAP= 74.6%  (queries 970/970, gallery 688) (266 c)
+[ep 20] loss=0.330 rank1= 72.0%  rank5= 87.2%  rank10= 92.9%  mAP= 74.6%  (queries 970/970, gallery 688) (267 c)
+[train] лучший mAP=74.6% (эпоха 20) → weights\hack_dinov2_b_336_maskp\best.pt

@@ -1,0 +1,5 @@
+[release] model.pt 164 МБ (fp16), лимит ТЗ — 2048 МБ
+[release] порог 0.6011 по «top1»: F1=96.2%, TNR=99.6%
+[release] отказов в рабочей точке: 25.6% (используется абсолютный порог)
+[release] val mAP@10 по правилу жюри 72.0% (строгий cross-cam для сравнения 73.9%, протокол track)
+[release] → release_soup/model.pt, release_soup/recipe.json

@@ -1,0 +1,54 @@
+[models] ft:baseline_seed0: vit_base_patch14_dinov2.lvd142m, D=1536, input=336, device=cuda
+
+extract[selection_query]:   0%|          | 0/5 [00:00<?, ?batch/s]
+extract[selection_query]:  20%|██        | 1/5 [00:04<00:17,  4.37s/batch]
+extract[selection_query]:  40%|████      | 2/5 [00:04<00:05,  1.89s/batch]
+extract[selection_query]:  60%|██████    | 3/5 [00:04<00:02,  1.09s/batch]
+extract[selection_query]:  80%|████████  | 4/5 [00:04<00:00,  1.39batch/s]
+extract[selection_query]: 100%|██████████| 5/5 [00:04<00:00,  1.97batch/s]
+extract[selection_query]: 100%|██████████| 5/5 [00:06<00:00,  1.21s/batch]
+[extract] selection_query: 39.4 мс/кроп всего = 7.2 сеть + 32.2 чтение кадров с диска
+[extract] selection_query: (154, 1536) → results\selection_baseline\query.npz
+
+extract[selection_gallery]:   0%|          | 0/10 [00:00<?, ?batch/s]
+extract[selection_gallery]:  10%|█         | 1/10 [00:04<00:37,  4.13s/batch]
+extract[selection_gallery]:  20%|██        | 2/10 [00:04<00:14,  1.79s/batch]
+extract[selection_gallery]:  30%|███       | 3/10 [00:04<00:07,  1.04s/batch]
+extract[selection_gallery]:  40%|████      | 4/10 [00:04<00:04,  1.46batch/s]
+extract[selection_gallery]:  50%|█████     | 5/10 [00:04<00:02,  1.92batch/s]
+extract[selection_gallery]:  60%|██████    | 6/10 [00:04<00:01,  2.53batch/s]
+extract[selection_gallery]:  70%|███████   | 7/10 [00:05<00:01,  2.81batch/s]
+extract[selection_gallery]:  80%|████████  | 8/10 [00:05<00:00,  3.46batch/s]
+extract[selection_gallery]:  90%|█████████ | 9/10 [00:05<00:00,  4.09batch/s]
+extract[selection_gallery]: 100%|██████████| 10/10 [00:05<00:00,  4.88batch/s]
+extract[selection_gallery]: 100%|██████████| 10/10 [00:06<00:00,  1.52batch/s]
+[extract] selection_gallery: 21.0 мс/кроп всего = 4.7 сеть + 16.3 чтение кадров с диска
+[extract] selection_gallery: (313, 1536) → results\selection_baseline\gallery.npz
+{
+  "TP": 112,
+  "FP": 0,
+  "FN": 11,
+  "TN": 31,
+  "FP_no_match": 0,
+  "F1": 0.9531914893617022,
+  "TNR": 1.0,
+  "objective": 0.9672340425531916,
+  "no_match_queries": 31,
+  "queries": 154,
+  "ranking": {
+    "rank1": 0.7723577235772358,
+    "rank5": 0.8943089430894309,
+    "rank10": 0.9105691056910569,
+    "mAP": 0.8044435841183808,
+    "cutoff": 10,
+    "n_query_valid": 123,
+    "n_query_total": 154,
+    "n_gallery": 313
+  },
+  "partition": "selection",
+  "official_scorer": "not_run",
+  "refusal": "diagnostic only, threshold not calibrated",
+  "model_sha256": "3d9eca6abb391f6d86e6f39bf082338894c0477b994471c0f8785e0790164e24",
+  "protocol_sha256": "521ec54be7c375c8a3d7466ee18577d104849175fae798cd548df37cdcea20db",
+  "recipe_sha256": "e0b12a2026c2708f81d91d25293d4bf7e6546ba17c0fd9cc2f6affc6c752211e"
+}

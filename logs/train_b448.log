@@ -1,0 +1,43 @@
+[train] throttle=0.18: после каждого шага пауза 18% от времени шага
+[hackathon] train.csv: 9556 bbox, 1541 vehicle_id, 9556 кадров
+[hackathon] камеры из CSV: 96 шт. — псевдокамера не нужна
+[hackathon] fit: 7655 bbox / 1233 id; val query: 308 (без пары: 62), gallery: 1271
+[train] кропы fit: 7655 (0 c)
+python : Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate l
+imits and faster downloads.
+строка:1 знак:1
++ python -m vreid.train --config configs/hackathon.yaml --backbone dino ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Warning: You ar...ster downloads.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[train] vit_base_patch14_dinov2.lvd142m, D=1536, id=1233, device=cuda
+[train] авто-батч: оценка по P=2: 1.57 ГБ на машину (×K=4), база 0.3 ГБ, бюджет 12.7 ГБ → пробую P=7
+[train] авто-батч: P=7 (×K=4 = 28 кропов), пик 10.8 ГБ из 15.9
+[val] до обучения: rank1=  9.8%  rank5= 17.1%  rank10= 22.0%  mAP=  9.8%  (queries 246/246, gallery 1271)
+E:\Хакатон\vreid\train.py:501: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorc
+h 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failur
+e to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https:/
+/pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  scaler.step(opt); scaler.update(); sched.step(); step += 1
+[ep 01] loss=15.815 rank1= 24.8%  rank5= 43.1%  rank10= 54.1%  mAP= 25.7%  (queries 246/246, gallery 1271) (289 c)
+[ep 02] loss=12.960 rank1= 42.7%  rank5= 60.6%  rank10= 68.7%  mAP= 41.0%  (queries 246/246, gallery 1271) (326 c)
+[ep 03] loss=9.557 rank1= 53.7%  rank5= 67.5%  rank10= 76.8%  mAP= 50.0%  (queries 246/246, gallery 1271) (326 c)
+[ep 04] loss=6.876 rank1= 56.5%  rank5= 72.4%  rank10= 80.5%  mAP= 54.6%  (queries 246/246, gallery 1271) (327 c)
+[ep 05] loss=4.996 rank1= 58.5%  rank5= 74.0%  rank10= 80.5%  mAP= 56.4%  (queries 246/246, gallery 1271) (326 c)
+[ep 06] loss=3.524 rank1= 65.0%  rank5= 77.2%  rank10= 83.7%  mAP= 61.1%  (queries 246/246, gallery 1271) (326 c)
+[ep 07] loss=2.671 rank1= 64.6%  rank5= 77.2%  rank10= 83.7%  mAP= 62.4%  (queries 246/246, gallery 1271) (326 c)
+[ep 08] loss=1.979 rank1= 65.9%  rank5= 77.2%  rank10= 83.7%  mAP= 63.0%  (queries 246/246, gallery 1271) (326 c)
+[ep 09] loss=1.487 rank1= 68.3%  rank5= 80.1%  rank10= 86.2%  mAP= 65.1%  (queries 246/246, gallery 1271) (327 c)
+[ep 10] loss=1.161 rank1= 67.1%  rank5= 80.1%  rank10= 87.8%  mAP= 65.7%  (queries 246/246, gallery 1271) (326 c)
+[ep 11] loss=0.890 rank1= 70.3%  rank5= 81.7%  rank10= 87.4%  mAP= 67.4%  (queries 246/246, gallery 1271) (327 c)
+[ep 12] loss=0.700 rank1= 71.1%  rank5= 82.1%  rank10= 87.8%  mAP= 68.1%  (queries 246/246, gallery 1271) (327 c)
+[ep 13] loss=0.547 rank1= 72.0%  rank5= 83.3%  rank10= 88.6%  mAP= 69.1%  (queries 246/246, gallery 1271) (326 c)
+[ep 14] loss=0.435 rank1= 71.5%  rank5= 80.5%  rank10= 88.2%  mAP= 68.6%  (queries 246/246, gallery 1271) (326 c)
+[ep 15] loss=0.364 rank1= 72.0%  rank5= 82.1%  rank10= 88.2%  mAP= 69.2%  (queries 246/246, gallery 1271) (326 c)
+[ep 16] loss=0.288 rank1= 72.8%  rank5= 81.3%  rank10= 89.4%  mAP= 69.4%  (queries 246/246, gallery 1271) (327 c)
+[ep 17] loss=0.264 rank1= 72.0%  rank5= 84.1%  rank10= 89.4%  mAP= 69.3%  (queries 246/246, gallery 1271) (327 c)
+[ep 18] loss=0.235 rank1= 72.8%  rank5= 83.3%  rank10= 89.4%  mAP= 69.4%  (queries 246/246, gallery 1271) (326 c)
+[ep 19] loss=0.217 rank1= 72.8%  rank5= 84.1%  rank10= 88.6%  mAP= 69.6%  (queries 246/246, gallery 1271) (326 c)
+[ep 20] loss=0.227 rank1= 72.0%  rank5= 84.1%  rank10= 88.6%  mAP= 69.7%  (queries 246/246, gallery 1271) (326 c)
+[train] лучший mAP=69.7% (эпоха 20) → weights\hack_dinov2_b_448\best.pt

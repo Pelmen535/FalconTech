@@ -1,0 +1,60 @@
+# HTTP-сервис инференса: то же ядро и те же веса, что в конкурсном образе, плюс API.
+#
+# Почему отдельный Dockerfile, а не вторая стадия конкурсного. Конкурсный образ собирается
+# командой без аргументов (docker build -t vreid:1.0 .) и обязан оставаться ровно тем, что
+# запускает жюри: один ENTRYPOINT, читает /data, пишет /out. Отдельный файл гарантирует,
+# что никакая правка сервиса не может изменить поведение конкурсной сборки.
+#
+# База и правила те же, что в Dockerfile: см. комментарии там про CUDA 12.1 и стенд жюри.
+# Для локальной проверки на карте sm_120:
+#     docker build -f Dockerfile.service \
+#       --build-arg BASE_IMAGE=pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime \
+#       --build-arg PIP_FLAGS=--break-system-packages \
+#       --build-arg REQUIREMENTS=requirements-infer-dev.txt -t vreid-api-dev .
+ARG BASE_IMAGE=pytorch/pytorch@sha256:fc47f8018254e6df30f48c48f2db1c758d44de21a8c553de1a1c451a65baa70a
+FROM ${BASE_IMAGE}
+
+ENV PYTHONUNBUFFERED=1 PYTHONUTF8=1 \
+    HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 \
+    OMP_NUM_THREADS=8 \
+    VREID_COMPILE=0 \
+    VREID_THROTTLE=0 \
+    VREID_CORE_DIR=/app \
+    VREID_RELEASE_DIR=/app/release \
+    VREID_SERVICE_DATA=/var/lib/vreid \
+    VREID_DEMO_DIR=/app/demo
+
+WORKDIR /app
+ARG PIP_FLAGS=""
+ARG REQUIREMENTS=requirements-infer.txt
+COPY requirements-infer.txt requirements-infer-dev.txt requirements-service.txt ./
+# Тот же закреплённый набор ядра плюс слой сервиса. --no-deps и pip check — по тем же
+# причинам, что в конкурсном образе: набор либо согласован, либо образ не собирается.
+RUN python -m pip install --no-cache-dir --no-deps ${PIP_FLAGS} -r ${REQUIREMENTS} \
+ && python -m pip install --no-cache-dir --no-deps ${PIP_FLAGS} -r requirements-service.txt \
+ && python -m pip check \
+ && python -m pip freeze --all > /app/installed-packages.txt
+
+COPY vreid/ /app/vreid/
+COPY scripts/ /app/scripts/
+COPY service/ /app/service/
+COPY release/ /app/release/
+COPY demo/ /app/demo/
+# Результат замера масштабируемости показывает вкладка интерфейса. Файл необязателен:
+# если его нет, интерфейс честно пишет «замер не выполнялся».
+COPY results/ann_scalability.json /app/results/ann_scalability.json
+
+RUN python -c "import fastapi, uvicorn, faiss, psycopg, torch, timm; \
+from vreid.predict import load_recipe; \
+print('[build] fastapi', fastapi.__version__, '| faiss', faiss.__version__, '| torch', torch.__version__); \
+print('[build] recipe ok:', load_recipe('/app/release')['threshold'])"
+
+# Данные галереи переживают перезапуск контейнера: том объявлен явно.
+VOLUME ["/var/lib/vreid"]
+EXPOSE 8765
+
+# 0.0.0.0 внутри контейнера — это сеть compose, наружу торчит только web.
+# Ключ доступа включается переменной VREID_API_KEY, её проверяет сам сервис.
+ENTRYPOINT ["python", "scripts/run_service.py", "--host", "0.0.0.0", "--port", "8765", \
+            "--allow-remote", "--core-dir", "/app", "--release-dir", "/app/release", \
+            "--data-dir", "/var/lib/vreid"]

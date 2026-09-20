@@ -1,0 +1,259 @@
+{
+  "scope": "отложенная валидация двойника релиза; правило жюри и замороженный рецепт",
+  "run": "runs\\hack\\ft_soup_b336_fit",
+  "release": "release",
+  "n_query": 1213,
+  "n_gallery": 688,
+  "jury_map10": 74.33,
+  "jury_rank1": 70.72,
+  "groups": {
+    "rank1_ok": {
+      "count": 686,
+      "median_area": 351430.5,
+      "median_aspect": 1.37,
+      "median_brightness": 105.49,
+      "median_cross_camera_positives": 1.0,
+      "median_same_camera_duplicate": 1.0,
+      "median_top1_cosine": 0.917
+    },
+    "rank1_wrong_but_in_top10": {
+      "count": 209,
+      "median_area": 335472.0,
+      "median_aspect": 1.32,
+      "median_brightness": 100.35,
+      "median_cross_camera_positives": 1.0,
+      "median_same_camera_duplicate": 1.0,
+      "median_top1_cosine": 0.906
+    },
+    "miss_top10": {
+      "count": 75,
+      "median_area": 308409.0,
+      "median_aspect": 1.44,
+      "median_brightness": 103.81,
+      "median_cross_camera_positives": 1.0,
+      "median_same_camera_duplicate": 1.0,
+      "median_top1_cosine": 0.896
+    },
+    "no_valid_positive": {
+      "count": 243,
+      "median_area": 299019.0,
+      "median_aspect": 1.45,
+      "median_brightness": 104.31,
+      "median_cross_camera_positives": 0.0,
+      "median_same_camera_duplicate": 0.0,
+      "median_top1_cosine": 0.382
+    }
+  },
+  "refusal": {
+    "threshold": 0.55,
+    "true_positive": 920,
+    "false_positive": 15,
+    "false_negative": 46,
+    "true_negative": 232,
+    "false_accept_on_no_match": 11,
+    "false_accept_on_wrong_top1": 4
+  },
+  "by_bbox_area_quartile": [
+    {
+      "area_from": 41652,
+      "area_to": 257553,
+      "queries": 243,
+      "rank1": 74.1,
+      "recall_at_10": 93.4
+    },
+    {
+      "area_from": 257553,
+      "area_to": 343543,
+      "queries": 242,
+      "rank1": 62.4,
+      "recall_at_10": 88.8
+    },
+    {
+      "area_from": 343543,
+      "area_to": 463586,
+      "queries": 242,
+      "rank1": 74.4,
+      "recall_at_10": 95.9
+    },
+    {
+      "area_from": 463586,
+      "area_to": 917196,
+      "queries": 243,
+      "rank1": 72.0,
+      "recall_at_10": 90.9
+    }
+  ],
+  "by_same_camera_duplicate": {
+    "с дубликатом своей камеры": {
+      "queries": 970,
+      "rank1": 98.4,
+      "recall_at_10": 92.3,
+      "median_top1_cosine": 0.912,
+      "accept_rate": 95.3
+    }
+  },
+  "examples": [
+    {
+      "case": "уверенный промах: валидная пара есть, но её нет и в десятке",
+      "count": 71,
+      "shown": [
+        {
+          "query_id": "ae7dd3735af6464db0314539a030b083",
+          "top1_cosine": 0.9931,
+          "top1_is_same_camera_duplicate": true,
+          "accepted": true,
+          "cross_camera_positives": 1,
+          "sheet": "docs/errors/miss_top10_1.jpg"
+        },
+        {
+          "query_id": "d637e600ae8f46168844ee768006e28d",
+          "top1_cosine": 0.9913,
+          "top1_is_same_camera_duplicate": true,
+          "accepted": true,
+          "cross_camera_positives": 1,
+          "sheet": "docs/errors/miss_top10_2.jpg"
+        },
+        {
+          "query_id": "ff7b1db4a0574061a8d4ad01e9ba19ac",
+          "top1_cosine": 0.9897,
+          "top1_is_same_camera_duplicate": true,
+          "accepted": true,
+          "cross_camera_positives": 1,
+          "sheet": "docs/errors/miss_top10_3.jpg"
+        },
+        {
+          "query_id": "48865b67661d4a4cbe286bc772f260b3",
+          "top1_cosine": 0.9889,
+          "top1_is_same_camera_duplicate": true,
+          "accepted": true,
+          "cross_camera_positives": 1,
+          "sheet": "docs/errors/miss_top10_4.jpg"
+        },
+        {
+          "query_id": "7e3a9c30522f4dc9be323ad5e5b347fe",
+          "top1_cosine": 0.9885,
+          "top1_is_same_camera_duplicate": true,
+          "accepted": true,
+          "cross_camera_positives": 1,
+          "sheet": "docs/errors/miss_top10_5.jpg"
+        },
+        {
+          "query_id": "ec2df94fa51f4751a9e3742609af1414",
+          "top1_cosine": 0.9842,
+          "top1_is_same_camera_duplicate": true,
+          "accepted": true,
+          "cross_camera_positives": 1,
+          "sheet": "docs/errors/miss_top10_6.jpg"
+        }
+      ]
+    },
+    {
+      "case": "ложное принятие: валидной пары нет, а система ответила",
+      "count": 11,
+      "shown": [
+        {
+          "query_id": "02e84cdaddd04d1d9dde8af631a3af85",
+          "top1_cosine": 0.7117,
+          "top1_is_same_camera_duplicate": false,
+          "accepted": true,
+          "cross_camera_positives": 0,
+          "sheet": "docs/errors/false_accept_1.jpg"
+        },
+        {
+          "query_id": "33687898b8c74c418206e3adefba4bfe",
+          "top1_cosine": 0.6399,
+          "top1_is_same_camera_duplicate": false,
+          "accepted": true,
+          "cross_camera_positives": 0,
+          "sheet": "docs/errors/false_accept_2.jpg"
+        },
+        {
+          "query_id": "75aef81669a349748edba2221679e60a",
+          "top1_cosine": 0.6335,
+          "top1_is_same_camera_duplicate": false,
+          "accepted": true,
+          "cross_camera_positives": 0,
+          "sheet": "docs/errors/false_accept_3.jpg"
+        },
+        {
+          "query_id": "bcc188afff734e82bfa77cd4735ba773",
+          "top1_cosine": 0.6185,
+          "top1_is_same_camera_duplicate": false,
+          "accepted": true,
+          "cross_camera_positives": 0,
+          "sheet": "docs/errors/false_accept_4.jpg"
+        },
+        {
+          "query_id": "8e445d6e4cdc4d3a9d91b3730d100329",
+          "top1_cosine": 0.6017,
+          "top1_is_same_camera_duplicate": false,
+          "accepted": true,
+          "cross_camera_positives": 0,
+          "sheet": "docs/errors/false_accept_5.jpg"
+        },
+        {
+          "query_id": "952f8d0e39c44fdb97b2e3998fd2b26a",
+          "top1_cosine": 0.5889,
+          "top1_is_same_camera_duplicate": false,
+          "accepted": true,
+          "cross_camera_positives": 0,
+          "sheet": "docs/errors/false_accept_6.jpg"
+        }
+      ]
+    },
+    {
+      "case": "ложный отказ: пара была, но уверенность ниже порога",
+      "count": 46,
+      "shown": [
+        {
+          "query_id": "f0172286a95f4254b3e45aceacfa9340",
+          "top1_cosine": 0.5487,
+          "top1_is_same_camera_duplicate": false,
+          "accepted": false,
+          "cross_camera_positives": 4,
+          "sheet": "docs/errors/false_refuse_1.jpg"
+        },
+        {
+          "query_id": "978a94e0e210473184bfeeedb8cd5ceb",
+          "top1_cosine": 0.548,
+          "top1_is_same_camera_duplicate": false,
+          "accepted": false,
+          "cross_camera_positives": 4,
+          "sheet": "docs/errors/false_refuse_2.jpg"
+        },
+        {
+          "query_id": "5e65c6dacf3d406db869a2c735160040",
+          "top1_cosine": 0.5464,
+          "top1_is_same_camera_duplicate": true,
+          "accepted": false,
+          "cross_camera_positives": 1,
+          "sheet": "docs/errors/false_refuse_3.jpg"
+        },
+        {
+          "query_id": "74f6011994f2462cabaf51ed3e8142c6",
+          "top1_cosine": 0.5449,
+          "top1_is_same_camera_duplicate": true,
+          "accepted": false,
+          "cross_camera_positives": 1,
+          "sheet": "docs/errors/false_refuse_4.jpg"
+        },
+        {
+          "query_id": "714b4449e36841b48f94bbcab1d410a3",
+          "top1_cosine": 0.5438,
+          "top1_is_same_camera_duplicate": false,
+          "accepted": false,
+          "cross_camera_positives": 1,
+          "sheet": "docs/errors/false_refuse_5.jpg"
+        },
+        {
+          "query_id": "1152287018234fb5a65d3ac587b69296",
+          "top1_cosine": 0.5407,
+          "top1_is_same_camera_duplicate": false,
+          "accepted": false,
+          "cross_camera_positives": 1,
+          "sheet": "docs/errors/false_refuse_6.jpg"
+        }
+      ]
+    }
+  ]
+}

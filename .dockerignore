@@ -1,0 +1,23 @@
+# Контекст сборки собирается из белого списка: в образ не должны попасть ни данные
+# организаторов, ни кеши прогонов, ни промежуточные веса (иначе образ вырастет на гигабайты).
+*
+!Dockerfile
+!Dockerfile.service
+!requirements-infer.txt
+!requirements-infer-dev.txt
+!requirements-service.txt
+!vreid/
+!vreid/**
+!scripts/
+!scripts/**
+!service/
+!service/**
+!release/
+!release/**
+!demo/
+!demo/**
+!web/
+!web/**
+!results/ann_scalability.json
+**/__pycache__
+**/*.pyc

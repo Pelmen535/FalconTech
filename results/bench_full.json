@@ -1,0 +1,59 @@
+{
+  "n": 300,
+  "tta_flip": false,
+  "workers": 8,
+  "model_sha256": "608042f64c259b97590e57b81f6c03e7143fba43d9a9c320b4a2a346e9f5fd1c",
+  "recipe_sha256": "9eb6b74aa6423d3926db0b6ac6ee8e6cdc43f8c34c57db0f6211c962e0600c01",
+  "device": "cuda",
+  "warmup": 50,
+  "min_seconds": 10.0,
+  "weights_files": 1,
+  "weights_mb": 164.0,
+  "weights_load_seconds": 2.62,
+  "peak_vram_mb": 1455.9,
+  "determinism_bitwise": true,
+  "determinism_max_abs_diff": 0.0,
+  "fast_decode": true,
+  "io_ms_per_item": 23.18,
+  "latency_ms_median": 31.682053493568674,
+  "latency_ms_mean": 31.928262623259798,
+  "latency_score": 1.0,
+  "throughput": [
+    {
+      "batch": 1,
+      "fps": 85.5,
+      "ms_per_item": 11.7,
+      "items": 900,
+      "seconds": 10.5,
+      "passes": 3
+    },
+    {
+      "batch": 8,
+      "fps": 188.9,
+      "ms_per_item": 5.29,
+      "items": 2100,
+      "seconds": 11.1,
+      "passes": 7
+    },
+    {
+      "batch": 16,
+      "fps": 158.2,
+      "ms_per_item": 6.32,
+      "items": 1800,
+      "seconds": 11.4,
+      "passes": 6
+    },
+    {
+      "batch": 32,
+      "fps": 123.8,
+      "ms_per_item": 8.08,
+      "items": 1500,
+      "seconds": 12.1,
+      "passes": 5
+    }
+  ],
+  "best_fps": 188.8833219685965,
+  "best_batch": 8,
+  "throughput_score": 1.0,
+  "score_of_20": 20.0
+}

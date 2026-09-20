@@ -1,0 +1,27 @@
+[predict] рецепт: порог=0.6011 по «top1», TTA flip=False, быстрый декод=True, DBA k=0, k-reciprocal=True (6/2)
+[predict] запросов 20, галерея 20
+[models] ft:release: vit_base_patch14_dinov2.lvd142m, D=1536, input=336, device=cpu
+[predict] /dev/shm всего 64 МБ, для 2 воркеров нужно ~149 МБ → работаю без воркеров (медленнее). Быстрее: docker run --shm-size=2g ...
+
+extract[query]:   0%|          | 0/5 [00:00<?, ?batch/s]
+extract[query]:  20%|██        | 1/5 [00:01<00:06,  1.57s/batch]
+extract[query]:  40%|████      | 2/5 [00:03<00:04,  1.60s/batch]
+extract[query]:  60%|██████    | 3/5 [00:04<00:03,  1.55s/batch]
+extract[query]:  80%|████████  | 4/5 [00:06<00:01,  1.53s/batch]
+extract[query]: 100%|██████████| 5/5 [00:07<00:00,  1.52s/batch]
+extract[query]: 100%|██████████| 5/5 [00:07<00:00,  1.54s/batch]
+[extract] query: 384.3 мс/кроп всего = 329.2 сеть + 55.0 чтение кадров с диска
+
+extract[gallery]:   0%|          | 0/5 [00:00<?, ?batch/s]
+extract[gallery]:  20%|██        | 1/5 [00:01<00:05,  1.46s/batch]
+extract[gallery]:  40%|████      | 2/5 [00:02<00:04,  1.44s/batch]
+extract[gallery]:  60%|██████    | 3/5 [00:04<00:02,  1.46s/batch]
+extract[gallery]:  80%|████████  | 4/5 [00:05<00:01,  1.42s/batch]
+extract[gallery]: 100%|██████████| 5/5 [00:07<00:00,  1.40s/batch]
+extract[gallery]: 100%|██████████| 5/5 [00:07<00:00,  1.42s/batch]
+[extract] gallery: 354.9 мс/кроп всего = 302.2 сеть + 52.7 чтение кадров с диска
+[predict] эмбеддинги: 40 кропов за 14.8 с = 2.7 кроп/с
+[submit] embeddings.npy (40, 1536) → /out/embeddings.npy
+[submit] submission.csv (20 запросов, top-10) → /out/submission.csv
+[submit] candidates.csv: отказов 0/20 → /out/candidates.csv
+[predict] готово за 18.5 с → /out

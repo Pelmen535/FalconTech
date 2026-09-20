@@ -1,0 +1,37 @@
+[train] ФИНАЛЬНЫЙ режим: все 1541 id в обучении, валидации нет — сохраняется последняя эпоха, число эпох задай по лучшему прогону с валидацией
+[train] кропы fit: 9556 (31 c)
+python : Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher r
+ate limits and faster downloads.
+строка:1 знак:1
++ python -m vreid.train --config configs/hackathon.yaml --backbone dino ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Warning: You ar...ster downloads.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[train] vit_base_patch14_dinov2.lvd142m, D=1536, id=1541, device=cuda
+[train] дистилляция от weights/hack_dinov2_l_336_cam/best.pt: D учителя 2048, вес 20.0
+[train] сэмплер: camera-aware (кадры одной машины — с разных камер)
+E:\Хакатон\vreid\train.py:579: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In P
+yTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()
+`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more det
+ails at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  scaler.step(opt); scaler.update(); sched.step(); step += 1
+[ep 01] loss=16.398 (264 c)
+[ep 02] loss=12.286 (260 c)
+[ep 03] loss=8.472 (260 c)
+[ep 04] loss=5.603 (260 c)
+[ep 05] loss=3.896 (260 c)
+[ep 06] loss=2.804 (260 c)
+[ep 07] loss=2.081 (260 c)
+[ep 08] loss=1.468 (261 c)
+[ep 09] loss=1.115 (263 c)
+[ep 10] loss=0.869 (260 c)
+[ep 11] loss=0.704 (260 c)
+[ep 12] loss=0.591 (260 c)
+[ep 13] loss=0.490 (260 c)
+[ep 14] loss=0.440 (260 c)
+[ep 15] loss=0.398 (260 c)
+[ep 16] loss=0.367 (260 c)
+[ep 17] loss=0.372 (260 c)
+[ep 18] loss=0.355 (260 c)
+[train] финальная модель: 18 эпох на всех id → weights\hack_dinov2_b_336_all\best.pt (валидации не было)

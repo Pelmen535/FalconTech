@@ -1,0 +1,172 @@
+{
+  "purpose": "масштабируемость поиска по галерее; в замер производительности жюри не входит",
+  "vectors": "синтез по ковариации 3761 настоящих эмбеддингов релиза",
+  "sources": [
+    "submission\\embeddings.npy",
+    "runs\\hack\\ft_soup_b336_fit\\val_gallery_track.npz",
+    "runs\\hack\\ft_soup_b336_fit\\val_query_track.npz"
+  ],
+  "machine": {
+    "platform": "Windows-11-10.0.22621-SP0",
+    "faiss": "1.15.0",
+    "threads": 24
+  },
+  "metrics": {
+    "recall_at_k": "доля позиций точного топ-k, которые вернул ANN",
+    "true_match_at_1": "доля запросов, у которых подсаженный ответ оказался первым",
+    "true_match_at_k": "то же, но в пределах топ-k"
+  },
+  "rows": [
+    {
+      "n": 10000,
+      "dim": 1536,
+      "k": 10,
+      "n_queries": 256,
+      "observation_noise": 0.6,
+      "base_bytes": 61440000,
+      "modes": {
+        "exact": {
+          "description": "полный перебор float32 по всей базе",
+          "bytes_per_vector": 6144,
+          "index_bytes": 61440000,
+          "build_seconds": 0.0,
+          "ms_per_query": 0.167,
+          "qps": 5995.0,
+          "recall_at_k": 1.0,
+          "true_match_at_1": 1.0,
+          "true_match_at_k": 1.0
+        },
+        "faiss_flat": {
+          "description": "faiss IndexFlatIP, тот же точный ответ",
+          "bytes_per_vector": 6144,
+          "index_bytes": 61440000,
+          "build_seconds": 0.01,
+          "ms_per_query": 0.116,
+          "qps": 8613.8,
+          "recall_at_k": 1.0,
+          "true_match_at_1": 1.0,
+          "true_match_at_k": 1.0
+        },
+        "ivfpq": {
+          "description": "faiss IVF256,PQ192x8, nprobe=16",
+          "bytes_per_vector": 192,
+          "index_bytes": 1920000,
+          "build_seconds": 5.52,
+          "ms_per_query": 0.039,
+          "qps": 25955.3,
+          "recall_at_k": 0.4867,
+          "true_match_at_1": 0.8789,
+          "true_match_at_k": 0.8789
+        },
+        "pca_hnsw": {
+          "description": "PCA-256 (83.9% дисперсии) + HNSW32, efSearch=128",
+          "bytes_per_vector": 1024,
+          "index_bytes": 10240000,
+          "build_seconds": 0.49,
+          "ms_per_query": 0.115,
+          "qps": 8719.1,
+          "recall_at_k": 0.8344,
+          "true_match_at_1": 1.0,
+          "true_match_at_k": 1.0
+        }
+      }
+    },
+    {
+      "n": 100000,
+      "dim": 1536,
+      "k": 10,
+      "n_queries": 256,
+      "observation_noise": 0.6,
+      "base_bytes": 614400000,
+      "modes": {
+        "exact": {
+          "description": "полный перебор float32 по всей базе",
+          "bytes_per_vector": 6144,
+          "index_bytes": 614400000,
+          "build_seconds": 0.0,
+          "ms_per_query": 1.663,
+          "qps": 601.2,
+          "recall_at_k": 1.0,
+          "true_match_at_1": 1.0,
+          "true_match_at_k": 1.0
+        },
+        "faiss_flat": {
+          "description": "faiss IndexFlatIP, тот же точный ответ",
+          "bytes_per_vector": 6144,
+          "index_bytes": 614400000,
+          "build_seconds": 0.14,
+          "ms_per_query": 1.199,
+          "qps": 834.4,
+          "recall_at_k": 1.0,
+          "true_match_at_1": 1.0,
+          "true_match_at_k": 1.0
+        },
+        "ivfpq": {
+          "description": "faiss IVF1264,PQ192x8, nprobe=79",
+          "bytes_per_vector": 192,
+          "index_bytes": 19200000,
+          "build_seconds": 145.56,
+          "ms_per_query": 0.164,
+          "qps": 6111.2,
+          "recall_at_k": 0.441,
+          "true_match_at_1": 0.8828,
+          "true_match_at_k": 0.8828
+        },
+        "pca_hnsw": {
+          "description": "PCA-256 (83.4% дисперсии) + HNSW32, efSearch=128",
+          "bytes_per_vector": 1024,
+          "index_bytes": 102400000,
+          "build_seconds": 13.44,
+          "ms_per_query": 0.248,
+          "qps": 4035.8,
+          "recall_at_k": 0.7523,
+          "true_match_at_1": 0.9922,
+          "true_match_at_k": 0.9922
+        }
+      }
+    },
+    {
+      "n": 1000000,
+      "dim": 1536,
+      "k": 10,
+      "n_queries": 256,
+      "observation_noise": 0.6,
+      "base_bytes": 6144000000,
+      "modes": {
+        "exact": {
+          "description": "полный перебор float32 по всей базе",
+          "bytes_per_vector": 6144,
+          "index_bytes": 6144000000,
+          "build_seconds": 0.0,
+          "ms_per_query": 16.954,
+          "qps": 59.0,
+          "recall_at_k": 1.0,
+          "true_match_at_1": 1.0,
+          "true_match_at_k": 1.0
+        },
+        "ivfpq": {
+          "description": "faiss IVF4000,PQ192x8, nprobe=250",
+          "bytes_per_vector": 192,
+          "index_bytes": 192000000,
+          "build_seconds": 246.7,
+          "ms_per_query": 1.344,
+          "qps": 743.9,
+          "recall_at_k": 0.3973,
+          "true_match_at_1": 0.9336,
+          "true_match_at_k": 0.9336
+        },
+        "pca_hnsw": {
+          "description": "PCA-256 (83.4% дисперсии) + HNSW32, efSearch=128",
+          "bytes_per_vector": 1024,
+          "index_bytes": 1024000000,
+          "build_seconds": 247.28,
+          "ms_per_query": 0.451,
+          "qps": 2216.5,
+          "recall_at_k": 0.5844,
+          "true_match_at_1": 0.8242,
+          "true_match_at_k": 0.8242
+        }
+      }
+    }
+  ]
+}

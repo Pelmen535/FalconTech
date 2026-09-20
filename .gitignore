@@ -1,0 +1,52 @@
+# --- окружение ---
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.obsidian/
+.env
+
+# --- данные организаторов ---
+# Датасет в репозиторий не кладётся: он выдаётся организаторами и весит гигабайты.
+Данные/
+data/
+
+# --- тяжёлые промежуточные артефакты обучения ---
+# Кеши эмбеддингов и чекпойнты. Исключение — кеш двойника релиза: на нём считаются
+# все диагностики, и без него их нельзя воспроизвести, а весит он 13 МБ.
+weights/
+runs/*
+!runs/hack/
+runs/hack/*
+!runs/hack/ft_soup_b336_fit/
+runs/hack/crops_cache/
+
+# --- рабочие каталоги сервиса ---
+var/
+
+# --- промежуточные прогоны, не являющиеся сдачей ---
+out_*/
+submission_*/
+release_*/
+!release/
+example_output/
+
+# --- архивы и бэкапы ---
+*.zip
+_to_delete/
+_marat_19b/
+send/
+release_all/
+1809/handoff/
+handoff/release/
+handoff/vreid/
+competition/
+Claude outputs/
+
+# --- крупные побочные результаты ---
+results/*.npz
+results/plate_debug/
+
+# Случайные крупные файлы без расширения (архивы, выгрузки)
+zihI2bX7
+handoff/

@@ -1,0 +1,20 @@
+# Зависимости HTTP-сервиса поверх ядра. Ставятся ДОПОЛНИТЕЛЬНО к requirements-infer.txt
+# в том же образе: torch, timm, Pillow и NumPy берутся оттуда и здесь не повторяются.
+# Версии точные (ответ 39), транзитивные пакеты перечислены явно, pip check проверяет
+# согласованность на этапе сборки.
+annotated-types==0.8.0
+anyio==4.4.0
+fastapi==0.115.12
+h11==0.16.0
+python-multipart==0.0.20
+pydantic==2.13.5
+pydantic-core==2.46.5
+sniffio==1.3.1
+starlette==0.46.2
+typing-inspection==0.4.4
+uvicorn==0.34.2
+# Векторное хранилище: PostgreSQL с pgvector поднимает docker compose (ТЗ §6).
+psycopg==3.2.12
+psycopg-binary==3.2.12
+# Приближённый поиск для больших галерей (ТЗ §10).
+faiss-cpu==1.9.0.post1

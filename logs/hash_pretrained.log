@@ -1,0 +1,10 @@
+vit_base_patch14_dinov2.lvd142m
+  файл   C:\Users\Sheka\.cache\huggingface\hub\models--timm--vit_base_patch14_dinov2.lvd142m\snapshots\4685c99dabffe5affac90bd99dbffd25801ae58d\model.safetensors
+  размер 330.3 МиБ
+  sha256 55cbb5d887b336d430e649c277b85a1429e724871f9d02ac16203235886d8c7b
+vit_large_patch14_dinov2.lvd142m
+  файл   C:\Users\Sheka\.cache\huggingface\hub\models--timm--vit_large_patch14_dinov2.lvd142m\snapshots\4741e1cafbf45415e77074bb0cb42dba76c8684a\model.safetensors
+  размер 1161.1 МиБ
+  sha256 0424a5d1b515278cba3c6640ccbeaacc41de59d3a93df0dd5e494285eea2b355
+
+[hash] → results/pretrained_hashes.json

@@ -1,0 +1,30 @@
+[train] кропы fit: 6673 (394 c)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[train] vit_base_patch14_dinov2.lvd142m, D=1536, id=1079, device=cuda
+[train] авто-батч: оценка по P=2: 0.95 ГБ на машину (×K=4), база 0.3 ГБ, бюджет 12.7 ГБ → пробую P=13
+[train] авто-батч: P=13 (×K=4 = 52 кропов), пик 11.3 ГБ из 15.9
+[train] сэмплер: camera-aware (кадры одной машины — с разных камер)
+[val] до обучения: rank1= 11.4%  rank5= 26.0%  rank10= 32.5%  mAP@10= 12.2%  (queries 123/123, gallery 313)
+E:\Хакатон\competition\vreid\train.py:594: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  scaler.step(opt); scaler.update(); sched.step(); step += 1
+[ep 01] loss=15.771 rank1= 29.3%  rank5= 51.2%  rank10= 63.4%  mAP@10= 30.9%  (queries 123/123, gallery 313) (224 c)
+[ep 02] loss=12.663 rank1= 43.9%  rank5= 70.7%  rank10= 82.1%  mAP@10= 48.2%  (queries 123/123, gallery 313) (170 c)
+[ep 03] loss=9.303 rank1= 53.7%  rank5= 79.7%  rank10= 82.9%  mAP@10= 58.6%  (queries 123/123, gallery 313) (146 c)
+[ep 04] loss=6.511 rank1= 55.3%  rank5= 78.9%  rank10= 87.0%  mAP@10= 61.2%  (queries 123/123, gallery 313) (145 c)
+[ep 05] loss=4.541 rank1= 62.6%  rank5= 83.7%  rank10= 87.8%  mAP@10= 66.6%  (queries 123/123, gallery 313) (145 c)
+[ep 06] loss=2.886 rank1= 66.7%  rank5= 85.4%  rank10= 90.2%  mAP@10= 69.7%  (queries 123/123, gallery 313) (146 c)
+[ep 07] loss=2.026 rank1= 67.5%  rank5= 87.0%  rank10= 88.6%  mAP@10= 71.9%  (queries 123/123, gallery 313) (148 c)
+[ep 08] loss=1.426 rank1= 67.5%  rank5= 85.4%  rank10= 88.6%  mAP@10= 71.9%  (queries 123/123, gallery 313) (147 c)
+[ep 09] loss=0.968 rank1= 70.7%  rank5= 87.0%  rank10= 90.2%  mAP@10= 73.3%  (queries 123/123, gallery 313) (240 c)
+[ep 10] loss=0.689 rank1= 70.7%  rank5= 85.4%  rank10= 88.6%  mAP@10= 73.8%  (queries 123/123, gallery 313) (233 c)
+[ep 11] loss=0.479 rank1= 71.5%  rank5= 86.2%  rank10= 87.8%  mAP@10= 73.7%  (queries 123/123, gallery 313) (233 c)
+[ep 12] loss=0.367 rank1= 73.2%  rank5= 87.8%  rank10= 89.4%  mAP@10= 75.7%  (queries 123/123, gallery 313) (244 c)
+[ep 13] loss=0.295 rank1= 72.4%  rank5= 85.4%  rank10= 89.4%  mAP@10= 75.0%  (queries 123/123, gallery 313) (215 c)
+[ep 14] loss=0.232 rank1= 71.5%  rank5= 87.0%  rank10= 87.0%  mAP@10= 74.3%  (queries 123/123, gallery 313) (219 c)
+[ep 15] loss=0.179 rank1= 72.4%  rank5= 86.2%  rank10= 91.1%  mAP@10= 76.0%  (queries 123/123, gallery 313) (240 c)
+[ep 16] loss=0.142 rank1= 73.2%  rank5= 87.8%  rank10= 88.6%  mAP@10= 75.8%  (queries 123/123, gallery 313) (240 c)
+[ep 17] loss=0.135 rank1= 74.0%  rank5= 87.8%  rank10= 88.6%  mAP@10= 76.7%  (queries 123/123, gallery 313) (238 c)
+[ep 18] loss=0.119 rank1= 74.8%  rank5= 87.0%  rank10= 87.8%  mAP@10= 76.6%  (queries 123/123, gallery 313) (242 c)
+[ep 19] loss=0.110 rank1= 74.8%  rank5= 87.8%  rank10= 89.4%  mAP@10= 77.3%  (queries 123/123, gallery 313) (242 c)
+[ep 20] loss=0.111 rank1= 74.8%  rank5= 87.0%  rank10= 88.6%  mAP@10= 77.4%  (queries 123/123, gallery 313) (241 c)
+[train] лучший mAP=77.4% (эпоха 20) → weights\baseline_seed0\best.pt

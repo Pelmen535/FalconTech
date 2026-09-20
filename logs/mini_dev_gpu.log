@@ -1,0 +1,19 @@
+[predict] рецепт: порог=0.6011 по «top1», TTA flip=False, быстрый декод=True, DBA k=0, k-reciprocal=True (6/2)
+[predict] запросов 20, галерея 20
+[models] ft:release: vit_base_patch14_dinov2.lvd142m, D=1536, input=336, device=cuda
+
+extract[query]:   0%|          | 0/5 [00:00<?, ?batch/s]
+extract[query]:  20%|██        | 1/5 [00:00<00:03,  1.21batch/s]
+extract[query]: 100%|██████████| 5/5 [00:00<00:00,  5.48batch/s]
+[extract] query: 45.7 мс/кроп всего = 35.8 сеть + 10.0 чтение кадров с диска
+
+extract[gallery]:   0%|          | 0/5 [00:00<?, ?batch/s]
+extract[gallery]:  20%|██        | 1/5 [00:00<00:00,  5.10batch/s]
+extract[gallery]:  80%|████████  | 4/5 [00:00<00:00, 14.75batch/s]
+extract[gallery]: 100%|██████████| 5/5 [00:00<00:00, 11.61batch/s]
+[extract] gallery: 21.6 мс/кроп всего = 4.1 сеть + 17.4 чтение кадров с диска
+[predict] эмбеддинги: 40 кропов за 1.3 с = 29.7 кроп/с
+[submit] embeddings.npy (40, 1536) → /out/embeddings.npy
+[submit] submission.csv (20 запросов, top-10) → /out/submission.csv
+[submit] candidates.csv: отказов 0/20 → /out/candidates.csv
+[predict] готово за 5.4 с → /out

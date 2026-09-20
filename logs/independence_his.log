@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "E:\Хакатон\competition\scripts\check_query_independence.py", line 84, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\Хакатон\competition\scripts\check_query_independence.py", line 55, in main
+    info = json.loads((sub / "run_info.json").read_text(encoding="utf-8"))
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\pathlib\__init__.py", line 787, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python314\Lib\pathlib\__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'release_calibrated_v1\\run_info.json'

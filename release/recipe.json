@@ -1,0 +1,93 @@
+{
+  "threshold": 0.55,
+  "confidence": "top1",
+  "tau": 0.20967482030391693,
+  "tta_flip": false,
+  "dba": 0,
+  "kr": true,
+  "k1": 3,
+  "k2": 2,
+  "lam": 0.2,
+  "crop_pad": 0.05,
+  "mask_plate": false,
+  "topk": 10,
+  "candidate_min_sim": null,
+  "candidates_topk": 1,
+  "fast_decode": true,
+  "refuse_rate": null,
+  "rerank_choice": {
+    "value": "k-reciprocal k1=3, k2=2, lambda=0.2",
+    "previous": "k1=6, k2=2, lambda=0.3",
+    "why": "Прежние 6/2/0.3 были первой строкой грубой сетки 6/10/15/20, то есть краем диапазона. Полная сетка 93 точки показала, что оптимум внутри: k1 3, k2 2, lambda 0.2. Выбор сделан на кеше двойника релиза и независимо подтверждён на кеше валидационной модели — лучшая точка совпала, ранговая корреляция поверхностей 0.957 на 93 точках.",
+    "gain_map10": {
+      "twin_fit": [
+        73.765,
+        74.331
+      ],
+      "val": [
+        74.876,
+        75.969
+      ]
+    },
+    "gain_rank1": {
+      "twin_fit": [
+        69.59,
+        70.72
+      ],
+      "val": [
+        71.65,
+        72.68
+      ]
+    },
+    "refusal_unchanged": "ре-ранжирование не сдвигает топ-1 ни у одного из 1213 запросов ни при старых, ни при новых параметрах, поэтому уверенность и набор принятых запросов те же: 96.40 на fit, 96.36 на val",
+    "cost": "нулевая: поиск и ре-ранжирование не входят в замер латентности (ответ 31)",
+    "caveat": "оба кеша имеют галерею 688, а закрытый тест 750; перенос оптимума k1 на другой размер галереи не измерен",
+    "reproduce": "python scripts/rerank_grid.py",
+    "source": [
+      "results/rerank_grid.json",
+      "results/rerank_grid_fine.json"
+    ]
+  },
+  "source": {
+    "weights": "weights/soup_b336_all/best.pt",
+    "val": "results/hack_ft_soup_b336_fit_val.json",
+    "protocol": "track",
+    "val_mAP_jury": 0.7065950130911473,
+    "val_rank1_jury": 0.6793814432989691,
+    "val_mAP_cross_camera_strict": 0.7297707685594285,
+    "val_mINP": 0.6933864353264946,
+    "val_n_query": 1213,
+    "val_n_no_match": 243,
+    "val_n_gallery": 688,
+    "val_refusal_mask_cam": false,
+    "val_refusal": {
+      "f1": 0.9616204690831557,
+      "precision": 0.9933920704845814,
+      "recall": 0.9318181818181818,
+      "tnr": 0.9835390946502057
+    }
+  },
+  "threshold_choice": {
+    "value": 0.55,
+    "selected_by": "не оптимум валидации, а решение с учётом устройства закрытого теста",
+    "validation_optimum": 0.6,
+    "minimax": 0.48,
+    "reason": "В нашей валидации и в открытом тесте галерея собрана по одному кадру на трек «машина × камера», поэтому у всех запросов с парой лежит кадр той же машины с той же камеры — почти дубликат, медиана косинуса 0.912. Закрытый тест гарантирует только кросс-камерную пару (ответ 17). Без дубликатов медиана падает до 0.517, и высокий порог начинает отказывать тем, кому надо отвечать.",
+    "refusal_score": {
+      "note": "0.7*F1 + 0.3*TNR, отложенная валидация двойника релиза, 1213 запросов",
+      "with_duplicates": {
+        "0.60": 96.66,
+        "0.55": 96.4,
+        "0.48": 92.56
+      },
+      "without_duplicates": {
+        "0.60": 54.39,
+        "0.55": 63.16,
+        "0.48": 69.67
+      }
+    },
+    "indifference_probability": 0.913,
+    "reproduce": "python scripts/refusal_stress.py --run runs/hack/ft_soup_b336_fit --release release",
+    "source": "results/refusal_stress_fit.json"
+  }
+}

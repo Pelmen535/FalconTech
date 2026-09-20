@@ -1,0 +1,737 @@
+﻿queue started 2026-09-17 21:07:33
+[21:07:33] WAIT  for running vreid processes
+[21:07:33] WAIT  done - GPU free
+[21:07:33] START plate_cache
+[21:09:45] END   plate_cache  exit=0  2 min
+[21:09:45] START abl_base
+[21:09:52] END   abl_base  exit=0  0 min
+[21:09:52] START abl_det
+[21:10:46] END   abl_det  exit=0  1 min
+[21:10:46] START abl_up
+[21:11:38] END   abl_up  exit=0  1 min
+[21:11:38] START abl_rand
+[21:12:27] END   abl_rand  exit=0  1 min
+[21:12:27] START abl_band
+[21:13:17] END   abl_band  exit=0  1 min
+[21:13:17] START train_b336_maskp
+[22:44:57] END   train_b336_maskp  exit=0  92 min
+[22:44:57] START val_b336_maskp
+[22:45:57] END   val_b336_maskp  exit=0  1 min
+[22:45:57] START val_b336_maskp_det
+[22:46:47] END   val_b336_maskp_det  exit=0  1 min
+[22:46:47] START train_b336_all
+[00:06:00] END   train_b336_all  exit=0  79 min
+[00:06:00] START train_b336_seed2
+[01:29:19] END   train_b336_seed2  exit=0  83 min
+[01:29:20] START val_b336_seed2
+[01:30:17] END   val_b336_seed2  exit=0  1 min
+[01:30:17] queue finished
+queue2 started 2026-09-18 05:58:45
+[05:58:45] WAIT  for running vreid processes
+[05:58:45] WAIT  done - GPU free
+[05:58:45] data folder: E:\Хакатон\Данные
+[05:58:45] START check_cache
+[05:58:46] END   check_cache  exit=0  0 min
+[05:58:46] START abl2_det
+queue2 started 2026-09-18 06:09:12
+[06:09:12] WAIT  for running vreid processes
+[06:09:13] WAIT  done - GPU free
+[06:09:13] data folder: E:\Хакатон\Данные
+[06:09:13] START check_cache
+[06:09:13] END   check_cache  exit=0  0 min
+[06:09:13] START abl2_det
+[06:10:04] END   abl2_det  exit=0  1 min
+[06:10:04] START abl2_up
+[06:10:54] END   abl2_up  exit=0  1 min
+[06:10:54] START abl2_rand
+[06:11:43] END   abl2_rand  exit=0  1 min
+[06:11:43] START abl2_report
+[06:11:44] END   abl2_report  exit=0  0 min
+[06:11:44] ablation verdict: leans_on_plate=False
+[06:11:44] SKIP  train_b336_maskp2 - no plate reliance to fix
+[06:11:44] START export_all
+[06:11:49] END   export_all  exit=0  0 min
+[06:11:49] START predict_all
+[06:13:14] END   predict_all  exit=0  1 min
+[06:13:14] START bench_all
+[06:15:52] END   bench_all  exit=0  3 min
+[06:15:52] queue2 finished
+queue3 started 2026-09-18 12:59:04
+[12:59:04] data folder: E:\Хакатон\Данные
+[12:59:04] START val_iso
+[12:59:24] END   val_iso  exit=0  0 min
+[12:59:24] START export_rate
+[12:59:35] END   export_rate  exit=0  0 min
+[12:59:35] START predict_rate
+[13:01:28] END   predict_rate  exit=0  2 min
+[13:01:28] START export_d20
+[13:01:33] END   export_d20  exit=0  0 min
+[13:01:33] START predict_d20
+[13:03:12] END   predict_d20  exit=0  2 min
+[13:03:12] queue3 finished
+queue4 started 2026-09-18 13:29:53
+[13:29:53] WAIT  for running vreid processes
+[13:29:59] WAIT  done - GPU free
+[13:29:59] START soup3
+[13:30:13] END   soup3  exit=0  0 min
+[13:30:13] START val_soup3
+[13:31:58] END   val_soup3  exit=0  2 min
+[13:31:58] START train_all_s2
+queue4 started 2026-09-18 13:43:16
+[13:43:16] WAIT  for running vreid processes
+[13:43:16] WAIT  done - GPU free
+[13:43:16] START mini_release_cpu
+[13:43:41] END   mini_release_cpu  exit=0  0 min
+[13:43:41] START mini_dev_gpu
+[13:43:54] END   mini_dev_gpu  exit=0  0 min
+[13:43:54] START mini_compare
+[13:43:54] END   mini_compare  exit=0  0 min
+[13:43:54] START bench_container
+[13:44:09] END   bench_container  exit=0  0 min
+[13:44:09] START soup3
+[13:44:20] END   soup3  exit=0  0 min
+[13:44:20] START val_soup3
+[13:45:52] END   val_soup3  exit=0  2 min
+[13:45:52] START train_all_s2
+[15:04:36] END   train_all_s2  exit=0  79 min
+[15:04:36] START train_all_s3
+[16:23:09] END   train_all_s3  exit=0  79 min
+[16:23:09] START soup_all
+[16:23:18] END   soup_all  exit=0  0 min
+[16:23:18] queue4 finished
+queue5 started 2026-09-18 18:26:39
+[18:26:39] WAIT  for running vreid processes
+[18:26:40] WAIT  done - GPU free
+[18:26:40] data folder: E:\Хакатон\Данные
+[18:26:40] START export_soup
+[18:26:51] END   export_soup  exit=0  0 min
+[18:26:51] START predict_soup
+[18:28:19] END   predict_soup  exit=0  1 min
+[18:28:19] START diff_vs_single
+[18:28:20] END   diff_vs_single  exit=1  0 min
+[18:28:20] START copy_release
+[18:28:20] END   copy_release  exit=0  0 min
+[18:28:20] START build_dev
+[18:28:51] END   build_dev  exit=0  1 min
+[18:28:51] START build_release
+[18:29:12] END   build_release  exit=0  0 min
+[18:29:12] START bench_container
+[18:29:49] END   bench_container  exit=0  1 min
+[18:29:49] START mini_release_cpu
+[18:30:09] END   mini_release_cpu  exit=0  0 min
+[18:30:09] START mini_dev_gpu
+[18:30:17] END   mini_dev_gpu  exit=0  0 min
+[18:30:17] START mini_compare
+[18:30:17] END   mini_compare  exit=0  0 min
+[18:30:17] START docker_full
+[18:30:43] END   docker_full  exit=0  0 min
+[18:30:43] START docker_vs_native
+[18:30:43] END   docker_vs_native  exit=0  0 min
+[18:30:43] queue5 finished
+queue6 started 2026-09-18 18:46:28
+[18:46:28] WAIT  for running vreid processes
+[18:46:28] WAIT  done - GPU free
+[18:46:28] START jury_soup
+[18:46:35] END   jury_soup  exit=0  0 min
+[18:46:35] START jury_single
+[18:46:42] END   jury_single  exit=0  0 min
+[18:46:42] START jury_teacher
+[18:46:49] END   jury_teacher  exit=0  0 min
+[18:46:49] START jury_abl_det
+[18:46:50] END   jury_abl_det  exit=0  0 min
+[18:46:50] START jury_abl_up
+[18:46:51] END   jury_abl_up  exit=0  0 min
+[18:46:51] START jury_abl_rand
+[18:46:52] END   jury_abl_rand  exit=0  0 min
+[18:46:52] START jury_abl_report
+[18:46:53] END   jury_abl_report  exit=0  0 min
+[18:46:53] queue6 finished
+queue7 started 2026-09-18 18:57:18
+[18:57:18] WAIT  for running vreid processes
+[18:57:19] WAIT  done - GPU free
+[18:57:19] data folder: E:\Хакатон\Данные
+[18:57:19] START iso_soup
+[18:57:25] END   iso_soup  exit=0  0 min
+[18:57:25] START iso_single
+[18:57:30] END   iso_single  exit=0  0 min
+[18:57:30] START abl_soup_det
+[18:59:02] END   abl_soup_det  exit=0  2 min
+[18:59:02] START abl_soup_up
+[18:59:59] END   abl_soup_up  exit=0  1 min
+[18:59:59] START abl_soup_rand
+[19:01:00] END   abl_soup_rand  exit=0  1 min
+[19:01:00] START abl_soup_report
+[19:01:00] END   abl_soup_report  exit=0  0 min
+[19:01:00] START refusal_audit
+[19:01:01] END   refusal_audit  exit=0  0 min
+[19:01:01] START export_soup
+[19:01:07] END   export_soup  exit=0  0 min
+[19:01:07] START predict_soup
+[19:02:43] END   predict_soup  exit=0  2 min
+[19:02:43] START copy_release
+[19:02:43] END   copy_release  exit=0  0 min
+[19:02:43] START build_dev
+[19:03:14] END   build_dev  exit=0  1 min
+[19:03:14] START build_release
+[19:03:32] END   build_release  exit=0  0 min
+[19:03:32] START independence
+[19:03:33] END   independence  exit=0  0 min
+[19:03:33] START independence2
+[19:03:34] END   independence2  exit=0  0 min
+[19:03:34] START bench_container
+[19:04:48] END   bench_container  exit=0  1 min
+[19:04:48] START docker_full
+[19:05:15] END   docker_full  exit=0  0 min
+[19:05:15] START docker_vs_native
+[19:05:15] END   docker_vs_native  exit=0  0 min
+[19:05:15] START mini_release_cpu
+[19:05:35] END   mini_release_cpu  exit=0  0 min
+[19:05:35] START mini_dev_gpu
+[19:05:43] END   mini_dev_gpu  exit=0  0 min
+[19:05:43] START mini_compare
+[19:05:43] END   mini_compare  exit=0  0 min
+[19:05:43] START manifest
+[19:05:47] END   manifest  exit=0  0 min
+[19:05:47] queue7 finished
+queue8 started 2026-09-18 20:18:13
+[20:18:14] WAIT  for running vreid processes
+[20:18:14] WAIT  done - GPU free
+[20:18:14] data folder: E:\Хакатон\Данные
+[20:18:14] START his_tests
+[20:18:23] END   his_tests  exit=0  0 min
+[20:18:23] START baseline_seed0
+[21:34:06] END   baseline_seed0  exit=0  76 min
+[21:34:06] START assess_selection
+[21:34:29] END   assess_selection  exit=0  0 min
+[21:34:29] START calibrate_export
+[21:35:21] END   calibrate_export  exit=0  1 min
+[21:35:21] START independence_his
+[21:35:21] END   independence_his  exit=1  0 min
+[21:35:21] START package
+[21:37:45] END   package  exit=0  2 min
+[21:37:45] queue8 finished
+queue9 started 2026-09-18 22:25:02
+[22:25:02] WAIT  for running vreid processes
+[22:25:02] WAIT  done - GPU free
+[22:25:02] data folder: E:\Хакатон\Данные
+[22:25:02] START tests
+[22:25:36] END   tests  exit=0  1 min
+[22:25:36] START val_fast
+[22:27:25] END   val_fast  exit=0  2 min
+[22:27:25] START export_fast
+[22:27:31] END   export_fast  exit=0  0 min
+[22:27:31] START export_soup
+[22:27:34] END   export_soup  exit=0  0 min
+[22:27:34] START copy_release
+[22:27:35] END   copy_release  exit=0  0 min
+[22:27:35] START transfer
+[22:30:02] END   transfer  exit=0  2 min
+[22:30:02] START predict_soup
+[22:31:01] END   predict_soup  exit=0  1 min
+[22:31:01] START independence
+[22:31:02] END   independence  exit=0  0 min
+[22:31:02] START independence2
+[22:31:03] END   independence2  exit=0  0 min
+[22:31:03] START pull_base
+[22:31:17] END   pull_base  exit=0  0 min
+[22:31:17] START pin_base
+[22:31:18] END   pin_base  exit=0  0 min
+[22:31:18] START build_release
+[22:32:51] END   build_release  exit=0  2 min
+[22:32:51] START build_dev
+[22:34:44] END   build_dev  exit=0  2 min
+[22:34:44] START bench_native
+[22:38:26] END   bench_native  exit=0  4 min
+[22:38:26] START bench_container
+[22:40:03] END   bench_container  exit=0  2 min
+[22:40:03] START docker_run_a
+[22:41:26] END   docker_run_a  exit=0  1 min
+[22:41:26] START docker_run_b
+[22:41:54] END   docker_run_b  exit=0  0 min
+[22:41:54] START cmp_det
+[22:41:54] END   cmp_det  exit=0  0 min
+[22:41:54] START docker_noshm
+[22:43:06] END   docker_noshm  exit=0  1 min
+[22:43:06] START cmp_noshm
+[22:43:06] END   cmp_noshm  exit=0  0 min
+[22:43:06] START cmp_native
+[22:43:07] END   cmp_native  exit=0  0 min
+[22:43:07] START abl_report
+[22:43:07] END   abl_report  exit=0  0 min
+[22:43:07] START gallery_size
+[22:43:09] END   gallery_size  exit=0  0 min
+[22:43:09] START refusal_audit
+[22:43:09] END   refusal_audit  exit=0  0 min
+[22:43:09] START manifest
+[22:43:16] END   manifest  exit=0  0 min
+[22:43:16] START scorecard
+[22:43:17] END   scorecard  exit=0  0 min
+[22:43:17] START package
+[22:43:42] END   package  exit=0  0 min
+[22:43:42] queue9 finished
+queue10 started 2026-09-19 17:57:06
+[17:57:06] WAIT  for running vreid processes
+[17:57:07] WAIT  done - GPU free
+[17:57:07] data folder: E:\Хакатон\Данные
+[17:57:07] START tests10
+[17:57:42] END   tests10  exit=0  1 min
+[17:57:42] START ties
+[17:57:43] END   ties  exit=0  0 min
+[17:57:43] START stress
+[17:57:43] END   stress  exit=0  0 min
+[17:57:43] START predict10
+[17:59:08] END   predict10  exit=0  1 min
+[17:59:08] START form10
+[17:59:08] END   form10  exit=0  0 min
+[17:59:08] START indep10
+[17:59:10] END   indep10  exit=0  0 min
+[17:59:10] START indep10b
+[17:59:10] END   indep10b  exit=0  0 min
+[17:59:10] START cmp_v2
+[17:59:11] END   cmp_v2  exit=1  0 min
+[17:59:11] START build10
+[18:00:50] END   build10  exit=0  2 min
+[18:00:50] START build10dev
+[18:01:25] END   build10dev  exit=0  1 min
+[18:01:25] START docker10a
+[18:01:59] END   docker10a  exit=0  1 min
+[18:01:59] START docker10b
+[18:02:29] END   docker10b  exit=0  0 min
+[18:02:29] START cmp10_det
+[18:02:29] END   cmp10_det  exit=0  0 min
+[18:02:29] START docker10_noshm
+[18:03:42] END   docker10_noshm  exit=0  1 min
+[18:03:42] START cmp10_noshm
+[18:03:42] END   cmp10_noshm  exit=0  0 min
+[18:03:42] START form10_docker
+[18:03:43] END   form10_docker  exit=0  0 min
+[18:03:43] START scorecard10
+[18:03:43] END   scorecard10  exit=0  0 min
+[18:03:43] START manifest10
+[18:03:48] END   manifest10  exit=0  0 min
+[18:03:48] queue10 finished
+queue11 started 2026-09-20 13:49:30
+[13:49:30] WAIT  for running vreid processes
+[13:49:31] WAIT  done - GPU free
+[13:49:31] data folder: E:\Хакатон\Данные
+[13:49:31] START soup2
+[13:49:57] END   soup2  exit=0  0 min
+[13:49:57] START val_soup2
+[13:50:26] END   val_soup2  exit=1  0 min
+[13:50:26] START hash_pretrained
+[13:50:28] END   hash_pretrained  exit=0  0 min
+[13:50:28] START freeze
+[13:51:58] END   freeze  exit=0  1 min
+[13:51:58] START pipcheck
+[13:52:11] END   pipcheck  exit=1  0 min
+[13:52:11] START offline
+[13:56:02] END   offline  exit=0  4 min
+[13:56:02] START cmp_offline
+[13:56:03] END   cmp_offline  exit=0  0 min
+[13:56:03] START form_offline
+[13:56:03] END   form_offline  exit=0  0 min
+[13:56:03] START fit_s0
+[15:43:38] END   fit_s0  exit=0  108 min
+[15:43:38] START fit_s2
+[18:29:47] END   fit_s2  exit=0  166 min
+[18:29:47] START fit_s3
+[20:16:34] END   fit_s3  exit=1  107 min
+[20:16:34] START soup_fit
+[20:16:47] END   soup_fit  exit=0  0 min
+[20:16:47] START val_fit_s0
+[20:18:34] END   val_fit_s0  exit=0  2 min
+[20:18:34] START val_fit_s2
+[20:19:58] END   val_fit_s2  exit=0  1 min
+[20:19:58] START val_fit_s3
+[20:21:07] END   val_fit_s3  exit=0  1 min
+[20:21:07] START val_soup_fit
+[20:22:19] END   val_soup_fit  exit=0  1 min
+[20:22:19] START stress_fit
+[20:22:19] END   stress_fit  exit=0  0 min
+[20:22:19] START audit_fit
+[20:22:20] END   audit_fit  exit=2  0 min
+[20:22:20] queue11 finished
+queue12 started 2026-09-20 21:12:00
+[21:12:00] WAIT  for queue 11 trainings
+[21:12:00] WAIT  done - GPU free
+[21:12:00] data folder: E:\Хакатон\Данные
+[21:12:00] START tests12
+[21:12:20] END   tests12  exit=1  0 min
+[21:12:20] START ties12
+[21:12:20] END   ties12  exit=0  0 min
+[21:12:20] START soup2
+[21:12:29] END   soup2  exit=1  0 min
+[21:12:29] START val_soup2
+[21:12:34] END   val_soup2  exit=1  0 min
+[21:12:34] START soup_fit
+[21:12:44] END   soup_fit  exit=0  0 min
+[21:12:44] START val_fit_s0
+[21:13:56] END   val_fit_s0  exit=0  1 min
+[21:13:56] START val_fit_s2
+[21:15:02] END   val_fit_s2  exit=0  1 min
+[21:15:02] START val_fit_s3
+[21:16:06] END   val_fit_s3  exit=0  1 min
+[21:16:06] START val_soup_fit
+[21:17:11] END   val_soup_fit  exit=0  1 min
+[21:17:11] START audit_fit
+[21:17:11] END   audit_fit  exit=1  0 min
+[21:17:11] START audit_val
+[21:17:11] END   audit_val  exit=1  0 min
+[21:17:11] START stress_fit
+[21:17:12] END   stress_fit  exit=0  0 min
+[21:17:12] START gallery_fit
+[21:17:12] END   gallery_fit  exit=1  0 min
+[21:17:12] START build12
+[21:18:29] END   build12  exit=1  1 min
+[21:18:29] START build12dev
+[21:18:33] END   build12dev  exit=1  0 min
+[21:18:34] START predict12
+[21:19:46] END   predict12  exit=0  1 min
+[21:19:46] START cmp_v3
+[21:19:46] END   cmp_v3  exit=0  0 min
+[21:19:46] START form_v3
+[21:19:47] END   form_v3  exit=0  0 min
+[21:19:47] START indep_v3
+[21:19:48] END   indep_v3  exit=0  0 min
+[21:19:48] START docker_v3a
+[21:20:56] END   docker_v3a  exit=0  1 min
+[21:20:56] START docker_v3b
+[21:21:26] END   docker_v3b  exit=0  1 min
+[21:21:26] START cmp_v3_det
+[21:21:26] END   cmp_v3_det  exit=0  0 min
+[21:21:26] START docker_v3_offline
+[21:21:54] END   docker_v3_offline  exit=0  0 min
+[21:21:54] START cmp_v3_offline
+[21:21:54] END   cmp_v3_offline  exit=0  0 min
+[21:21:54] START docker_v3_noshm
+[21:23:02] END   docker_v3_noshm  exit=0  1 min
+[21:23:02] START cmp_v3_noshm
+[21:23:02] END   cmp_v3_noshm  exit=0  0 min
+[21:23:02] START replay
+[21:23:05] END   replay  exit=0  0 min
+[21:23:05] START scorecard12
+[21:23:05] END   scorecard12  exit=0  0 min
+[21:23:05] START manifest12
+[21:23:11] END   manifest12  exit=0  0 min
+[21:23:11] queue12 finished
+queue13 started 2026-09-20 21:38:36
+[21:38:36] WAIT  for running vreid processes
+[21:38:36] WAIT  done - GPU free
+[21:38:36] data folder: E:\Хакатон\Данные
+[21:38:36] START tests13
+[21:38:49] END   tests13  exit=0  0 min
+[21:38:49] START soup2
+[21:38:55] END   soup2  exit=0  0 min
+[21:38:55] START val_soup2
+[21:40:35] END   val_soup2  exit=0  2 min
+[21:40:35] START audit_fit
+[21:40:37] END   audit_fit  exit=0  0 min
+[21:40:37] START audit_val
+[21:40:38] END   audit_val  exit=0  0 min
+[21:40:38] START gallery_fit
+[21:40:55] END   gallery_fit  exit=0  0 min
+[21:40:55] START export_twin
+[21:41:00] END   export_twin  exit=0  0 min
+[21:41:00] START copy_release
+[21:41:02] END   copy_release  exit=0  0 min
+[21:41:02] START build13
+[21:41:26] END   build13  exit=1  0 min
+[21:41:26] START build13dev
+[21:41:29] END   build13dev  exit=1  0 min
+[21:41:29] START packages13
+[21:41:30] END   packages13  exit=2  0 min
+[21:41:30] START predict13
+[21:43:01] END   predict13  exit=0  2 min
+[21:43:01] START cmp_v4
+[21:43:01] END   cmp_v4  exit=0  0 min
+[21:43:01] START form_v4
+[21:43:01] END   form_v4  exit=0  0 min
+[21:43:01] START indep_v4
+[21:43:03] END   indep_v4  exit=0  0 min
+[21:43:03] START ties13
+[21:43:04] END   ties13  exit=0  0 min
+[21:43:04] START docker_v4a
+[21:43:39] END   docker_v4a  exit=0  1 min
+[21:43:39] START docker_v4b
+[21:44:07] END   docker_v4b  exit=0  0 min
+[21:44:07] START cmp_v4_det
+[21:44:07] END   cmp_v4_det  exit=0  0 min
+[21:44:07] START docker_v4_offline
+[21:44:34] END   docker_v4_offline  exit=0  0 min
+[21:44:34] START cmp_v4_offline
+[21:44:35] END   cmp_v4_offline  exit=0  0 min
+[21:44:35] START docker_v4_noshm
+[21:45:41] END   docker_v4_noshm  exit=0  1 min
+[21:45:41] START cmp_v4_noshm
+[21:45:41] END   cmp_v4_noshm  exit=0  0 min
+[21:45:41] START form_v4_docker
+[21:45:42] END   form_v4_docker  exit=0  0 min
+[21:45:42] START replay13
+[21:45:44] END   replay13  exit=0  0 min
+[21:45:44] START bench13
+[21:47:06] END   bench13  exit=0  1 min
+[21:47:06] START stress13
+[21:47:07] END   stress13  exit=0  0 min
+[21:47:07] START scorecard13
+[21:47:07] END   scorecard13  exit=0  0 min
+[21:47:07] START manifest13
+[21:47:13] END   manifest13  exit=0  0 min
+[21:47:13] queue13 finished
+queue14 started 2026-09-20 22:43:11
+[22:43:11] WAIT  for running vreid processes
+[22:43:13] WAIT  done - GPU free, service stack down
+[22:43:13] data folder: E:\Хакатон\Данные
+[22:43:13] START tests14
+[22:43:34] END   tests14  exit=0  0 min
+[22:43:34] START build14_release
+[22:44:04] END   build14_release  exit=0  1 min
+[22:44:04] START build14_dev
+[22:44:23] END   build14_dev  exit=0  0 min
+[22:44:23] START build14_api
+[22:44:40] END   build14_api  exit=0  0 min
+[22:44:40] START build14_web
+[22:44:41] END   build14_web  exit=0  0 min
+[22:44:41] START packages14
+[22:44:45] END   packages14  exit=0  0 min
+[22:44:45] START predict14
+[22:46:25] END   predict14  exit=0  2 min
+[22:46:25] START cmp14_v4
+[22:46:25] END   cmp14_v4  exit=0  0 min
+[22:46:25] START form14
+[22:46:25] END   form14  exit=0  0 min
+[22:46:25] START indep14
+[22:46:27] END   indep14  exit=0  0 min
+[22:46:27] START ties14
+[22:46:27] END   ties14  exit=0  0 min
+[22:46:27] START replay14
+[22:46:30] END   replay14  exit=0  0 min
+[22:46:30] START docker14_a
+[22:46:59] END   docker14_a  exit=0  0 min
+[22:46:59] START docker14_b
+[22:47:24] END   docker14_b  exit=0  0 min
+[22:47:24] START cmp14_det
+[22:47:25] END   cmp14_det  exit=0  0 min
+[22:47:25] START docker14_offline
+[22:47:50] END   docker14_offline  exit=0  0 min
+[22:47:50] START cmp14_offline
+[22:47:50] END   cmp14_offline  exit=0  0 min
+[22:47:50] START docker14_noshm
+[22:48:49] END   docker14_noshm  exit=0  1 min
+[22:48:49] START cmp14_noshm
+[22:48:50] END   cmp14_noshm  exit=0  0 min
+[22:48:50] START cmp14_native
+[22:48:50] END   cmp14_native  exit=1  0 min
+[22:48:50] START form14_docker
+[22:48:50] END   form14_docker  exit=0  0 min
+[22:48:50] START bench14
+[22:50:10] END   bench14  exit=0  1 min
+[22:50:10] START stress14
+[22:50:11] END   stress14  exit=0  0 min
+[22:50:11] START audit14
+[22:50:12] END   audit14  exit=0  0 min
+[22:50:12] START errors14
+[22:50:28] END   errors14  exit=0  0 min
+[22:50:28] START scorecard14
+[22:50:28] END   scorecard14  exit=0  0 min
+[22:50:28] START manifest14
+[22:50:34] END   manifest14  exit=0  0 min
+[22:50:34] START compose14
+[22:50:42] END   compose14  exit=0  0 min
+[22:50:42] queue14 finished
+queue15 started 2026-09-20 23:11:11
+[23:11:11] WAIT  for running vreid processes
+[23:11:13] WAIT  done - GPU free, service stack down
+[23:11:13] data folder: E:\Хакатон\Данные
+[23:11:13] START tests15
+[23:11:14] END   tests15  exit=0  0 min
+[23:11:14] START build15_release
+[23:11:14] END   build15_release  exit=0  0 min
+[23:11:14] START build15_dev
+[23:11:14] END   build15_dev  exit=0  0 min
+[23:11:14] START build15_api
+[23:11:14] END   build15_api  exit=0  0 min
+[23:11:14] START build15_web
+[23:11:14] END   build15_web  exit=0  0 min
+[23:11:14] START packages15
+[23:11:14] END   packages15  exit=0  0 min
+[23:11:14] START predict15
+[23:11:14] END   predict15  exit=0  0 min
+[23:11:14] START form15
+[23:11:14] END   form15  exit=0  0 min
+[23:11:14] START indep15
+[23:11:14] END   indep15  exit=0  0 min
+[23:11:14] START ties15
+[23:11:14] END   ties15  exit=0  0 min
+[23:11:14] START replay15
+[23:11:14] END   replay15  exit=0  0 min
+[23:11:14] START docker15_a
+[23:11:14] END   docker15_a  exit=0  0 min
+[23:11:14] START docker15_b
+[23:11:14] END   docker15_b  exit=0  0 min
+[23:11:14] START cmp15_det
+[23:11:14] END   cmp15_det  exit=0  0 min
+[23:11:14] START docker15_offline
+[23:11:14] END   docker15_offline  exit=0  0 min
+[23:11:14] START cmp15_offline
+[23:11:14] END   cmp15_offline  exit=0  0 min
+[23:11:14] START docker15_noshm
+[23:11:14] END   docker15_noshm  exit=0  0 min
+[23:11:14] START cmp15_noshm
+[23:11:14] END   cmp15_noshm  exit=0  0 min
+[23:11:14] START cmp15_native
+[23:11:14] END   cmp15_native  exit=0  0 min
+[23:11:14] START form15_docker
+[23:11:14] END   form15_docker  exit=0  0 min
+[23:11:14] START bench15
+[23:11:14] END   bench15  exit=0  0 min
+[23:11:14] START stress15
+[23:11:14] END   stress15  exit=0  0 min
+[23:11:14] START audit15
+[23:11:14] END   audit15  exit=0  0 min
+[23:11:14] START errors15
+[23:11:14] END   errors15  exit=0  0 min
+[23:11:14] START scorecard15
+[23:11:14] END   scorecard15  exit=0  0 min
+[23:11:14] START manifest15
+[23:11:14] END   manifest15  exit=0  0 min
+[23:11:14] START compose15
+[23:11:14] END   compose15  exit=0  0 min
+[23:11:14] START waitapi15
+[23:11:14] END   waitapi15  exit=0  0 min
+[23:11:14] START smoke15
+[23:11:14] END   smoke15  exit=0  0 min
+[23:11:14] START logs15
+[23:11:14] END   logs15  exit=0  0 min
+[23:11:14] queue15 finished
+queue15 started 2026-09-20 23:13:42
+[23:13:43] WAIT  for running vreid processes
+[23:13:43] WAIT  done - GPU free, service stack down
+[23:13:43] data folder: E:\Хакатон\Данные
+[23:13:43] START tests15
+[23:14:07] END   tests15  ok  0 min
+[23:14:07] START build15_release
+[23:14:23] END   build15_release  ok  0 min
+[23:14:23] START build15_dev
+[23:14:37] END   build15_dev  ok  0 min
+[23:14:37] START build15_api
+[23:14:55] END   build15_api  ok  0 min
+[23:14:55] START build15_web
+[23:14:57] END   build15_web  ok  0 min
+[23:14:57] START packages15
+[23:15:00] END   packages15  ok  0 min
+[23:15:00] START predict15
+[23:16:22] END   predict15  ok  1 min
+[23:16:22] START form15
+[23:16:23] END   form15  ok  0 min
+[23:16:23] START indep15
+[23:16:24] END   indep15  ok  0 min
+[23:16:24] START ties15
+[23:16:24] END   ties15  ok  0 min
+[23:16:24] START replay15
+[23:16:27] END   replay15  ok  0 min
+[23:16:27] START docker15_a
+[23:16:53] END   docker15_a  ok  0 min
+[23:16:53] START docker15_b
+[23:17:18] END   docker15_b  ok  0 min
+[23:17:18] START cmp15_det
+[23:17:19] END   cmp15_det  ok  0 min
+[23:17:19] START docker15_offline
+[23:17:44] END   docker15_offline  ok  0 min
+[23:17:44] START cmp15_offline
+[23:17:44] END   cmp15_offline  ok  0 min
+[23:17:44] START docker15_noshm
+[23:18:43] END   docker15_noshm  ok  1 min
+[23:18:43] START cmp15_noshm
+[23:18:44] END   cmp15_noshm  ok  0 min
+[23:18:44] START cmp15_native
+[23:18:44] END   cmp15_native  FAILED exit=1  0 min
+[23:18:44] START form15_docker
+[23:18:44] END   form15_docker  ok  0 min
+[23:18:44] START bench15
+[23:20:05] END   bench15  ok  1 min
+[23:20:05] START stress15
+[23:20:05] END   stress15  ok  0 min
+[23:20:05] START audit15
+[23:20:07] END   audit15  ok  0 min
+[23:20:07] START errors15
+[23:20:36] END   errors15  ok  0 min
+[23:20:36] START scorecard15
+[23:20:37] END   scorecard15  ok  0 min
+[23:20:37] START manifest15
+[23:20:44] END   manifest15  ok  0 min
+[23:20:44] START compose15
+[23:20:51] END   compose15  ok  0 min
+[23:20:51] START waitapi15
+[23:20:52] END   waitapi15  ok  0 min
+[23:20:52] START smoke15
+[23:20:59] END   smoke15  ok  0 min
+[23:20:59] START logs15
+[23:20:59] END   logs15  ok  0 min
+[23:20:59] queue15 finished: РџР РћР’РђР›РР›РРЎР¬ 1 С€Р°Рі(РѕРІ): cmp15_native
+queue16 started 2026-09-20 23:29:26
+[23:29:26] WAIT  for running vreid processes
+[23:29:29] WAIT  done - GPU free, service stack down
+[23:29:29] data folder: E:\Хакатон\Данные
+[23:29:29] START tests16
+[23:29:51] END   tests16  FAILED exit=1  0 min
+[23:29:51] START build16_release
+[23:30:10] END   build16_release  ok  0 min
+[23:30:10] START build16_dev
+[23:30:23] END   build16_dev  ok  0 min
+[23:30:23] START build16_api
+[23:30:38] END   build16_api  ok  0 min
+[23:30:38] START build16_web
+[23:30:39] END   build16_web  ok  0 min
+[23:30:39] START packages16
+[23:30:43] END   packages16  ok  0 min
+[23:30:43] START predict16
+[23:32:25] END   predict16  ok  2 min
+[23:32:25] START form16
+[23:32:25] END   form16  ok  0 min
+[23:32:25] START indep16
+[23:32:27] END   indep16  ok  0 min
+[23:32:27] START ties16
+[23:32:27] END   ties16  ok  0 min
+[23:32:27] START replay16
+[23:32:30] END   replay16  ok  0 min
+[23:32:30] START docker16_a
+[23:32:59] END   docker16_a  ok  0 min
+[23:32:59] START docker16_b
+[23:33:24] END   docker16_b  ok  0 min
+[23:33:24] START cmp16_det
+[23:33:24] END   cmp16_det  ok  0 min
+[23:33:24] START docker16_offline
+[23:33:49] END   docker16_offline  ok  0 min
+[23:33:49] START cmp16_offline
+[23:33:49] END   cmp16_offline  ok  0 min
+[23:33:49] START docker16_noshm
+[23:34:48] END   docker16_noshm  ok  1 min
+[23:34:48] START cmp16_noshm
+[23:34:48] END   cmp16_noshm  ok  0 min
+[23:34:48] START cmp16_native
+[23:34:49] END   cmp16_native  FAILED exit=1  0 min
+[23:34:49] START form16_docker
+[23:34:49] END   form16_docker  ok  0 min
+[23:34:49] START bench16
+[23:36:10] END   bench16  ok  1 min
+[23:36:10] START stress16
+[23:36:10] END   stress16  ok  0 min
+[23:36:10] START audit16
+[23:36:12] END   audit16  ok  0 min
+[23:36:12] START errors16
+[23:36:42] END   errors16  ok  0 min
+[23:36:42] START confidence16
+[23:36:42] END   confidence16  ok  0 min
+[23:36:42] START scorecard16
+[23:36:43] END   scorecard16  ok  0 min
+[23:36:43] START manifest16
+[23:36:49] END   manifest16  ok  0 min
+[23:36:49] START compose16
+[23:36:56] END   compose16  ok  0 min
+[23:36:56] START waitapi16
+[23:37:00] END   waitapi16  ok  0 min
+[23:37:00] START smoke16
+[23:37:06] END   smoke16  ok  0 min
+[23:37:06] START logs16
+[23:37:08] END   logs16  ok  0 min
+[23:37:08] queue16 finished: РџР РћР’РђР›РР›РРЎР¬ 2 С€Р°Рі(РѕРІ): tests16, cmp16_native

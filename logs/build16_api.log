@@ -1,0 +1,67 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.service
+#1 transferring dockerfile: 3.75kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 641B done
+#3 DONE 0.0s
+
+#4 [ 1/11] FROM docker.io/pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime@sha256:eee11b3b3872a8c838e35ef48f08b2d5def2080902c7f666831310ca1a0ef2be
+#4 resolve docker.io/pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime@sha256:eee11b3b3872a8c838e35ef48f08b2d5def2080902c7f666831310ca1a0ef2be 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 15.48MB 0.6s done
+#5 DONE 0.6s
+
+#6 [ 3/11] COPY requirements-infer.txt requirements-infer-dev.txt requirements-service.txt ./
+#6 CACHED
+
+#7 [ 2/11] WORKDIR /app
+#7 CACHED
+
+#8 [ 4/11] RUN python -m pip install --no-cache-dir --no-deps --break-system-packages -r requirements-infer-dev.txt  && python -m pip install --no-cache-dir --no-deps --break-system-packages -r requirements-service.txt  && python -m pip check  && python -m pip freeze --all > /app/installed-packages.txt
+#8 CACHED
+
+#9 [ 5/11] COPY vreid/ /app/vreid/
+#9 DONE 0.1s
+
+#10 [ 6/11] COPY scripts/ /app/scripts/
+#10 DONE 0.1s
+
+#11 [ 7/11] COPY service/ /app/service/
+#11 DONE 0.1s
+
+#12 [ 8/11] COPY release/ /app/release/
+#12 DONE 0.3s
+
+#13 [ 9/11] COPY demo/ /app/demo/
+#13 DONE 0.1s
+
+#14 [10/11] COPY results/ann_scalability.json /app/results/ann_scalability.json
+#14 DONE 0.1s
+
+#15 [11/11] RUN python -c "import fastapi, uvicorn, faiss, psycopg, torch, timm; from vreid.predict import load_recipe; print('[build] fastapi', fastapi.__version__, '| faiss', faiss.__version__, '| torch', torch.__version__); print('[build] recipe ok:', load_recipe('/app/release')['threshold'])"
+#15 3.157 [build] fastapi 0.115.12 | faiss 1.9.0 | torch 2.11.0+cu128
+#15 3.158 [build] recipe ok: 0.55
+#15 DONE 4.0s
+
+#16 exporting to image
+#16 exporting layers
+#16 exporting layers 5.9s done
+#16 exporting manifest sha256:16db89d5b0bf3533dc0f5e2c83e84a695c06ce0968cd3f16aca6a5a478e0ea78 0.0s done
+#16 exporting config sha256:eb08d45003f78c13c93de54eab8876f3403439a1de63f9d689ff4b12a3a76018 0.0s done
+#16 exporting attestation manifest sha256:bb86320fc277a5c5b3d8eec33d9d90bfcae8292d9419bd93d11662db34722a7d 0.0s done
+#16 exporting manifest list sha256:c27a9e0f51cf936c3ebe84f99143d1d76056cd2fae5938446c58824a495bc4e6 0.0s done
+#16 naming to docker.io/library/vreid-api:1.1
+#16 naming to docker.io/library/vreid-api:1.1 done
+#16 unpacking to docker.io/library/vreid-api:1.1
+#16 unpacking to docker.io/library/vreid-api:1.1 2.7s done
+#16 DONE 8.8s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/co2ubc5m1c05bg6oltv3tibb3

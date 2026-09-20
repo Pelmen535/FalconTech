@@ -1,0 +1,70 @@
+[hackathon] train.csv: 9556 bbox, 1541 vehicle_id, 9556 кадров
+[hackathon] камеры из CSV: 96 шт. — псевдокамера не нужна
+[hackathon] fit: 7655 bbox / 1233 id; val query: 308 (без пары: 62), gallery: 1271
+[models] ft:hack_dinov2_b_448: vit_base_patch14_dinov2.lvd142m, D=1536, input=448, device=cuda
+python : 
+строка:1 знак:1
++ python -m vreid.hack_cli val --config configs/hackathon.yaml --backbo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+extract[query]:   0%|          | 0/5 [00:00<?, ?batch/s]
+extract[query]:  20%|██        | 1/5 [00:16<01:05, 16.31s/batch]
+extract[query]:  40%|████      | 2/5 [00:16<00:21,  7.06s/batch]
+extract[query]:  60%|██████    | 3/5 [00:17<00:08,  4.11s/batch]
+extract[query]:  80%|████████  | 4/5 [00:18<00:02,  2.72s/batch]
+extract[query]: 100%|██████████| 5/5 [00:18<00:00,  1.91s/batch]
+extract[query]: 100%|██████████| 5/5 [00:19<00:00,  3.94s/batch]
+[extract] query: (308, 1536) → runs\hack\ft_hack_dinov2_b_448\val_query.npz
+
+extract[gallery]:   0%|          | 0/20 [00:00<?, ?batch/s]
+extract[gallery]:   5%|▌         | 1/20 [00:09<02:57,  9.34s/batch]
+extract[gallery]:  10%|█         | 2/20 [00:09<01:15,  4.19s/batch]
+extract[gallery]:  15%|█▌        | 3/20 [00:10<00:43,  2.55s/batch]
+extract[gallery]:  20%|██        | 4/20 [00:11<00:32,  2.03s/batch]
+extract[gallery]:  25%|██▌       | 5/20 [00:12<00:22,  1.52s/batch]
+extract[gallery]:  30%|███       | 6/20 [00:12<00:16,  1.20s/batch]
+extract[gallery]:  35%|███▌      | 7/20 [00:13<00:13,  1.00s/batch]
+extract[gallery]:  40%|████      | 8/20 [00:14<00:10,  1.14batch/s]
+extract[gallery]:  45%|████▌     | 9/20 [00:14<00:08,  1.27batch/s]
+extract[gallery]:  50%|█████     | 10/20 [00:15<00:07,  1.38batch/s]
+extract[gallery]:  55%|█████▌    | 11/20 [00:15<00:06,  1.46batch/s]
+extract[gallery]:  60%|██████    | 12/20 [00:16<00:05,  1.52batch/s]
+extract[gallery]:  65%|██████▌   | 13/20 [00:17<00:04,  1.57batch/s]
+extract[gallery]:  70%|███████   | 14/20 [00:17<00:03,  1.59batch/s]
+extract[gallery]:  75%|███████▌  | 15/20 [00:18<00:03,  1.62batch/s]
+extract[gallery]:  80%|████████  | 16/20 [00:18<00:02,  1.64batch/s]
+extract[gallery]:  85%|████████▌ | 17/20 [00:19<00:01,  1.66batch/s]
+extract[gallery]:  90%|█████████ | 18/20 [00:20<00:01,  1.67batch/s]
+extract[gallery]:  95%|█████████▌| 19/20 [00:20<00:00,  1.68batch/s]
+extract[gallery]: 100%|██████████| 20/20 [00:21<00:00,  1.75batch/s]
+extract[gallery]: 100%|██████████| 20/20 [00:22<00:00,  1.12s/batch]
+[extract] gallery: (1271, 1536) → runs\hack\ft_hack_dinov2_b_448\val_gallery.npz
+cross-cam (псевдокамера): rank1= 72.0%  rank5= 84.1%  rank10= 88.6%  mAP= 69.7%  (queries 246/246, gallery 1271)
+standard               : rank1= 69.5%  rank5= 82.9%  rank10= 87.8%  mAP= 67.6%  (queries 246/246, gallery 1271)
+bits: tau=0.193, max 10.3 бит при галерее 1271
+     4.3–  5.0 бит  n=   45  rank-1 =  55.6%
+     5.0–  5.2 бит  n=   50  rank-1 =  64.0%
+     5.2–  5.6 бит  n=   48  rank-1 =  81.2%
+     5.6–  5.9 бит  n=   51  rank-1 =  72.5%
+     5.9–  6.2 бит  n=   43  rank-1 =  81.4%
+     6.2–  8.3 бит  n=   48  rank-1 =  72.9%
+постобработка (cross-cam):
+   base                       mAP= 69.7%  rank1= 72.0%  rank5= 84.1%
+   dba k=1                    mAP= 70.6%  rank1= 71.5%  rank5= 83.7%
+   dba k=2                    mAP= 71.6%  rank1= 70.3%  rank5= 82.5%
+   dba k=3                    mAP= 71.8%  rank1= 70.7%  rank5= 81.3%
+   dba k=5                    mAP= 73.0%  rank1= 72.4%  rank5= 80.1%
+   k-recip 10/3               mAP= 72.7%  rank1= 72.0%  rank5= 80.5%
+   k-recip 20/6               mAP= 73.0%  rank1= 72.4%  rank5= 78.9%
+   dba k=5 + k-recip 20/6     mAP= 73.2%  rank1= 72.4%  rank5= 78.5%
+режим отказа: запросов 308, без пары 62, mINP=60.6%
+  top1       порог=0.324  F1= 76.7%  P= 69.2%  R= 85.9%  TNR= 53.2%  PR-AUC= 86.0%
+  margin     порог=0.000  F1= 73.1%  P= 57.8%  R= 99.4%  TNR=  1.6%  PR-AUC= 65.6%
+  bits       порог=4.332  F1= 73.1%  P= 57.8%  R= 99.4%  TNR=  1.6%  PR-AUC= 56.3%
+  top1+bits  порог=0.437  F1= 77.2%  P= 69.5%  R= 86.9%  TNR= 53.2%  PR-AUC= 87.2%
+  → лучшая уверенность: top1+bits
+[val] → results\hack_ft_hack_dinov2_b_448_val.json
+[W916 06:13:30.000000000 CudaIPCTypes.cpp:16] Producer process has been terminated before all shared CUDA tensors relea
+sed. See Note [Sharing CUDA tensors]

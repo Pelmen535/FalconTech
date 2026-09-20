@@ -1,0 +1,7 @@
+[check] test_query 1110 строк, test_gallery 750
+[check] embeddings.npy (1860, 1536) float32
+[check] норма строк: мин 1.0000, макс 1.0000
+[check] submission.csv: заголовок 11 столбцов, строк 1110
+[check] candidates.csv: строк 1018, отвечено 1018, отказов 92 (8.3%), запросов с >1 строкой: 0
+
+[check] все три файла по форме в порядке

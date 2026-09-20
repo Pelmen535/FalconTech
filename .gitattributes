@@ -1,0 +1,17 @@
+# Веса модели больше лимита GitHub на обычный файл (100 МБ), поэтому идут через Git LFS.
+# Если LFS в вашем окружении недоступен, берите release/model.pt из архива поставки:
+# его SHA-256 записан в handoff/MANIFEST.json и в release/recipe.json поля source.
+*.pt filter=lfs diff=lfs merge=lfs -text
+
+# Текстовые файлы храним с LF, чтобы контрольные суммы не зависели от ОС проверяющего.
+* text=auto eol=lf
+
+# Артефакты сдачи и фикстуры CSV — байт в байт, без нормализации переводов строки:
+# их SHA-256 записан в MANIFEST, и он не должен зависеть от того, где сделан checkout.
+submission/** -text
+tests/service/fixtures/** -text
+*.ps1 text eol=crlf
+*.png binary
+*.jpg binary
+*.npy binary
+*.zip binary

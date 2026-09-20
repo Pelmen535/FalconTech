@@ -1,0 +1,64 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 DONE 0.1s
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile:
+#1 transferring dockerfile: 3.71kB 1.2s done
+#1 DONE 1.9s
+
+#2 [internal] load metadata for docker.io/pytorch/pytorch@sha256:fc47f8018254e6df30f48c48f2db1c758d44de21a8c553de1a1c451a65baa70a
+#2 DONE 4.5s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 32B
+#3 transferring context: 144B 0.2s done
+#3 DONE 0.3s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/7] FROM docker.io/pytorch/pytorch@sha256:fc47f8018254e6df30f48c48f2db1c758d44de21a8c553de1a1c451a65baa70a
+#5 resolve docker.io/pytorch/pytorch@sha256:fc47f8018254e6df30f48c48f2db1c758d44de21a8c553de1a1c451a65baa70a
+#5 resolve docker.io/pytorch/pytorch@sha256:fc47f8018254e6df30f48c48f2db1c758d44de21a8c553de1a1c451a65baa70a 0.2s done
+#5 DONE 0.3s
+
+#4 [internal] load build context
+#4 transferring context: 153.32kB 1.4s done
+#4 DONE 1.6s
+
+#6 [3/7] COPY requirements-infer.txt .
+#6 CACHED
+
+#7 [2/7] WORKDIR /app
+#7 CACHED
+
+#8 [4/7] RUN pip install --no-cache-dir --break-system-packages -r requirements-infer.txt  || pip install --no-cache-dir -r requirements-infer.txt
+#8 CACHED
+
+#9 [5/7] COPY vreid/ /app/vreid/
+#9 DONE 2.5s
+
+#10 [6/7] COPY release/ /app/release/
+#10 DONE 20.7s
+
+#11 [7/7] RUN python -c "import json, pathlib, torch, timm; r = json.load(open('/app/release/recipe.json', encoding='utf-8')); mb = pathlib.Path('/app/release/model.pt').stat().st_size / 1024**2; print('[build] torch', torch.__version__, '| timm', timm.__version__); print('[build] recipe ok: threshold', round(r['threshold'], 4), '| weights', round(mb), 'MB / 2048 limit'); assert mb < 2048, 'weights exceed 2 GB'"
+#11 27.75 [build] torch 2.3.1 | timm 1.0.20
+#11 27.75 [build] recipe ok: threshold 0.55 | weights 164 MB / 2048 limit
+#11 DONE 28.9s
+
+#12 exporting to image
+#12 exporting layers
+#12 exporting layers 22.7s done
+#12 exporting manifest sha256:98aee0a809cba29b00d12767f82f9ca94e3d856446c337a9b8dcb990342b5e53 0.0s done
+#12 exporting config sha256:f2da9798aef6c67701b7791250f104272c25bbf4307f11c062332b0927bf3736 0.0s done
+#12 exporting attestation manifest sha256:df74315f7c744ddeec2e01b4e5fa65ca3b7075832c83b89b4fc208399bac4eb6 0.0s done
+#12 exporting manifest list sha256:58d76112d9b47fec176bbeef913621aed238a4ac71050f516fe492ef55489b03
+#12 exporting manifest list sha256:58d76112d9b47fec176bbeef913621aed238a4ac71050f516fe492ef55489b03 0.0s done
+#12 naming to docker.io/library/vreid-release:latest 0.0s done
+#12 unpacking to docker.io/library/vreid-release:latest
+#12 unpacking to docker.io/library/vreid-release:latest 6.2s done
+#12 DONE 29.2s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/2kjdwg5oxg2qpgra321mrgzsi

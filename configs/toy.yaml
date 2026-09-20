@@ -1,0 +1,10 @@
+# Игрушечный датасет для проверки стенда без GPU: scripts/make_toy_dataset.py
+name: toy
+dataset:
+  root: data/toy
+  pattern: '^(?P<vid>\d+)_c(?P<cam>\d+)_'
+  splits:
+    query: query
+    gallery: gallery
+runs_dir: runs
+results_dir: results

@@ -1,0 +1,155 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 3.71kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime
+#2 DONE 0.7s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 144B done
+#3 DONE 0.0s
+
+#4 [1/7] FROM docker.io/pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime@sha256:eee11b3b3872a8c838e35ef48f08b2d5def2080902c7f666831310ca1a0ef2be
+#4 resolve docker.io/pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime@sha256:eee11b3b3872a8c838e35ef48f08b2d5def2080902c7f666831310ca1a0ef2be 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 3.08kB done
+#5 DONE 0.0s
+
+#6 [2/7] WORKDIR /app
+#6 CACHED
+
+#7 [3/7] COPY requirements-infer.txt .
+#7 CACHED
+
+#8 [4/7] RUN pip install --no-cache-dir --break-system-packages -r requirements-infer.txt  || pip install --no-cache-dir -r requirements-infer.txt
+#8 1.295 Collecting timm==1.0.20 (from -r requirements-infer.txt (line 4))
+#8 1.610   Downloading timm-1.0.20-py3-none-any.whl.metadata (61 kB)
+#8 2.198 Collecting numpy==1.26.4 (from -r requirements-infer.txt (line 5))
+#8 2.268   Downloading numpy-1.26.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (61 kB)
+#8 2.678 Collecting pillow==10.4.0 (from -r requirements-infer.txt (line 6))
+#8 2.749   Downloading pillow-10.4.0-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (9.2 kB)
+#8 2.853 Collecting tqdm==4.66.5 (from -r requirements-infer.txt (line 7))
+#8 2.922   Downloading tqdm-4.66.5-py3-none-any.whl.metadata (57 kB)
+#8 2.943 Requirement already satisfied: torch in /usr/local/lib/python3.12/dist-packages (from timm==1.0.20->-r requirements-infer.txt (line 4)) (2.11.0+cu128)
+#8 2.943 Requirement already satisfied: torchvision in /usr/local/lib/python3.12/dist-packages (from timm==1.0.20->-r requirements-infer.txt (line 4)) (0.26.0+cu128)
+#8 2.943 Requirement already satisfied: pyyaml in /usr/local/lib/python3.12/dist-packages (from timm==1.0.20->-r requirements-infer.txt (line 4)) (6.0.3)
+#8 3.158 Collecting huggingface_hub (from timm==1.0.20->-r requirements-infer.txt (line 4))
+#8 3.310   Downloading huggingface_hub-1.32.0-py3-none-any.whl.metadata (16 kB)
+#8 3.693 Collecting safetensors (from timm==1.0.20->-r requirements-infer.txt (line 4))
+#8 3.760   Downloading safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.2 kB)
+#8 3.857 Collecting click<9.0.0,>=8.4.2 (from huggingface_hub->timm==1.0.20->-r requirements-infer.txt (line 4))
+#8 3.925   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+#8 3.928 Requirement already satisfied: filelock>=3.10.0 in /usr/local/lib/python3.12/dist-packages (from huggingface_hub->timm==1.0.20->-r requirements-infer.txt (line 4)) (3.25.2)
+#8 3.928 Requirement already satisfied: fsspec>=2023.5.0 in /usr/local/lib/python3.12/dist-packages (from huggingface_hub->timm==1.0.20->-r requirements-infer.txt (line 4)) (2026.2.0)
+#8 4.072 Collecting hf-xet<2.0.0,>=1.5.2 (from huggingface_hub->timm==1.0.20->-r requirements-infer.txt (line 4))
+#8 4.140   Downloading hf_xet-1.6.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (4.9 kB)
+#8 4.239 Collecting httpx<1,>=0.23.0 (from huggingface_hub->timm==1.0.20->-r requirements-infer.txt (line 4))
+#8 4.308   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+#8 4.315 Requirement already satisfied: packaging>=20.9 in /usr/local/lib/python3.12/dist-packages (from huggingface_hub->timm==1.0.20->-r requirements-infer.txt (line 4)) (26.0)
+#8 4.317 Requirement already satisfied: typing-extensions>=4.1.0 in /usr/local/lib/python3.12/dist-packages (from huggingface_hub->timm==1.0.20->-r requirements-infer.txt (line 4)) (4.15.0)
+#8 4.413 Collecting anyio (from httpx<1,>=0.23.0->huggingface_hub->timm==1.0.20->-r requirements-infer.txt (line 4))
+#8 4.481   Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+#8 4.486 Requirement already satisfied: certifi in /usr/local/lib/python3.12/dist-packages (from httpx<1,>=0.23.0->huggingface_hub->timm==1.0.20->-r requirements-infer.txt (line 4)) (2026.2.25)
+#8 4.577 Collecting httpcore==1.* (from httpx<1,>=0.23.0->huggingface_hub->timm==1.0.20->-r requirements-infer.txt (line 4))
+#8 4.644   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+#8 4.663 Requirement already satisfied: idna in /usr/local/lib/python3.12/dist-packages (from httpx<1,>=0.23.0->huggingface_hub->timm==1.0.20->-r requirements-infer.txt (line 4)) (3.11)
+#8 4.741 Collecting h11>=0.16 (from httpcore==1.*->httpx<1,>=0.23.0->huggingface_hub->timm==1.0.20->-r requirements-infer.txt (line 4))
+#8 4.809   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#8 4.914 Collecting typing-extensions>=4.1.0 (from huggingface_hub->timm==1.0.20->-r requirements-infer.txt (line 4))
+#8 4.983   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#8 4.992 Requirement already satisfied: setuptools<82 in /usr/local/lib/python3.12/dist-packages (from torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (81.0.0)
+#8 4.992 Requirement already satisfied: sympy>=1.13.3 in /usr/local/lib/python3.12/dist-packages (from torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (1.14.0)
+#8 4.992 Requirement already satisfied: networkx>=2.5.1 in /usr/local/lib/python3.12/dist-packages (from torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (3.6.1)
+#8 4.993 Requirement already satisfied: jinja2 in /usr/local/lib/python3.12/dist-packages (from torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (3.1.6)
+#8 4.994 Requirement already satisfied: cuda-toolkit==12.8.1 in /usr/local/lib/python3.12/dist-packages (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == "Linux"->torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (12.8.1)
+#8 4.994 Requirement already satisfied: cuda-bindings<13,>=12.9.4 in /usr/local/lib/python3.12/dist-packages (from torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (12.9.4)
+#8 4.995 Requirement already satisfied: nvidia-cudnn-cu12==9.19.0.56 in /usr/local/lib/python3.12/dist-packages (from torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (9.19.0.56)
+#8 4.995 Requirement already satisfied: nvidia-cusparselt-cu12==0.7.1 in /usr/local/lib/python3.12/dist-packages (from torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (0.7.1)
+#8 4.996 Requirement already satisfied: nvidia-nccl-cu12==2.28.9 in /usr/local/lib/python3.12/dist-packages (from torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (2.28.9)
+#8 4.996 Requirement already satisfied: nvidia-nvshmem-cu12==3.4.5 in /usr/local/lib/python3.12/dist-packages (from torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (3.4.5)
+#8 4.997 Requirement already satisfied: triton==3.6.0 in /usr/local/lib/python3.12/dist-packages (from torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (3.6.0)
+#8 5.005 Requirement already satisfied: nvidia-cublas-cu12==12.8.4.1.* in /usr/local/lib/python3.12/dist-packages (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == "Linux"->torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (12.8.4.1)
+#8 5.005 Requirement already satisfied: nvidia-cuda-runtime-cu12==12.8.90.* in /usr/local/lib/python3.12/dist-packages (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == "Linux"->torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (12.8.90)
+#8 5.006 Requirement already satisfied: nvidia-cufft-cu12==11.3.3.83.* in /usr/local/lib/python3.12/dist-packages (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == "Linux"->torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (11.3.3.83)
+#8 5.007 Requirement already satisfied: nvidia-cufile-cu12==1.13.1.3.* in /usr/local/lib/python3.12/dist-packages (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == "Linux"->torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (1.13.1.3)
+#8 5.007 Requirement already satisfied: nvidia-cuda-cupti-cu12==12.8.90.* in /usr/local/lib/python3.12/dist-packages (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == "Linux"->torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (12.8.90)
+#8 5.008 Requirement already satisfied: nvidia-curand-cu12==10.3.9.90.* in /usr/local/lib/python3.12/dist-packages (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == "Linux"->torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (10.3.9.90)
+#8 5.009 Requirement already satisfied: nvidia-cusolver-cu12==11.7.3.90.* in /usr/local/lib/python3.12/dist-packages (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == "Linux"->torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (11.7.3.90)
+#8 5.009 Requirement already satisfied: nvidia-cusparse-cu12==12.5.8.93.* in /usr/local/lib/python3.12/dist-packages (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == "Linux"->torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (12.5.8.93)
+#8 5.010 Requirement already satisfied: nvidia-nvjitlink-cu12==12.8.93.* in /usr/local/lib/python3.12/dist-packages (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == "Linux"->torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (12.8.93)
+#8 5.011 Requirement already satisfied: nvidia-cuda-nvrtc-cu12==12.8.93.* in /usr/local/lib/python3.12/dist-packages (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == "Linux"->torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (12.8.93)
+#8 5.012 Requirement already satisfied: nvidia-nvtx-cu12==12.8.90.* in /usr/local/lib/python3.12/dist-packages (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == "Linux"->torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (12.8.90)
+#8 5.020 Requirement already satisfied: cuda-pathfinder~=1.1 in /usr/local/lib/python3.12/dist-packages (from cuda-bindings<13,>=12.9.4->torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (1.2.2)
+#8 5.075 Requirement already satisfied: mpmath<1.4,>=1.1.0 in /usr/local/lib/python3.12/dist-packages (from sympy>=1.13.3->torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (1.3.0)
+#8 5.079 Requirement already satisfied: MarkupSafe>=2.0 in /usr/local/lib/python3.12/dist-packages (from jinja2->torch->timm==1.0.20->-r requirements-infer.txt (line 4)) (3.0.3)
+#8 5.157 Downloading timm-1.0.20-py3-none-any.whl (2.5 MB)
+#8 7.727    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.5/2.5 MB 942.2 kB/s  0:00:02
+#8 7.796 Downloading numpy-1.26.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (18.0 MB)
+#8 54.69    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 18.0/18.0 MB 386.5 kB/s  0:00:46
+#8 54.76 Downloading pillow-10.4.0-cp312-cp312-manylinux_2_28_x86_64.whl (4.5 MB)
+#8 65.37    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 427.2 kB/s  0:00:10
+#8 65.44 Downloading tqdm-4.66.5-py3-none-any.whl (78 kB)
+#8 65.70 Downloading huggingface_hub-1.32.0-py3-none-any.whl (842 kB)
+#8 67.59    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 842.9/842.9 kB 451.3 kB/s  0:00:01
+#8 67.66 Downloading click-8.5.0-py3-none-any.whl (125 kB)
+#8 68.04 Downloading hf_xet-1.6.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (4.5 MB)
+#8 80.78    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 348.1 kB/s  0:00:12
+#8 80.85 Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+#8 81.08 Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+#8 81.32 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#8 81.46 Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+#8 81.79 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#8 81.95 Downloading safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (516 kB)
+#8 82.95 Installing collected packages: typing-extensions, tqdm, safetensors, pillow, numpy, hf-xet, h11, click, httpcore, anyio, httpx, huggingface_hub, timm
+#8 82.95   Attempting uninstall: typing-extensions
+#8 82.95     Found existing installation: typing_extensions 4.15.0
+#8 82.95     Uninstalling typing_extensions-4.15.0:
+#8 84.26       Successfully uninstalled typing_extensions-4.15.0
+#8 84.38   Attempting uninstall: pillow
+#8 84.38     Found existing installation: pillow 12.1.1
+#8 84.42     Uninstalling pillow-12.1.1:
+#8 84.57       Successfully uninstalled pillow-12.1.1
+#8 84.84   Attempting uninstall: numpy
+#8 84.84     Found existing installation: numpy 2.4.3
+#8 84.96     Uninstalling numpy-2.4.3:
+#8 85.94       Successfully uninstalled numpy-2.4.3
+#8 87.89   Attempting uninstall: click
+#8 87.89     Found existing installation: click 8.3.1
+#8 87.90     Uninstalling click-8.3.1:
+#8 87.92       Successfully uninstalled click-8.3.1
+#8 89.38 
+#8 89.38 ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+#8 89.38 spin 0.17 requires click!=8.3.0,<8.4,>=8, but you have click 8.5.0 which is incompatible.
+#8 89.38 Successfully installed anyio-4.15.1 click-8.5.0 h11-0.16.0 hf-xet-1.6.0 httpcore-1.0.9 httpx-0.28.1 huggingface_hub-1.32.0 numpy-1.26.4 pillow-10.4.0 safetensors-0.8.0 timm-1.0.20 tqdm-4.66.5 typing-extensions-4.16.0
+#8 89.38 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#8 DONE 89.7s
+
+#9 [5/7] COPY vreid/ /app/vreid/
+#9 DONE 0.1s
+
+#10 [6/7] COPY release/ /app/release/
+#10 DONE 0.4s
+
+#11 [7/7] RUN python -c "import json, pathlib, torch, timm; r = json.load(open('/app/release/recipe.json', encoding='utf-8')); mb = pathlib.Path('/app/release/model.pt').stat().st_size / 1024**2; print('[build] torch', torch.__version__, '| timm', timm.__version__); print('[build] recipe ok: threshold', round(r['threshold'], 4), '| weights', round(mb), 'MB / 2048 limit'); assert mb < 2048, 'weights exceed 2 GB'"
+#11 4.934 [build] torch 2.11.0+cu128 | timm 1.0.20
+#11 4.934 [build] recipe ok: threshold 0.6011 | weights 164 MB / 2048 limit
+#11 DONE 6.4s
+
+#12 exporting to image
+#12 exporting layers
+#12 exporting layers 8.2s done
+#12 exporting manifest sha256:810db68ed7a93b7f3c4f2bb5ba0e36e6a14679ddc8e07dc5df0033847f328b18 0.0s done
+#12 exporting config sha256:f2472674fa60a78954f9d6ea0e6c25f434f91d1e00b28dd77783b755be38a31b 0.0s done
+#12 exporting attestation manifest sha256:a1df2afd4b7d4a06362968d17655d56842d0b33d71974b99811f178d38554b4b 0.0s done
+#12 exporting manifest list sha256:47e8cbd960c20151f33fdf19f793ea0f53ed9b84c0fe4aae0a719124cdb86f3a 0.0s done
+#12 naming to docker.io/library/vreid-dev:latest
+#12 naming to docker.io/library/vreid-dev:latest done
+#12 unpacking to docker.io/library/vreid-dev:latest
+#12 unpacking to docker.io/library/vreid-dev:latest 6.1s done
+#12 DONE 14.4s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/rhcq1vbcd57rv3zpcu2iq132d

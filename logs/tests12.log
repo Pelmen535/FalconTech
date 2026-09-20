@@ -1,0 +1,42 @@
+.....................F.F................................................ [ 88%]
+..F......                                                                [100%]
+================================== FAILURES ===================================
+________________ test_bad_bbox_cannot_become_whole_image[box0] ________________
+
+box = (0, 0, 0, 2)
+
+    @pytest.mark.parametrize('box',[(0,0,0,2),(0,0,float('nan'),2),(100,100,2,2)])
+    def test_bad_bbox_cannot_become_whole_image(box):
+>       with pytest.raises(ValueError):crop_bbox(Image.new('RGB',(20,20)),box,pad=0)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_input_contract.py:18: Failed
+---------------------------- Captured stdout call -----------------------------
+[extract] ВНИМАНИЕ: bbox (0, 0, 0, 2) пуст или вне кадра (20, 20) — беру весь кадр. Это уже другой объект, проверь входной CSV
+________________ test_bad_bbox_cannot_become_whole_image[box2] ________________
+
+box = (100, 100, 2, 2)
+
+    @pytest.mark.parametrize('box',[(0,0,0,2),(0,0,float('nan'),2),(100,100,2,2)])
+    def test_bad_bbox_cannot_become_whole_image(box):
+>       with pytest.raises(ValueError):crop_bbox(Image.new('RGB',(20,20)),box,pad=0)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests\test_input_contract.py:18: Failed
+---------------------------- Captured stdout call -----------------------------
+[extract] ВНИМАНИЕ: bbox (100, 100, 2, 2) пуст или вне кадра (20, 20) — беру весь кадр. Это уже другой объект, проверь входной CSV
+_____________ test_memory_budget_too_small_fails_without_fallback _____________
+
+    def test_memory_budget_too_small_fails_without_fallback():
+>       with pytest.raises(MemoryError):rerank_chunk_size(1,750,.0001)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE MemoryError
+
+tests\test_runtime_guards.py:32: Failed
+=========================== short test summary info ===========================
+FAILED tests/test_input_contract.py::test_bad_bbox_cannot_become_whole_image[box0]
+FAILED tests/test_input_contract.py::test_bad_bbox_cannot_become_whole_image[box2]
+FAILED tests/test_runtime_guards.py::test_memory_budget_too_small_fails_without_fallback
+3 failed, 78 passed in 18.63s

@@ -1,0 +1,18 @@
+Existing gallery preserved; checking whether it is exactly the demo gallery.
+{
+  "passed": true,
+  "scope": "HTTP execution smoke, not accuracy",
+  "imported": 0,
+  "gallery_count": 20,
+  "ranking_count": 10,
+  "accepted": true,
+  "top1": "df7ea50171af48df81584ab7e8107d15",
+  "device": "cuda",
+  "dimension": 1536,
+  "model_sha256": "608042f64c259b97590e57b81f6c03e7143fba43d9a9c320b4a2a346e9f5fd1c",
+  "recipe_sha256": "9eb6b74aa6423d3926db0b6ac6ee8e6cdc43f8c34c57db0f6211c962e0600c01",
+  "same_reference_release": false,
+  "exact_reference_top10": false,
+  "seconds": 5.48
+}
+Different model/recipe: only HTTP execution was checked, not equivalence to 19b.
