@@ -48,7 +48,7 @@ def block_score(s, has, gv, qv, thr):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--run", default="runs/hack/ft_soup_b336_val")
+    ap.add_argument("--run", default="runs/hack/ft_soup_b336_fit")
     ap.add_argument("--release", default="release")
     ap.add_argument("--beliefs", type=float, nargs="+", default=[0.70, 0.85, 0.95])
     ap.add_argument("--out", default="results/refusal_stress.json")

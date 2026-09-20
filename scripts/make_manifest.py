@@ -1,7 +1,7 @@
 """Манифест поставки: то, по чему сдачу можно проверить, не веря нам на слово.
 
     python scripts/make_manifest.py --release release --submission submission \
-        --run runs/hack/ft_soup_b336_val --out handoff/MANIFEST.json
+        --run runs/hack/ft_soup_b336_fit --out reports/MANIFEST.json
 
 Складывает в один файл: хэши весов, рецепта и файлов сдачи; состав разбиения по vehicle_id;
 версии пакетов и команды, которыми всё получено; ключевые измерения со ссылками на отчёты.

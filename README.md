@@ -472,4 +472,4 @@ python scripts/scorecard.py --release release --submission submission
    (вектор уже в СУБД), но в этой версии оно не сделано.
 6. **Веса в git.** `release/model.pt` — 164 МиБ, это больше лимита GitHub на файл без
    Git LFS. В репозитории настроен `.gitattributes` для LFS; если LFS недоступен, забирайте
-   `model.pt` из архива поставки — его SHA-256 записан в `handoff/MANIFEST.json`.
+   `model.pt` из архива поставки — его SHA-256 записан в `reports/MANIFEST.json`.

@@ -1,7 +1,7 @@
 {
   "scope": "Smoke example from organizer data, not labeled evaluation or accuracy",
   "model_sha256": "608042f64c259b97590e57b81f6c03e7143fba43d9a9c320b4a2a346e9f5fd1c",
-  "recipe_sha256": "6ced3ed0b1155a8f21136267eed6e1c9f8cee3733c889205b54e41c545570b83",
+  "recipe_sha256": "9eb6b74aa6423d3926db0b6ac6ee8e6cdc43f8c34c57db0f6211c962e0600c01",
   "gallery_ids": [
     "df7ea50171af48df81584ab7e8107d15",
     "e79ae27b52fa4d54aa37735fd275c66e",
@@ -29,12 +29,13 @@
     "e79ae27b52fa4d54aa37735fd275c66e",
     "f12e9e5805534d719f829332d1ea5d29",
     "7226603f024c45c6a6e44b00e52e8aad",
+    "04d24d1cf42b4f7787d8d300cbad6d50",
     "6b4676aba2a746b3ab778315afc8ee82",
     "51c6049a18b84ee381d0512e40b67c0e",
-    "04d24d1cf42b4f7787d8d300cbad6d50",
     "dd36cc0867b94d55a43b82c1c9a0e95c",
-    "57bcda73abab44ee930b20cdaee9d24b",
-    "41e657daa20545a588584578bdb4101c"
+    "41e657daa20545a588584578bdb4101c",
+    "57bcda73abab44ee930b20cdaee9d24b"
   ],
-  "accepted": true
+  "accepted": true,
+  "recorded_on": "GPU, dev-образ CUDA 12.8; на CPU нижние позиции могут отличаться"
 }
