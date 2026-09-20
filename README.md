@@ -439,7 +439,7 @@ python scripts/scorecard.py --release release --submission submission
 | `submission/` | артефакты сдачи на открытом тесте |
 | `scripts/` | проверки, замеры, отчёты, экспорт релиза |
 | `tests/` | 180 проверок: метрики, независимость запросов, контракт ввода, HTTP, хранилище, объяснение, ANN |
-| `docs/` | `ARCHITECTURE.md`, `API.md`, `ERROR_ANALYSIS.md`, `WORKFLOW.md`, картинки разбора ошибок |
+| `docs/` | `ARCHITECTURE.md`, `API.md`, `ERROR_ANALYSIS.md`, `SELF_REVIEW.md`, сводка ответов организаторов, ТЗ, картинки разбора ошибок |
 | `results/` | все замеры в JSON, имя файла = модель + режим |
 | `runs/hack/ft_soup_b336_fit/` | кеш эмбеддингов двойника релиза; на нём считаются диагностики |
 | `demo/` | 20 кадров организаторов и один запрос для проверки сервиса в два клика |
