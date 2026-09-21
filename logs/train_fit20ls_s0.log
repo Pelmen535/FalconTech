@@ -2,6 +2,7 @@
 [hackathon] камеры из CSV: 96 шт. — псевдокамера не нужна
 [hackathon] протокол «track», fit: 7655 bbox / 1233 id; val query: 1213 (без пары: 243), gallery: 688
 [train] кропы fit: 7655 (0 c)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
 [train] vit_base_patch14_dinov2.lvd142m, D=1536, id=1233, device=cuda
 [train] дистилляция от weights/hack_dinov2_l_336_cam/best.pt: D учителя 2048, вес 20.0
 [train] сэмплер: camera-aware (кадры одной машины — с разных камер)
@@ -12,49 +13,32 @@ Traceback (most recent call last):
   File "<frozen runpy>", line 198, in _run_module_as_main
   File "<frozen runpy>", line 88, in _run_code
   File "E:\Хакатон\vreid\train.py", line 626, in <module>
-    main()
-    ~~~~^^
+    parser.add_argument("--K", type=int, default=4)
+    ^^^^^^
   File "E:\Хакатон\vreid\train.py", line 595, in main
-    m = validate(model, d["query"], d["gallery"], d["has_match"], tf_eval, device, a.batch_size_eval, a.workers)
+    with torch.no_grad(), torch.autocast(device_type="cuda" if device == "cuda" else "cpu",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "E:\Хакатон\vreid\train.py", line 410, in validate
-    qe, ge = embed_records(model, q.records, tf, device, batch_size, workers), embed_records(model, g.records, tf, device, batch_size, workers)
-                                                                               ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "E:\Хакатон\vreid\train.py", line 403, in embed_records
-    for x, _, _ in dl:
-                   ^^
+    # реализацией» изменит функцию потерь
   File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 741, in __next__
     data = self._next_data()
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 1548, in _next_data
-    return self._process_data(data, worker_id)
-           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 1586, in _process_data
-    data.reraise()
-    ~~~~~~~~~~~~^^
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\_utils.py", line 785, in reraise
-    raise exception
-RuntimeError: Caught RuntimeError in DataLoader worker process 0.
-Original Traceback (most recent call last):
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\worker.py", line 358, in _worker_loop
-    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\fetch.py", line 57, in fetch
-    return self.collate_fn(data)
-           ~~~~~~~~~~~~~~~^^^^^^
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\collate.py", line 401, in default_collate
-    return collate(batch, collate_fn_map=default_collate_fn_map)
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\collate.py", line 215, in collate
-    collate(samples, collate_fn_map=collate_fn_map)
-    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\collate.py", line 155, in collate
-    return collate_fn_map[elem_type](batch, collate_fn_map=collate_fn_map)
-           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\collate.py", line 273, in collate_tensor_fn
-    storage = elem._typed_storage()._new_shared(numel, device=elem.device)
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\storage.py", line 1210, in _new_shared
-    untyped_storage = torch.UntypedStorage._new_shared(
-        size * self._element_size(), device=device
-    )
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\storage.py", line 412, in _new_shared
-    return cls._new_using_filename_cpu(size)
-           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
-RuntimeError: Couldn't open shared file mapping: <torch_2996_3394523409_0>, error code: <1455>
-
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 801, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\fetch.py", line 54, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+            ~~~~~~~~~~~~^^^^^
+  File "E:\Хакатон\vreid\train.py", line 140, in __getitem__
+    downscale = random.uniform(0.3, 0.7)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Хакатон\vreid\train.py", line 122, in __call__
+    # порядок обращений к random (scale → dx → dy) фиксирует обучающую выборку —
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torchvision\transforms\transforms.py", line 95, in __call__
+    img = t(img)
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torchvision\transforms\transforms.py", line 137, in __call__
+    return F.to_tensor(pic)
+           ~~~~~~~~~~~^^^^^
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torchvision\transforms\functional.py", line 168, in to_tensor
+    img = torch.from_numpy(np.array(pic, mode_to_nptype.get(pic.mode, np.uint8), copy=True))
+                           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+numpy._core._exceptions._ArrayMemoryError: Unable to allocate 331. KiB for an array with shape (336, 336, 3) and data type uint8
