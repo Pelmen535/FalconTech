@@ -798,3 +798,21 @@ queue19 started 2026-09-21 19:21:30
 [19:21:30] WAIT  for running vreid processes
 [19:21:30] WAIT  done - GPU free
 [19:21:30] START q19_train_l_fit
+queue19 started 2026-09-21 20:19:55
+[20:19:55] WAIT  for running vreid processes
+[20:19:56] WAIT  done - GPU free
+[20:19:56] START q19_train_l_fit
+[22:28:35] END   q19_train_l_fit  ok  129 min
+[22:28:35] START q19_val_l_fit
+[22:30:00] END   q19_val_l_fit  ok  1 min
+[22:30:00] START q19_cascade_honest
+[22:30:02] END   q19_cascade_honest  ok  0 min
+[22:30:02] START q19_train_l_all
+[00:41:09] END   q19_train_l_all  ok  131 min
+[00:41:09] START q19_train_b_multi
+[03:21:15] END   q19_train_b_multi  ok  160 min
+[03:21:15] START q19_val_b_multi
+[03:22:22] END   q19_val_b_multi  ok  1 min
+[03:22:22] START q19_compare
+[03:22:22] END   q19_compare  FAILED exit=1  0 min
+[03:22:22] queue19 finished: РџР РћР’РђР›РР›РРЎР¬ 1 С€Р°Рі(РѕРІ): q19_compare
