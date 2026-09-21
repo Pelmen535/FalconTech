@@ -387,6 +387,8 @@ python scripts/rerank_grid.py                               # сетка пар�
 python scripts/confidence_stress.py                         # выбор меры уверенности
 python scripts/ann_benchmark.py                             # масштабируемость
 python scripts/scorecard.py --release release --submission submission
+python scripts/check_refactor_equivalence.py --compare reports/equivalence_before.json
+                                                            # правка кода не изменила поведение
 ```
 
 ### 9.4 Воспроизводимость сдачи
@@ -401,6 +403,7 @@ python scripts/scorecard.py --release release --submission submission
 | контейнер с `--network none` | совпал бит в бит — рантайм действительно офлайн |
 | прогон до и после интеграции сервиса | совпал бит в бит |
 | нативный прогон против контейнерного | **расходится**: 35 ячеек ранжирования из 11 100 (0.3%), эмбеддинги до 4.5e-04 |
+| код до и после чистки читаемости (133 правки в двух файлах) | совпало всё, кроме трёх описаний `--help`, которые правились намеренно |
 | релизный образ на CPU против dev-образа на GPU | **расходится**: 88 ячеек из 11 100 (0.8%), топ-1 разошёлся у 1 запроса из 1110; отказов поровну, 69 |
 
 Две последние строки называем вслух. Разные версии Pillow и NumPy дают разный порядок
