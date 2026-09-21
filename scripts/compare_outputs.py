@@ -38,7 +38,11 @@ def main(a: str, b: str) -> int:
         d = np.abs(np.array([float(r[2]) for r in ca]) - np.array([float(r[2]) for r in cb]))
         print(f"  уверенность: среднее расхождение {d.mean():.2e}, максимум {d.max():.2e}")
 
-    sa, sb = rows(A / "submission.csv")[1:], rows(B / "submission.csv")[1:]
+    # submission.csv идёт без заголовка (официальный формат); строку-заголовок из
+    # файлов прежних версий пропускаем, чтобы сравнивать одно и то же.
+    drop_header = lambda r: r[1:] if r and r[0][0] == "query_id" else r
+    sa = drop_header(rows(A / "submission.csv"))
+    sb = drop_header(rows(B / "submission.csv"))
     t1 = sum(1 for x, y in zip(sa, sb) if x[1] == y[1])
     cells = sum(1 for x, y in zip(sa, sb) for u, v in zip(x, y) if u != v)
     print(f"submission: top-1 совпадает у {t1}/{len(sa)} запросов, различается ячеек {cells}")

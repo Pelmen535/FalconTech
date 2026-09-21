@@ -1,10 +1,10 @@
 {
   "scope": "отложенная валидация двойника релиза; правило жюри и замороженный рецепт",
-  "run": "runs\\hack\\ft_soup_b336_fit",
-  "release": "release",
+  "run": "E:\\Хакатон\\runs\\hack\\ft_soup_b336_fit",
+  "release": "E:\\Хакатон\\release",
   "n_query": 1213,
   "n_gallery": 688,
-  "jury_map10": 74.33,
+  "jury_map10": 74.21,
   "jury_rank1": 70.72,
   "groups": {
     "rank1_ok": {

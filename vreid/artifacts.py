@@ -32,6 +32,24 @@ def read_csv(path, header=None):
     return rows
 
 
+def read_submission(path, topk=10):
+    """Ранжирование из submission.csv в официальном формате: без заголовка,
+    query_id в первой ячейке, дальше идентификаторы галереи по убыванию близости.
+
+    Строка заголовка, если она осталась от прежней версии файла, пропускается: её
+    первая ячейка равна литералу 'query_id', а настоящий image_id так называться не может.
+    Так проверка читает и наши прежние файлы, и файлы других команд.
+    """
+    with open(path, newline='', encoding='utf-8-sig') as stream:
+        rows = [row for row in csv.reader(stream) if any(cell.strip() for cell in row)]
+    if rows and rows[0][0] == 'query_id':
+        rows = rows[1:]
+    for row in rows:
+        if len(row) != topk + 1:
+            raise ValueError(f'{path}: в строке {row[0]!r} {len(row)} ячеек, ожидается {topk + 1}')
+    return [(row[0], row[1:]) for row in rows]
+
+
 def input_ids(path):
     rows = read_csv(path)
     ids = [r['image_id'] for r in rows]
@@ -47,14 +65,12 @@ def validate_outputs(data, output, expected_dim=None):
     if len(gallery) < 10:
         raise ValueError('gallery needs at least ten entries')
     qset, gset = set(queries), set(gallery)
-    header = ['query_id'] + [f'gallery_id_{i}' for i in range(1, 11)]
-    ranking = read_csv(output / 'submission.csv', header)
-    if [r['query_id'] for r in ranking] != queries:
+    ranking = read_submission(output / 'submission.csv')
+    if [query_id for query_id, _ in ranking] != queries:
         raise ValueError('submission query coverage/order differs from input CSV')
-    for row in ranking:
-        candidates = [row[h] for h in header[1:]]
+    for query_id, candidates in ranking:
         if len(set(candidates)) != 10 or not set(candidates) <= gset:
-            raise ValueError(f'invalid top10 for {row["query_id"]}')
+            raise ValueError(f'invalid top10 for {query_id}')
     candidates = read_csv(output / 'candidates.csv', ['query_id', 'gallery_id', 'confidence'])
     seen = set()
     for row in candidates:

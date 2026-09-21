@@ -75,23 +75,28 @@ def main():
         err(f"нет {sp}")
     else:
         with open(sp, newline="", encoding="utf-8") as f:
-            rows = list(csv.reader(f))
-        head, body = rows[0], rows[1:]
-        print(f"[check] submission.csv: заголовок {len(head)} столбцов, строк {len(body)}")
-        if head[0] != "query_id":
-            err(f"первый столбец submission.csv = {head[0]!r}, ожидается 'query_id'")
-        if len(head) != a.topk + 1:
-            err(f"столбцов {len(head)}, ожидается 1 + {a.topk}")
+            rows = [r for r in csv.reader(f) if any(c.strip() for c in r)]
+        # Официальный формат — БЕЗ заголовка (organizer/evaluate.py: «Формат
+        # submission.csv (без заголовка)»). Строку заголовка из файлов прежних версий
+        # пропускаем и говорим об этом вслух: сдавать её не надо.
+        if rows and rows[0][0] == "query_id":
+            warn("в submission.csv есть строка заголовка; официальный формат без неё "
+                 "(organizer/evaluate.py разберёт её как лишний запрос и предупредит)")
+            rows = rows[1:]
+        body = rows
+        print(f"[check] submission.csv: строк {len(body)}, ячеек в строке {len(body[0]) if body else 0}")
+        if body and len(body[0]) != a.topk + 1:
+            err(f"ячеек в строке {len(body[0])}, ожидается 1 + {a.topk}")
         if len(body) != len(qids):
             err(f"строк {len(body)}, а запросов {len(qids)} — строка нужна на КАЖДЫЙ запрос")
         seen = []
         for i, r in enumerate(body):
             if len(r) != a.topk + 1:
-                err(f"строка {i + 2}: ячеек {len(r)}, ожидается {a.topk + 1}"); break
+                err(f"строка {i + 1}: ячеек {len(r)}, ожидается {a.topk + 1}"); break
             seen.append(r[0])
             empty = [j for j, x in enumerate(r[1:], 1) if x.strip() == ""]
             if empty:
-                err(f"строка {i + 2} ({r[0]}): пустые ячейки {empty} — нужно ровно {a.topk} id (ответы 10/12/21/22)"); break
+                err(f"строка {i + 1} ({r[0]}): пустые ячейки {empty} — нужно ровно {a.topk} id (ответы 10/12/21/22)"); break
             bad = [x for x in r[1:] if x not in gset]
             if bad:
                 err(f"строка {i + 2} ({r[0]}): id не из галереи: {bad[:3]}"); break

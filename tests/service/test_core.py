@@ -232,8 +232,12 @@ def test_representative_cached_queries_match_received_output_on_full_750_gallery
     assert len(gallery_ids) >= 10 and len(query_ids) >= 1
     embeddings = np.load(EXAMPLE_OUTPUT / "embeddings.npy", allow_pickle=False)
     assert embeddings.shape == (len(query_ids) + len(gallery_ids), 1536)
-    rankings = {row["query_id"]: [row[f"gallery_id_{i}"] for i in range(1, 11)]
-                for row in _csv(EXAMPLE_OUTPUT / "submission.csv")}
+    # submission.csv официального формата идёт без заголовка (organizer/evaluate.py).
+    with (EXAMPLE_OUTPUT / "submission.csv").open(encoding="utf-8-sig", newline="") as stream:
+        rows = [r for r in csv.reader(stream) if any(c.strip() for c in r)]
+    if rows and rows[0][0] == "query_id":
+        rows = rows[1:]
+    rankings = {row[0]: row[1:] for row in rows}
     candidates = {row["query_id"]: row for row in _csv(EXAMPLE_OUTPUT / "candidates.csv")}
     # Cover both refusal outcomes and separated positions in the original CSV.
     selected = {0, len(query_ids) // 3, len(query_ids) // 2, len(query_ids) - 1}

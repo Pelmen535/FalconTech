@@ -94,5 +94,9 @@ def test_end_to_end_toy_hack(tmp_path):
     emb = np.load(tmp_path / "sub" / "embeddings.npy")
     n_test = sum(1 for _ in open(d / "test.csv")) - 1
     assert emb.shape[0] == n_test and emb.dtype == np.float32
-    rows = list(csv.reader(open(tmp_path / "sub" / "submission.csv")))
-    assert len(rows) == n_test + 1 and len(rows[1]) == 11
+    # Официальный формат submission.csv — БЕЗ строки заголовка: так написано в шапке
+    # organizer/evaluate.py и так устроен organizer/example_submission.zip. Строка на
+    # каждый запрос, в строке query_id плюс ровно десять идентификаторов галереи.
+    rows = list(csv.reader(open(tmp_path / "sub" / "submission.csv", encoding="utf-8")))
+    assert rows[0][0] != "query_id", "в submission.csv не должно быть строки заголовка"
+    assert len(rows) == n_test and all(len(r) == 11 for r in rows)

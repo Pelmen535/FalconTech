@@ -1,7 +1,7 @@
 """Артефакты сдачи (ТЗ §8):
 
   embeddings.npy   float32 [N_test, D] строго в порядке test.csv
-  submission.csv   query_id, gallery_id_1 ... gallery_id_10 (топ-10 по убыванию близости)
+  submission.csv   query_id, gallery_id_1 ... gallery_id_10 без заголовка (топ-10 по убыванию)
   candidates.csv   query_id, gallery_id, confidence — только принятые; ОТКАЗ = полное отсутствие
                    строк для этого query_id (ответ организаторов Q-18/Q-20/Q-29, 16.09)
 Формат по README организаторов: embeddings.npy — сначала все query (по порядку файла), затем gallery.
@@ -63,10 +63,12 @@ def write_submission(q_keys, g_keys, sims: np.ndarray, path: str | Path, topk: i
             # список повторами нельзя: это был бы ответ, которого модель не давала.
             raise ValueError(f'Not enough eligible distinct candidates for {query_key}')
         rows.append([query_key] + selected)
+    # БЕЗ строки заголовка: так задан официальный формат (organizer/evaluate.py, шапка:
+    # «Формат submission.csv (без заголовка)») и так устроен organizer/example_submission.zip.
+    # Заголовок эталонный scorer не отвергает, но разбирает как ещё один запрос с десятью
+    # неизвестными идентификаторами и печатает предупреждение — сдавать такое незачем.
     with open(path, "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f)
-        w.writerow(["query_id"] + [f"gallery_id_{i + 1}" for i in range(topk)])
-        w.writerows(rows)
+        csv.writer(f).writerows(rows)
     print(f"[submit] submission.csv ({len(q_keys)} запросов, top-{topk}) → {path}")
 
 

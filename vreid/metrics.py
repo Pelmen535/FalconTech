@@ -22,39 +22,69 @@ def evaluate(sims: np.ndarray, q_vids: np.ndarray, q_cams: np.ndarray,
              cross_camera_only: bool = False, cutoff: int | None = None) -> dict:
     """sims: [Q, G] сходства (больше = ближе). Возвращает dict с mAP, rank-k, n_valid.
 
-    cutoff=K — метрика организаторов mAP@K (ответы Q-10/Q-13 от 16.09): кадры той же машины
-    с камеры запроса удаляются ДО обрезания до K, AP считается по первым K и нормируется на
-    min(n_совпадений, K), усреднение макро по запросам; запросы без валидных совпадений
-    после фильтрации из расчёта исключаются (а не получают AP=0)."""
+    cutoff=K — метрика организаторов mAP@K. Считается ровно так, как это делает эталонный
+    organizer/evaluate.py, а это НЕ то же самое, что «убрать junk и взять первые K»:
+
+      1. берутся первые K кандидатов ИСХОДНОГО ранжирования — именно они уходят в
+         submission.csv, и другого списка у жюри нет;
+      2. из этих K удаляются junk-пары (тот же vehicle_id И та же camera_id);
+      3. AP считается по тому, что осталось (может быть меньше K строк), и нормируется на
+         min(n_валидных_позитивов_во_всей_галерее, K).
+
+    Разница с прежней реализацией не косметическая: раньше junk удалялся из ПОЛНОГО
+    ранжирования, и на освободившееся место поднимался кандидат с 11-й позиции. У жюри он
+    не поднимется — место просто пропадает. На нашей валидации это 74.33 против 74.21,
+    то есть мы завышали на 0.12 п.п. Сверено построчно: scripts/score_validation_with_official.py
+    даёт побайтово те же 0.742072, что и эталонный скрипт.
+
+    Запросы без валидных совпадений после junk-фильтра из расчёта исключаются (а не
+    получают AP=0) — это ответы 11/13/22 и так же сделано в эталоне."""
     Q, G = sims.shape
     max_rank = max(ranks)
     order = np.argsort(-sims, axis=1, kind='stable')
     cmc_hits = np.zeros(max_rank, dtype=np.float64)
     aps = []
     n_valid = 0
-    for i in range(Q):
-        idx = order[i]
+    def junk_mask(candidates, i):
+        """Пары, которые жюри вычёркивает из ранжирования (ответ 11)."""
         if cross_camera_only:
-            keep = g_cams[idx] != q_cams[i]
-        else:
-            keep = ~((g_vids[idx] == q_vids[i]) & (g_cams[idx] == q_cams[i]))
-        idx = idx[keep]
-        matches = (g_vids[idx] == q_vids[i]).astype(np.int32)
-        n_match = matches.sum()
+            return g_cams[candidates] == q_cams[i]
+        return (g_vids[candidates] == q_vids[i]) & (g_cams[candidates] == q_cams[i])
+
+    for i in range(Q):
+        # Число валидных позитивов считается по ВСЕЙ галерее: именно им нормируется AP
+        # и по нему решается, участвует ли запрос в метрике.
+        full = order[i]
+        kept_full = full[~junk_mask(full, i)]
+        n_match = int((g_vids[kept_full] == q_vids[i]).sum())
         if n_match == 0:
             continue
         n_valid += 1
-        first = np.argmax(matches)
-        if first < max_rank:
-            cmc_hits[first:] += 1
-        cum = np.cumsum(matches)
-        hit_pos = np.nonzero(matches)[0]
-        precision = cum[hit_pos] / (hit_pos + 1)
+
         if cutoff is None:
-            aps.append(precision.mean())
+            matches = (g_vids[kept_full] == q_vids[i]).astype(np.int32)
+            first = int(np.argmax(matches))
+            if first < max_rank:
+                cmc_hits[first:] += 1
+            cum = np.cumsum(matches)
+            hit_pos = np.nonzero(matches)[0]
+            aps.append(float((cum[hit_pos] / (hit_pos + 1)).mean()))
+            continue
+
+        # Режим организаторов: сначала обрезаем до K (это и есть submission.csv),
+        # потом вычёркиваем junk. Освободившееся место НЕ занимает кандидат с K+1.
+        submitted = full[:cutoff]
+        clean = submitted[~junk_mask(submitted, i)]
+        relevant = (g_vids[clean] == q_vids[i]).astype(np.int32)
+        if relevant.any():
+            first = int(np.argmax(relevant))
+            if first < max_rank:
+                cmc_hits[first:] += 1
+            cum = np.cumsum(relevant)
+            precision = cum / (np.arange(len(relevant)) + 1)
+            aps.append(float((precision * relevant).sum() / min(n_match, cutoff)))
         else:
-            inside = hit_pos < cutoff
-            aps.append(float(precision[inside].sum() / min(int(n_match), cutoff)))
+            aps.append(0.0)
     if n_valid == 0:
         raise RuntimeError("ни один запрос не имеет валидного совпадения в галерее — проверь vid/cam")
     out = {f"rank{r}": float(cmc_hits[r - 1] / n_valid) for r in ranks}

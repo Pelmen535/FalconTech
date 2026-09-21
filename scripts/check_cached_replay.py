@@ -23,6 +23,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from vreid.artifacts import read_submission                                # noqa: E402
 from vreid.predict import load_recipe, rerank_chunk_size, sha256          # noqa: E402
 from vreid.rerank import frame_block_mask, k_reciprocal_chunked           # noqa: E402
 from vreid.submit import write_candidates, write_submission               # noqa: E402
@@ -72,9 +73,9 @@ def main() -> int:
     write_candidates(query_keys, gallery_keys, rank, conf, recipe['threshold'],
                      out / 'candidates.csv', exclude_self=False, conf_sims=raw)
 
-    old = read_csv(source / 'submission.csv')
-    new = read_csv(out / 'submission.csv')
-    if [row['query_id'] for row in old] != query_keys:
+    old = read_submission(source / 'submission.csv')
+    new = read_submission(out / 'submission.csv')
+    if [query_id for query_id, _ in old] != query_keys:
         raise ValueError('Порядок запросов в сдаче не совпадает с порядком входного CSV')
 
     old_candidates = {row['query_id']: row for row in read_csv(source / 'candidates.csv')}
@@ -84,9 +85,8 @@ def main() -> int:
         n_query=len(query_keys), n_gallery=len(gallery_keys),
         embeddings_sha256=sha256(source / 'embeddings.npy'),
         recipe_sha256=sha256(Path(args.release) / 'recipe.json'),
-        top1_changes=sum(a['gallery_id_1'] != b['gallery_id_1'] for a, b in zip(old, new)),
-        changed_rank_cells=sum(a[f'gallery_id_{i}'] != b[f'gallery_id_{i}']
-                               for a, b in zip(old, new) for i in range(1, 11)),
+        top1_changes=sum(a[1][0] != b[1][0] for a, b in zip(old, new)),
+        changed_rank_cells=sum(x != y for a, b in zip(old, new) for x, y in zip(a[1], b[1])),
         acceptance_changes=len(set(old_candidates) ^ set(new_candidates)),
         old_accepted=len(old_candidates), new_accepted=len(new_candidates),
         candidate_id_changes=sum(old_candidates[key]['gallery_id'] != new_candidates[key]['gallery_id']
