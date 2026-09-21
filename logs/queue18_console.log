@@ -1,0 +1,743 @@
+.................................................................s...... [ 39%]
+........................................................................ [ 79%]
+......................................                                   [100%]
+============================== warnings summary ===============================
+tests/service/test_api.py: 448 warnings
+tests/service/test_extensions.py: 128 warnings
+  C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py:233: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    is_coroutine = asyncio.iscoroutinefunction(dependant.call)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+181 passed, 1 skipped, 576 warnings in 26.92s
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile:
+#1 transferring dockerfile: 4.90kB 0.6s done
+#1 DONE 1.0s
+
+#2 [internal] load metadata for docker.io/pytorch/pytorch@sha256:fc47f8018254e6df30f48c48f2db1c758d44de21a8c553de1a1c451a65baa70a
+#2 DONE 3.8s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 637B 0.1s
+#3 transferring context: 641B 0.1s done
+#3 DONE 0.1s
+
+#4 [1/8] FROM docker.io/pytorch/pytorch@sha256:fc47f8018254e6df30f48c48f2db1c758d44de21a8c553de1a1c451a65baa70a
+#4 resolve docker.io/pytorch/pytorch@sha256:fc47f8018254e6df30f48c48f2db1c758d44de21a8c553de1a1c451a65baa70a 0.0s done
+#4 DONE 0.1s
+
+#5 [internal] load build context
+#5 transferring context: 237.26kB 0.5s done
+#5 DONE 0.6s
+
+#6 [3/8] COPY requirements-infer.txt requirements-infer-dev.txt ./
+#6 CACHED
+
+#7 [2/8] WORKDIR /app
+#7 CACHED
+
+#8 [4/8] RUN python -m pip install --no-cache-dir --no-deps  -r requirements-infer.txt  && python -m pip check  && python -m pip freeze --all > /app/installed-packages.txt
+#8 CACHED
+
+#9 [5/8] COPY vreid/ /app/vreid/
+#9 DONE 1.0s
+
+#10 [6/8] COPY scripts/ /app/scripts/
+#10 DONE 0.7s
+
+#11 [7/8] COPY release/ /app/release/
+#11 DONE 17.8s
+
+#12 [8/8] RUN python -c "import torch, torchvision, timm; from vreid.artifacts import weight_inventory; from vreid.predict import load_recipe; print('[build] torch', torch.__version__, '| torchvision', torchvision.__version__, '| timm', timm.__version__); print('[build] weights:', weight_inventory('/app/release')); print('[build] recipe ok:', load_recipe('/app/release')['threshold'])"
+#12 19.50 [build] torch 2.3.1 | torchvision 0.18.1 | timm 1.0.20
+#12 19.68 [build] weights: {'files': [{'path': 'model.pt', 'bytes': 171995879, 'sha256': '608042f64c259b97590e57b81f6c03e7143fba43d9a9c320b4a2a346e9f5fd1c'}], 'total_bytes': 171995879, 'limit_bytes': 2000000000}
+#12 19.68 [build] recipe ok: 0.55
+#12 DONE 20.8s
+
+#13 exporting to image
+#13 exporting layers
+#13 exporting layers 26.8s done
+#13 exporting manifest sha256:3e7c70e7878c6addab1d47d1a61a225fe9828df29bdbc5c14c38a39653ee9b42 0.0s done
+#13 exporting config sha256:92e2ad652a9c21b0654937193f7ecc4c2091d06a06faf437de0f25d9b54f763e 0.0s done
+#13 exporting attestation manifest sha256:0e6874e7ce4ef6a60e07974fe5d4daee858f1c94ec505cc58609e47cf540bb19
+#13 exporting attestation manifest sha256:0e6874e7ce4ef6a60e07974fe5d4daee858f1c94ec505cc58609e47cf540bb19 0.1s done
+#13 exporting manifest list sha256:2ffb14cb114014c53db551857f873150ed384a098a30e3b1936dad8f3f14c193 0.0s done
+#13 naming to docker.io/library/vreid-release:latest done
+#13 unpacking to docker.io/library/vreid-release:latest
+#13 unpacking to docker.io/library/vreid-release:latest 9.1s done
+#13 DONE 36.1s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/qbul3odz2bu3qw9hpkuc8h0yx
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 4.90kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 641B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/8] FROM docker.io/pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime@sha256:eee11b3b3872a8c838e35ef48f08b2d5def2080902c7f666831310ca1a0ef2be
+#5 resolve docker.io/pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime@sha256:eee11b3b3872a8c838e35ef48f08b2d5def2080902c7f666831310ca1a0ef2be 0.0s done
+#5 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 2.81kB done
+#4 DONE 0.0s
+
+#6 [2/8] WORKDIR /app
+#6 CACHED
+
+#7 [3/8] COPY requirements-infer.txt requirements-infer-dev.txt ./
+#7 CACHED
+
+#8 [4/8] RUN python -m pip install --no-cache-dir --no-deps --break-system-packages -r requirements-infer-dev.txt  && python -m pip check  && python -m pip freeze --all > /app/installed-packages.txt
+#8 CACHED
+
+#9 [5/8] COPY vreid/ /app/vreid/
+#9 DONE 0.4s
+
+#10 [6/8] COPY scripts/ /app/scripts/
+#10 DONE 0.1s
+
+#11 [7/8] COPY release/ /app/release/
+#11 DONE 0.5s
+
+#12 [8/8] RUN python -c "import torch, torchvision, timm; from vreid.artifacts import weight_inventory; from vreid.predict import load_recipe; print('[build] torch', torch.__version__, '| torchvision', torchvision.__version__, '| timm', timm.__version__); print('[build] weights:', weight_inventory('/app/release')); print('[build] recipe ok:', load_recipe('/app/release')['threshold'])"
+#12 46.73 [build] torch 2.11.0+cu128 | torchvision 0.26.0+cu128 | timm 1.0.20
+#12 46.84 [build] weights: {'files': [{'path': 'model.pt', 'bytes': 171995879, 'sha256': '608042f64c259b97590e57b81f6c03e7143fba43d9a9c320b4a2a346e9f5fd1c'}], 'total_bytes': 171995879, 'limit_bytes': 2000000000}
+#12 46.86 [build] recipe ok: 0.55
+#12 DONE 49.5s
+
+#13 exporting to image
+#13 exporting layers
+#13 exporting layers 11.4s done
+#13 exporting manifest sha256:8f84852b6466afe16a93bcaa769ebe0f1f31989598d10ecac3a182b0e804834f 0.0s done
+#13 exporting config sha256:172b955c78fb003dce36aad78cba0b153a066f0eae7dc3c80b0b7e79b796e812 0.0s done
+#13 exporting attestation manifest sha256:175d20ab11e0fee7d20792eeb28525635366e1fadf19a0e0d1ff6209874e5331 0.1s done
+#13 exporting manifest list sha256:3c66a390df79481799a3ae55a43094f6d135d62b9145650579ad9ed17d308521
+#13 exporting manifest list sha256:3c66a390df79481799a3ae55a43094f6d135d62b9145650579ad9ed17d308521 0.0s done
+#13 naming to docker.io/library/vreid-dev:latest done
+#13 unpacking to docker.io/library/vreid-dev:latest
+#13 unpacking to docker.io/library/vreid-dev:latest 4.2s done
+#13 DONE 15.8s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/cb3pr0zi3lp0yjyjkabkcd6gx
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.service
+#1 transferring dockerfile: 3.75kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 641B done
+#3 DONE 0.0s
+
+#4 [ 1/11] FROM docker.io/pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime@sha256:eee11b3b3872a8c838e35ef48f08b2d5def2080902c7f666831310ca1a0ef2be
+#4 resolve docker.io/pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime@sha256:eee11b3b3872a8c838e35ef48f08b2d5def2080902c7f666831310ca1a0ef2be 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 15.48MB 0.8s done
+#5 DONE 0.8s
+
+#6 [ 2/11] WORKDIR /app
+#6 CACHED
+
+#7 [ 3/11] COPY requirements-infer.txt requirements-infer-dev.txt requirements-service.txt ./
+#7 CACHED
+
+#8 [ 4/11] RUN python -m pip install --no-cache-dir --no-deps --break-system-packages -r requirements-infer-dev.txt  && python -m pip install --no-cache-dir --no-deps --break-system-packages -r requirements-service.txt  && python -m pip check  && python -m pip freeze --all > /app/installed-packages.txt
+#8 CACHED
+
+#9 [ 5/11] COPY vreid/ /app/vreid/
+#9 DONE 0.1s
+
+#10 [ 6/11] COPY scripts/ /app/scripts/
+#10 DONE 0.1s
+
+#11 [ 7/11] COPY service/ /app/service/
+#11 DONE 0.1s
+
+#12 [ 8/11] COPY release/ /app/release/
+#12 DONE 0.5s
+
+#13 [ 9/11] COPY demo/ /app/demo/
+#13 DONE 0.1s
+
+#14 [10/11] COPY results/ann_scalability.json /app/results/ann_scalability.json
+#14 DONE 0.1s
+
+#15 [11/11] RUN python -c "import fastapi, uvicorn, faiss, psycopg, torch, timm; from vreid.predict import load_recipe; print('[build] fastapi', fastapi.__version__, '| faiss', faiss.__version__, '| torch', torch.__version__); print('[build] recipe ok:', load_recipe('/app/release')['threshold'])"
+#15 6.081 [build] fastapi 0.115.12 | faiss 1.9.0 | torch 2.11.0+cu128
+#15 6.081 [build] recipe ok: 0.55
+#15 DONE 7.1s
+
+#16 exporting to image
+#16 exporting layers
+#16 exporting layers 11.6s done
+#16 exporting manifest sha256:9897125228bb6eb0140091738e2cf935e590e9796ae94969eaef9fde5c514b65 0.0s done
+#16 exporting config sha256:c67943c85322e23219ceb0c4505da0c2bb5f9cf8f5b6040069d401f7fbc5808d 0.0s done
+#16 exporting attestation manifest sha256:3fb1241f3931bf2406f6aebbb7f1464d302a663de5b97e6835d70e6e154af2fb 0.0s done
+#16 exporting manifest list sha256:76d04b92f9da73e9028de8395b1f7b661851d8bf6e5eadac3c184d43a15506ee
+#16 exporting manifest list sha256:76d04b92f9da73e9028de8395b1f7b661851d8bf6e5eadac3c184d43a15506ee 0.0s done
+#16 naming to docker.io/library/vreid-api:1.1 done
+#16 unpacking to docker.io/library/vreid-api:1.1
+#16 unpacking to docker.io/library/vreid-api:1.1 5.0s done
+#16 DONE 16.9s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/wj7f47vs7dx2kfwapfy0bxkie
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 706B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/nginx:1.27.4-alpine
+#2 DONE 0.2s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 641B done
+#3 DONE 0.0s
+
+#4 [1/4] FROM docker.io/library/nginx:1.27.4-alpine@sha256:4ff102c5d78d254a6f0da062b3cf39eaf07f01eec0927fd21e219d0af8bc0591
+#4 resolve docker.io/library/nginx:1.27.4-alpine@sha256:4ff102c5d78d254a6f0da062b3cf39eaf07f01eec0927fd21e219d0af8bc0591 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 1.91kB 0.1s done
+#5 DONE 0.1s
+
+#6 [2/4] COPY service/static/ /usr/share/nginx/html/static/
+#6 CACHED
+
+#7 [3/4] COPY service/static/index.html /usr/share/nginx/html/index.html
+#7 CACHED
+
+#8 [4/4] COPY web/nginx.conf /etc/nginx/conf.d/default.conf
+#8 CACHED
+
+#9 exporting to image
+#9 exporting layers 0.0s done
+#9 exporting manifest sha256:bc1ac01d31e0fc10dc5be54cc3b876aafa3b14d23a6527ddb27a52ef502940d8 done
+#9 exporting config sha256:2a6bffb6f3986feaadbb2efc433a11b11749868256b5cc5662d2d22dc38a6361 done
+#9 exporting attestation manifest sha256:4173fe341ab7e64eaa6836b0e95262ab7d0304f0b028141e69a420b816d9bdd0 0.0s done
+#9 exporting manifest list sha256:ae5f8f4be73e5fcfd4668d34054c7e1b3e70c297e57749876f1a1ae8b42a3a73
+#9 exporting manifest list sha256:ae5f8f4be73e5fcfd4668d34054c7e1b3e70c297e57749876f1a1ae8b42a3a73 0.0s done
+#9 naming to docker.io/library/vreid-web:1.1 done
+#9 unpacking to docker.io/library/vreid-web:1.1 0.0s done
+#9 DONE 0.2s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/ws1u7cvez5j1j4ydh42x7ytav
+[predict] рецепт: порог=0.5500 по «top1», TTA flip=False, быстрый декод=True, DBA k=0, k-reciprocal=True (3/2, lambda=0.2)
+[predict] запросов 1110, галерея 750
+[models] ft:release: vit_base_patch14_dinov2.lvd142m, D=1536, input=336, device=cuda
+
+extract[query]:   0%|          | 0/35 [00:00<?, ?batch/s]
+extract[query]:   3%|▎         | 1/35 [00:25<14:37, 25.81s/batch]
+extract[query]:   6%|▌         | 2/35 [00:26<05:54, 10.74s/batch]
+extract[query]:   9%|▊         | 3/35 [00:26<03:09,  5.92s/batch]
+extract[query]:  11%|█▏        | 4/35 [00:26<01:53,  3.66s/batch]
+extract[query]:  14%|█▍        | 5/35 [00:26<01:12,  2.40s/batch]
+extract[query]:  17%|█▋        | 6/35 [00:26<00:47,  1.65s/batch]
+extract[query]:  20%|██        | 7/35 [00:26<00:32,  1.17s/batch]
+extract[query]:  23%|██▎       | 8/35 [00:30<00:55,  2.05s/batch]
+extract[query]:  26%|██▌       | 9/35 [00:31<00:38,  1.47s/batch]
+extract[query]:  29%|██▊       | 10/35 [00:31<00:26,  1.07s/batch]
+extract[query]:  31%|███▏      | 11/35 [00:31<00:19,  1.25batch/s]
+extract[query]:  34%|███▍      | 12/35 [00:31<00:14,  1.63batch/s]
+extract[query]:  37%|███▋      | 13/35 [00:31<00:10,  2.06batch/s]
+extract[query]:  40%|████      | 14/35 [00:31<00:08,  2.55batch/s]
+extract[query]:  43%|████▎     | 15/35 [00:32<00:06,  3.03batch/s]
+extract[query]:  46%|████▌     | 16/35 [00:33<00:11,  1.65batch/s]
+extract[query]:  49%|████▊     | 17/35 [00:33<00:08,  2.08batch/s]
+extract[query]:  51%|█████▏    | 18/35 [00:33<00:06,  2.56batch/s]
+extract[query]:  54%|█████▍    | 19/35 [00:33<00:05,  3.05batch/s]
+extract[query]:  57%|█████▋    | 20/35 [00:34<00:04,  3.52batch/s]
+extract[query]:  60%|██████    | 21/35 [00:34<00:03,  3.93batch/s]
+extract[query]:  63%|██████▎   | 22/35 [00:34<00:03,  4.25batch/s]
+extract[query]:  66%|██████▌   | 23/35 [00:34<00:02,  4.54batch/s]
+extract[query]:  69%|██████▊   | 24/35 [00:36<00:07,  1.42batch/s]
+extract[query]:  71%|███████▏  | 25/35 [00:36<00:05,  1.82batch/s]
+extract[query]:  74%|███████▍  | 26/35 [00:36<00:03,  2.26batch/s]
+extract[query]:  77%|███████▋  | 27/35 [00:37<00:02,  2.74batch/s]
+extract[query]:  80%|████████  | 28/35 [00:37<00:02,  3.22batch/s]
+extract[query]:  83%|████████▎ | 29/35 [00:37<00:01,  3.67batch/s]
+extract[query]:  86%|████████▌ | 30/35 [00:37<00:01,  4.08batch/s]
+extract[query]:  89%|████████▊ | 31/35 [00:37<00:00,  4.42batch/s]
+extract[query]:  91%|█████████▏| 32/35 [00:37<00:00,  4.70batch/s]
+extract[query]:  94%|█████████▍| 33/35 [00:38<00:00,  4.96batch/s]
+extract[query]:  97%|█████████▋| 34/35 [00:38<00:00,  5.14batch/s]
+extract[query]: 100%|██████████| 35/35 [00:38<00:00,  5.70batch/s]
+extract[query]: 100%|██████████| 35/35 [00:40<00:00,  1.16s/batch]
+[extract] query: 36.5 мс/кроп всего = 6.3 сеть + 30.2 чтение кадров с диска
+
+extract[gallery]:   0%|          | 0/24 [00:00<?, ?batch/s]
+extract[gallery]:   4%|▍         | 1/24 [00:30<11:38, 30.38s/batch]
+extract[gallery]:   8%|▊         | 2/24 [00:30<04:37, 12.62s/batch]
+extract[gallery]:  12%|█▎        | 3/24 [00:30<02:25,  6.94s/batch]
+extract[gallery]:  17%|█▋        | 4/24 [00:30<01:25,  4.28s/batch]
+extract[gallery]:  21%|██        | 5/24 [00:31<00:53,  2.80s/batch]
+extract[gallery]:  25%|██▌       | 6/24 [00:31<00:34,  1.91s/batch]
+extract[gallery]:  29%|██▉       | 7/24 [00:31<00:22,  1.35s/batch]
+extract[gallery]:  33%|███▎      | 8/24 [00:34<00:28,  1.78s/batch]
+extract[gallery]:  38%|███▊      | 9/24 [00:34<00:19,  1.28s/batch]
+extract[gallery]:  42%|████▏     | 10/24 [00:34<00:13,  1.06batch/s]
+extract[gallery]:  46%|████▌     | 11/24 [00:34<00:09,  1.41batch/s]
+extract[gallery]:  50%|█████     | 12/24 [00:34<00:06,  1.81batch/s]
+extract[gallery]:  54%|█████▍    | 13/24 [00:35<00:04,  2.27batch/s]
+extract[gallery]:  58%|█████▊    | 14/24 [00:35<00:03,  2.75batch/s]
+extract[gallery]:  62%|██████▎   | 15/24 [00:35<00:02,  3.23batch/s]
+extract[gallery]:  67%|██████▋   | 16/24 [00:36<00:04,  1.79batch/s]
+extract[gallery]:  71%|███████   | 17/24 [00:36<00:03,  2.25batch/s]
+extract[gallery]:  75%|███████▌  | 18/24 [00:36<00:02,  2.73batch/s]
+extract[gallery]:  79%|███████▉  | 19/24 [00:37<00:01,  3.23batch/s]
+extract[gallery]:  83%|████████▎ | 20/24 [00:37<00:01,  3.70batch/s]
+extract[gallery]:  88%|████████▊ | 21/24 [00:37<00:00,  4.12batch/s]
+extract[gallery]:  92%|█████████▏| 22/24 [00:37<00:00,  4.48batch/s]
+extract[gallery]:  96%|█████████▌| 23/24 [00:37<00:00,  4.75batch/s]
+extract[gallery]: 100%|██████████| 24/24 [00:39<00:00,  1.66s/batch]
+[extract] gallery: 53.2 мс/кроп всего = 5.7 сеть + 47.4 чтение кадров с диска
+[predict] эмбеддинги: 1860 кропов за 80.4 с = 23.1 кроп/с
+[submit] embeddings.npy (1860, 1536) → submission\embeddings.npy
+[submit] submission.csv (1110 запросов, top-10) → submission\submission.csv
+[submit] candidates.csv: отказов 69/1110 → submission\candidates.csv
+[predict] готово за 90.1 с → submission
+[W921 17:18:24.000000000 CudaIPCTypes.cpp:16] Producer process has been terminated before all shared CUDA tensors released. See Note [Sharing CUDA tensors]
+[check] test_query 1110 строк, test_gallery 750
+[check] embeddings.npy (1860, 1536) float32
+[check] норма строк: мин 1.0000, макс 1.0000
+[check] submission.csv: строк 1110, ячеек в строке 11
+[check] candidates.csv: строк 1041, отвечено 1041, отказов 69 (6.2%), запросов с >1 строкой: 0
+[check] эталонный organizer/evaluate.py прочитал: 1110 запросов в submission.csv, 1041 в candidates.csv
+
+[check] все три файла по форме в порядке
+запросов 1110, галерея 750, k-reciprocal=True (3/2)
+второй прогон: 666 запросов из 1110 в другом порядке
+топ-10 совпал у 666/666 запросов
+
+ВЫВОД: запросы независимы — удаление и перестановка остальных не меняют выдачу
+1. дубликаты в галерее: топ-10 СОВПАЛ, макс. расхождение расстояний 0.000e+00
+   один:          [0, 1, 2, 3, 10, 17, 6, 19, 14, 9]
+   +15 чужих:     [0, 1, 2, 3, 10, 17, 6, 19, 14, 9]
+2. перестановка чужих запросов: топ-10 СОВПАЛ, макс. расхождение 0.000e+00
+3. пачки 1/3/7/16 против одного куска: макс. расхождение 0.000e+00
+
+ВЫВОД: запросы независимы и на точных ничьих, и при любом размере пачки
+[submit] submission.csv (1110 запросов, top-10) → results\cached_replay.json\submission.csv
+[submit] candidates.csv: отказов 69/1110 → results\cached_replay.json\candidates.csv
+{"n_query": 1110, "n_gallery": 750, "embeddings_sha256": "ffcea632e4f4050140fcde81cd48a9c38a759c04f54b20295100024377eb12fe", "recipe_sha256": "47c3993fd1289fa00e4884652cb4bee281f408281cd77b50826f5c0495c66abc", "top1_changes": 0, "changed_rank_cells": 0, "acceptance_changes": 0, "old_accepted": 1041, "new_accepted": 1041, "candidate_id_changes": 0, "scope": "Cached ranking regression only; no new extraction, accuracy or GPU performance measurement."}
+[predict] рецепт: порог=0.5500 по «top1», TTA flip=False, быстрый декод=True, DBA k=0, k-reciprocal=True (3/2, lambda=0.2)
+[predict] запросов 1110, галерея 750
+[models] ft:release: vit_base_patch14_dinov2.lvd142m, D=1536, input=336, device=cuda
+
+extract[query]:   0%|          | 0/35 [00:00<?, ?batch/s]
+extract[query]:   3%|▎         | 1/35 [00:03<02:05,  3.71s/batch]
+extract[query]:   6%|▌         | 2/35 [00:03<00:53,  1.62s/batch]
+extract[query]:   9%|▊         | 3/35 [00:04<00:30,  1.05batch/s]
+extract[query]:  11%|█▏        | 4/35 [00:04<00:19,  1.56batch/s]
+extract[query]:  14%|█▍        | 5/35 [00:04<00:14,  2.12batch/s]
+extract[query]:  17%|█▋        | 6/35 [00:04<00:10,  2.72batch/s]
+extract[query]:  20%|██        | 7/35 [00:04<00:08,  3.32batch/s]
+extract[query]:  23%|██▎       | 8/35 [00:04<00:07,  3.84batch/s]
+extract[query]:  26%|██▌       | 9/35 [00:05<00:05,  4.37batch/s]
+extract[query]:  29%|██▊       | 10/35 [00:05<00:05,  4.75batch/s]
+extract[query]:  31%|███▏      | 11/35 [00:05<00:04,  5.12batch/s]
+extract[query]:  34%|███▍      | 12/35 [00:05<00:04,  5.33batch/s]
+extract[query]:  37%|███▋      | 13/35 [00:05<00:03,  5.63batch/s]
+extract[query]:  40%|████      | 14/35 [00:05<00:03,  5.73batch/s]
+extract[query]:  43%|████▎     | 15/35 [00:06<00:03,  5.38batch/s]
+extract[query]:  46%|████▌     | 16/35 [00:06<00:04,  4.67batch/s]
+extract[query]:  49%|████▊     | 17/35 [00:06<00:03,  5.01batch/s]
+extract[query]:  51%|█████▏    | 18/35 [00:06<00:03,  4.52batch/s]
+extract[query]:  54%|█████▍    | 19/35 [00:07<00:04,  3.71batch/s]
+extract[query]:  57%|█████▋    | 20/35 [00:07<00:03,  3.93batch/s]
+extract[query]:  60%|██████    | 21/35 [00:07<00:03,  4.35batch/s]
+extract[query]:  63%|██████▎   | 22/35 [00:07<00:03,  4.29batch/s]
+extract[query]:  66%|██████▌   | 23/35 [00:08<00:03,  3.52batch/s]
+extract[query]:  69%|██████▊   | 24/35 [00:08<00:03,  3.35batch/s]
+extract[query]:  71%|███████▏  | 25/35 [00:08<00:02,  3.80batch/s]
+extract[query]:  74%|███████▍  | 26/35 [00:08<00:02,  4.21batch/s]
+extract[query]:  77%|███████▋  | 27/35 [00:09<00:02,  3.74batch/s]
+extract[query]:  80%|████████  | 28/35 [00:09<00:02,  3.41batch/s]
+extract[query]:  83%|████████▎ | 29/35 [00:09<00:01,  3.85batch/s]
+extract[query]:  86%|████████▌ | 30/35 [00:09<00:01,  4.24batch/s]
+extract[query]:  89%|████████▊ | 31/35 [00:10<00:00,  4.07batch/s]
+extract[query]:  91%|█████████▏| 32/35 [00:10<00:00,  3.67batch/s]
+extract[query]:  94%|█████████▍| 33/35 [00:10<00:00,  4.14batch/s]
+extract[query]:  97%|█████████▋| 34/35 [00:10<00:00,  4.20batch/s]
+extract[query]: 100%|██████████| 35/35 [00:11<00:00,  4.94batch/s]
+extract[query]: 100%|██████████| 35/35 [00:11<00:00,  3.15batch/s]
+[extract] query: 10.0 мс/кроп всего = 6.8 сеть + 3.2 чтение кадров с диска
+
+extract[gallery]:   0%|          | 0/24 [00:00<?, ?batch/s]
+extract[gallery]:   4%|▍         | 1/24 [00:01<00:34,  1.51s/batch]
+extract[gallery]:   8%|▊         | 2/24 [00:01<00:16,  1.37batch/s]
+extract[gallery]:  12%|█▎        | 3/24 [00:01<00:09,  2.10batch/s]
+extract[gallery]:  17%|█▋        | 4/24 [00:02<00:07,  2.78batch/s]
+extract[gallery]:  21%|██        | 5/24 [00:02<00:07,  2.45batch/s]
+extract[gallery]:  25%|██▌       | 6/24 [00:02<00:05,  3.03batch/s]
+extract[gallery]:  29%|██▉       | 7/24 [00:02<00:04,  3.56batch/s]
+extract[gallery]:  33%|███▎      | 8/24 [00:03<00:03,  4.06batch/s]
+extract[gallery]:  38%|███▊      | 9/24 [00:03<00:04,  3.07batch/s]
+extract[gallery]:  42%|████▏     | 10/24 [00:03<00:03,  3.59batch/s]
+extract[gallery]:  46%|████▌     | 11/24 [00:03<00:03,  4.02batch/s]
+extract[gallery]:  50%|█████     | 12/24 [00:04<00:02,  4.41batch/s]
+extract[gallery]:  54%|█████▍    | 13/24 [00:04<00:03,  3.58batch/s]
+extract[gallery]:  58%|█████▊    | 14/24 [00:04<00:02,  4.04batch/s]
+extract[gallery]:  62%|██████▎   | 15/24 [00:04<00:02,  4.40batch/s]
+extract[gallery]:  67%|██████▋   | 16/24 [00:05<00:01,  4.69batch/s]
+extract[gallery]:  71%|███████   | 17/24 [00:05<00:01,  3.91batch/s]
+extract[gallery]:  75%|███████▌  | 18/24 [00:05<00:01,  4.31batch/s]
+extract[gallery]:  79%|███████▉  | 19/24 [00:05<00:01,  4.67batch/s]
+extract[gallery]:  83%|████████▎ | 20/24 [00:05<00:00,  4.90batch/s]
+extract[gallery]:  88%|████████▊ | 21/24 [00:06<00:00,  3.81batch/s]
+extract[gallery]:  92%|█████████▏| 22/24 [00:06<00:00,  4.28batch/s]
+extract[gallery]:  96%|█████████▌| 23/24 [00:06<00:00,  4.69batch/s]
+extract[gallery]: 100%|██████████| 24/24 [00:06<00:00,  3.54batch/s]
+[extract] gallery: 9.1 мс/кроп всего = 5.5 сеть + 3.6 чтение кадров с диска
+[predict] эмбеддинги: 1860 кропов за 17.9 с = 103.9 кроп/с
+[submit] embeddings.npy (1860, 1536) → /out/embeddings.npy
+[submit] submission.csv (1110 запросов, top-10) → /out/submission.csv
+[submit] candidates.csv: отказов 69/1110 → /out/candidates.csv
+[predict] готово за 31.3 с → /out
+[predict] рецепт: порог=0.5500 по «top1», TTA flip=False, быстрый декод=True, DBA k=0, k-reciprocal=True (3/2, lambda=0.2)
+[predict] запросов 1110, галерея 750
+[models] ft:release: vit_base_patch14_dinov2.lvd142m, D=1536, input=336, device=cuda
+
+extract[query]:   0%|          | 0/35 [00:00<?, ?batch/s]
+extract[query]:   3%|▎         | 1/35 [00:02<01:41,  2.99s/batch]
+extract[query]:   6%|▌         | 2/35 [00:03<00:44,  1.34s/batch]
+extract[query]:   9%|▊         | 3/35 [00:03<00:25,  1.24batch/s]
+extract[query]:  11%|█▏        | 4/35 [00:03<00:17,  1.78batch/s]
+extract[query]:  14%|█▍        | 5/35 [00:03<00:12,  2.35batch/s]
+extract[query]:  17%|█▋        | 6/35 [00:03<00:09,  2.90batch/s]
+extract[query]:  20%|██        | 7/35 [00:04<00:08,  3.43batch/s]
+extract[query]:  23%|██▎       | 8/35 [00:04<00:06,  3.89batch/s]
+extract[query]:  26%|██▌       | 9/35 [00:04<00:06,  4.25batch/s]
+extract[query]:  29%|██▊       | 10/35 [00:04<00:05,  4.55batch/s]
+extract[query]:  31%|███▏      | 11/35 [00:04<00:05,  4.78batch/s]
+extract[query]:  34%|███▍      | 12/35 [00:05<00:04,  4.90batch/s]
+extract[query]:  37%|███▋      | 13/35 [00:05<00:04,  5.04batch/s]
+extract[query]:  40%|████      | 14/35 [00:05<00:04,  5.13batch/s]
+extract[query]:  43%|████▎     | 15/35 [00:05<00:03,  5.18batch/s]
+extract[query]:  46%|████▌     | 16/35 [00:05<00:03,  5.25batch/s]
+extract[query]:  49%|████▊     | 17/35 [00:05<00:03,  5.24batch/s]
+extract[query]:  51%|█████▏    | 18/35 [00:06<00:03,  5.21batch/s]
+extract[query]:  54%|█████▍    | 19/35 [00:06<00:03,  5.20batch/s]
+extract[query]:  57%|█████▋    | 20/35 [00:06<00:02,  5.24batch/s]
+extract[query]:  60%|██████    | 21/35 [00:06<00:02,  5.32batch/s]
+extract[query]:  63%|██████▎   | 22/35 [00:06<00:02,  5.22batch/s]
+extract[query]:  66%|██████▌   | 23/35 [00:07<00:02,  4.25batch/s]
+extract[query]:  69%|██████▊   | 24/35 [00:07<00:02,  4.56batch/s]
+extract[query]:  71%|███████▏  | 25/35 [00:07<00:02,  4.80batch/s]
+extract[query]:  74%|███████▍  | 26/35 [00:07<00:01,  4.51batch/s]
+extract[query]:  77%|███████▋  | 27/35 [00:08<00:01,  4.01batch/s]
+extract[query]:  80%|████████  | 28/35 [00:08<00:01,  4.25batch/s]
+extract[query]:  83%|████████▎ | 29/35 [00:08<00:01,  4.57batch/s]
+extract[query]:  86%|████████▌ | 30/35 [00:08<00:01,  4.34batch/s]
+extract[query]:  89%|████████▊ | 31/35 [00:09<00:00,  4.35batch/s]
+extract[query]:  91%|█████████▏| 32/35 [00:09<00:00,  4.67batch/s]
+extract[query]:  94%|█████████▍| 33/35 [00:09<00:00,  4.98batch/s]
+extract[query]:  97%|█████████▋| 34/35 [00:09<00:00,  4.50batch/s]
+extract[query]: 100%|██████████| 35/35 [00:09<00:00,  5.26batch/s]
+extract[query]: 100%|██████████| 35/35 [00:09<00:00,  3.56batch/s]
+[extract] query: 8.9 мс/кроп всего = 6.8 сеть + 2.1 чтение кадров с диска
+
+extract[gallery]:   0%|          | 0/24 [00:00<?, ?batch/s]
+extract[gallery]:   4%|▍         | 1/24 [00:01<00:30,  1.34s/batch]
+extract[gallery]:   8%|▊         | 2/24 [00:01<00:14,  1.52batch/s]
+extract[gallery]:  12%|█▎        | 3/24 [00:01<00:09,  2.26batch/s]
+extract[gallery]:  17%|█▋        | 4/24 [00:01<00:06,  2.97batch/s]
+extract[gallery]:  21%|██        | 5/24 [00:02<00:06,  2.72batch/s]
+extract[gallery]:  25%|██▌       | 6/24 [00:02<00:05,  3.32batch/s]
+extract[gallery]:  29%|██▉       | 7/24 [00:02<00:04,  3.82batch/s]
+extract[gallery]:  33%|███▎      | 8/24 [00:02<00:03,  4.28batch/s]
+extract[gallery]:  38%|███▊      | 9/24 [00:03<00:04,  3.65batch/s]
+extract[gallery]:  42%|████▏     | 10/24 [00:03<00:03,  4.07batch/s]
+extract[gallery]:  46%|████▌     | 11/24 [00:03<00:02,  4.45batch/s]
+extract[gallery]:  50%|█████     | 12/24 [00:03<00:02,  4.75batch/s]
+extract[gallery]:  54%|█████▍    | 13/24 [00:04<00:02,  3.82batch/s]
+extract[gallery]:  58%|█████▊    | 14/24 [00:04<00:02,  4.23batch/s]
+extract[gallery]:  62%|██████▎   | 15/24 [00:04<00:01,  4.60batch/s]
+extract[gallery]:  67%|██████▋   | 16/24 [00:04<00:01,  4.89batch/s]
+extract[gallery]:  71%|███████   | 17/24 [00:05<00:01,  3.90batch/s]
+extract[gallery]:  75%|███████▌  | 18/24 [00:05<00:01,  4.28batch/s]
+extract[gallery]:  79%|███████▉  | 19/24 [00:05<00:01,  4.65batch/s]
+extract[gallery]:  83%|████████▎ | 20/24 [00:05<00:00,  4.93batch/s]
+extract[gallery]:  88%|████████▊ | 21/24 [00:05<00:00,  4.08batch/s]
+extract[gallery]:  92%|█████████▏| 22/24 [00:06<00:00,  4.53batch/s]
+extract[gallery]:  96%|█████████▌| 23/24 [00:06<00:00,  4.89batch/s]
+extract[gallery]: 100%|██████████| 24/24 [00:06<00:00,  3.79batch/s]
+[extract] gallery: 8.4 мс/кроп всего = 5.5 сеть + 3.0 чтение кадров с диска
+[predict] эмбеддинги: 1860 кропов за 16.2 с = 115.1 кроп/с
+[submit] embeddings.npy (1860, 1536) → /out/embeddings.npy
+[submit] submission.csv (1110 запросов, top-10) → /out/submission.csv
+[submit] candidates.csv: отказов 69/1110 → /out/candidates.csv
+[predict] готово за 26.3 с → /out
+candidates: строк 1041 и 1041, отвеченных запросов 1041 и 1041
+  пары (query, gallery) совпадают: 1041/1041
+  уверенность: среднее расхождение 0.00e+00, максимум 0.00e+00
+submission: top-1 совпадает у 1110/1110 запросов, различается ячеек 0
+embeddings: форма (1860, 1536), среднее расхождение 0.00e+00, максимум 0.00e+00, минимальный косинус 1.000000
+
+ВЫВОД: проверенные файлы совпали по указанным проверкам; accuracy без меток не измерялась
+[predict] рецепт: порог=0.5500 по «top1», TTA flip=False, быстрый декод=True, DBA k=0, k-reciprocal=True (3/2, lambda=0.2)
+[predict] запросов 1110, галерея 750
+[models] ft:release: vit_base_patch14_dinov2.lvd142m, D=1536, input=336, device=cuda
+
+extract[query]:   0%|          | 0/35 [00:00<?, ?batch/s]
+extract[query]:   3%|▎         | 1/35 [00:02<01:33,  2.75s/batch]
+extract[query]:   6%|▌         | 2/35 [00:02<00:40,  1.24s/batch]
+extract[query]:   9%|▊         | 3/35 [00:03<00:24,  1.33batch/s]
+extract[query]:  11%|█▏        | 4/35 [00:03<00:16,  1.91batch/s]
+extract[query]:  14%|█▍        | 5/35 [00:03<00:12,  2.49batch/s]
+extract[query]:  17%|█▋        | 6/35 [00:03<00:09,  3.06batch/s]
+extract[query]:  20%|██        | 7/35 [00:03<00:07,  3.57batch/s]
+extract[query]:  23%|██▎       | 8/35 [00:04<00:06,  4.01batch/s]
+extract[query]:  26%|██▌       | 9/35 [00:04<00:05,  4.39batch/s]
+extract[query]:  29%|██▊       | 10/35 [00:04<00:05,  4.79batch/s]
+extract[query]:  31%|███▏      | 11/35 [00:04<00:04,  5.00batch/s]
+extract[query]:  34%|███▍      | 12/35 [00:04<00:04,  5.13batch/s]
+extract[query]:  37%|███▋      | 13/35 [00:04<00:04,  5.23batch/s]
+extract[query]:  40%|████      | 14/35 [00:05<00:03,  5.31batch/s]
+extract[query]:  43%|████▎     | 15/35 [00:05<00:03,  5.43batch/s]
+extract[query]:  46%|████▌     | 16/35 [00:05<00:03,  5.47batch/s]
+extract[query]:  49%|████▊     | 17/35 [00:05<00:03,  5.48batch/s]
+extract[query]:  51%|█████▏    | 18/35 [00:05<00:03,  5.50batch/s]
+extract[query]:  54%|█████▍    | 19/35 [00:06<00:03,  4.57batch/s]
+extract[query]:  57%|█████▋    | 20/35 [00:06<00:03,  4.81batch/s]
+extract[query]:  60%|██████    | 21/35 [00:06<00:02,  4.99batch/s]
+extract[query]:  63%|██████▎   | 22/35 [00:06<00:02,  5.14batch/s]
+extract[query]:  66%|██████▌   | 23/35 [00:07<00:02,  4.04batch/s]
+extract[query]:  69%|██████▊   | 24/35 [00:07<00:02,  4.31batch/s]
+extract[query]:  71%|███████▏  | 25/35 [00:07<00:02,  4.61batch/s]
+extract[query]:  74%|███████▍  | 26/35 [00:07<00:01,  4.91batch/s]
+extract[query]:  77%|███████▋  | 27/35 [00:07<00:02,  3.96batch/s]
+extract[query]:  80%|████████  | 28/35 [00:08<00:01,  4.07batch/s]
+extract[query]:  83%|████████▎ | 29/35 [00:08<00:01,  4.43batch/s]
+extract[query]:  86%|████████▌ | 30/35 [00:08<00:01,  4.70batch/s]
+extract[query]:  89%|████████▊ | 31/35 [00:08<00:00,  4.26batch/s]
+extract[query]:  91%|█████████▏| 32/35 [00:09<00:00,  4.47batch/s]
+extract[query]:  94%|█████████▍| 33/35 [00:09<00:00,  4.79batch/s]
+extract[query]:  97%|█████████▋| 34/35 [00:09<00:00,  4.71batch/s]
+extract[query]: 100%|██████████| 35/35 [00:09<00:00,  5.46batch/s]
+extract[query]: 100%|██████████| 35/35 [00:09<00:00,  3.66batch/s]
+[extract] query: 8.6 мс/кроп всего = 6.6 сеть + 2.0 чтение кадров с диска
+
+extract[gallery]:   0%|          | 0/24 [00:00<?, ?batch/s]
+extract[gallery]:   4%|▍         | 1/24 [00:01<00:31,  1.35s/batch]
+extract[gallery]:   8%|▊         | 2/24 [00:01<00:14,  1.51batch/s]
+extract[gallery]:  12%|█▎        | 3/24 [00:01<00:09,  2.27batch/s]
+extract[gallery]:  17%|█▋        | 4/24 [00:01<00:06,  2.98batch/s]
+extract[gallery]:  21%|██        | 5/24 [00:02<00:06,  2.83batch/s]
+extract[gallery]:  25%|██▌       | 6/24 [00:02<00:05,  3.41batch/s]
+extract[gallery]:  29%|██▉       | 7/24 [00:02<00:04,  3.91batch/s]
+extract[gallery]:  33%|███▎      | 8/24 [00:02<00:03,  4.35batch/s]
+extract[gallery]:  38%|███▊      | 9/24 [00:03<00:03,  3.94batch/s]
+extract[gallery]:  42%|████▏     | 10/24 [00:03<00:03,  4.32batch/s]
+extract[gallery]:  46%|████▌     | 11/24 [00:03<00:02,  4.66batch/s]
+extract[gallery]:  50%|█████     | 12/24 [00:03<00:02,  4.89batch/s]
+extract[gallery]:  54%|█████▍    | 13/24 [00:04<00:02,  3.91batch/s]
+extract[gallery]:  58%|█████▊    | 14/24 [00:04<00:02,  4.27batch/s]
+extract[gallery]:  62%|██████▎   | 15/24 [00:04<00:01,  4.64batch/s]
+extract[gallery]:  67%|██████▋   | 16/24 [00:04<00:01,  4.85batch/s]
+extract[gallery]:  71%|███████   | 17/24 [00:04<00:01,  3.93batch/s]
+extract[gallery]:  75%|███████▌  | 18/24 [00:05<00:01,  4.31batch/s]
+extract[gallery]:  79%|███████▉  | 19/24 [00:05<00:01,  4.64batch/s]
+extract[gallery]:  83%|████████▎ | 20/24 [00:05<00:00,  4.93batch/s]
+extract[gallery]:  88%|████████▊ | 21/24 [00:05<00:00,  4.11batch/s]
+extract[gallery]:  92%|█████████▏| 22/24 [00:05<00:00,  4.54batch/s]
+extract[gallery]:  96%|█████████▌| 23/24 [00:06<00:00,  4.91batch/s]
+extract[gallery]: 100%|██████████| 24/24 [00:06<00:00,  3.85batch/s]
+[extract] gallery: 8.3 мс/кроп всего = 5.5 сеть + 2.8 чтение кадров с диска
+[predict] эмбеддинги: 1860 кропов за 15.8 с = 117.6 кроп/с
+[submit] embeddings.npy (1860, 1536) → /out/embeddings.npy
+[submit] submission.csv (1110 запросов, top-10) → /out/submission.csv
+[submit] candidates.csv: отказов 69/1110 → /out/candidates.csv
+[predict] готово за 25.3 с → /out
+candidates: строк 1041 и 1041, отвеченных запросов 1041 и 1041
+  пары (query, gallery) совпадают: 1041/1041
+  уверенность: среднее расхождение 0.00e+00, максимум 0.00e+00
+submission: top-1 совпадает у 1110/1110 запросов, различается ячеек 0
+embeddings: форма (1860, 1536), среднее расхождение 0.00e+00, максимум 0.00e+00, минимальный косинус 1.000000
+
+ВЫВОД: проверенные файлы совпали по указанным проверкам; accuracy без меток не измерялась
+[check] test_query 1110 строк, test_gallery 750
+[check] embeddings.npy (1860, 1536) float32
+[check] норма строк: мин 1.0000, макс 1.0000
+[check] submission.csv: строк 1110, ячеек в строке 11
+[check] candidates.csv: строк 1041, отвечено 1041, отказов 69 (6.2%), запросов с >1 строкой: 0
+[check] эталонный organizer/evaluate.py прочитал: 1110 запросов в submission.csv, 1041 в candidates.csv
+
+[check] все три файла по форме в порядке
+[models] ft:release: vit_base_patch14_dinov2.lvd142m, D=1536, input=336, device=cuda
+[bench] веса: 1 файл(ов), 164 МБ из 2048 лимита; загрузка весов 3.3 с
+[bench] 300 ТС, вход 336, устройство cuda, TTA flip=False, быстрый декод=True
+[bench] из них чтение+декод+кроп+препроцессинг: 25.3 мс/ТС (одним потоком)
+[bench] латентность batch=1: медиана 33.2 мс, среднее 33.2, 90% 39.0 → балл 100%
+[bench] batch= 1:   77.0 кроп/с ( 13.0 мс/ТС), 900 кропов за 11.7 с в 3 прохода(х)
+[bench] batch= 8:  149.4 кроп/с (  6.7 мс/ТС), 1500 кропов за 10.0 с в 5 прохода(х)
+[bench] batch=16:  125.0 кроп/с (  8.0 мс/ТС), 1500 кропов за 12.0 с в 5 прохода(х)
+[bench] batch=32:   99.2 кроп/с ( 10.1 мс/ТС), 1200 кропов за 12.1 с в 4 прохода(х)
+[bench] лучший FPS 149.4 при batch=8 → балл 100%
+[bench] детерминизм двух прогонов на 64 кропах: бит в бит
+[bench] пик VRAM 1456 МБ из 24576 на A5000
+[bench] ИТОГО за производительность: 20.0 из 20 баллов (латентность 10.0/10, пропускная 10.0/10)
+[bench] воркеров 8; у жюри 2×Xeon Gold 6338 (64 ядра) — там пакетный режим будет быстрее
+[bench] → results/bench_full.json
+[submit] embeddings.npy (1901, 1536) → E:\Хакатон\results\official_validation\embeddings.npy
+[submit] submission.csv (1213 запросов, top-10) → E:\Хакатон\results\official_validation\submission.csv
+[submit] candidates.csv: отказов 278/1213 → E:\Хакатон\results\official_validation\candidates.csv
+ground truth   : 1213 query, 688 gallery, 268 ТС в галерее
+
+--- Ранжирование (submission.csv) ---
+запросов в зачёте : 970
+open-set вне mAP  : 243
+mAP@10           : 0.7421   <- основная метрика
+Rank-1            : 0.7072
+Rank-5            : 0.8660
+
+--- Полное ранжирование (embeddings.npy, справочно) ---
+mAP (полный)      : 0.7146
+mINP              : 0.6574
+
+--- Режим предложения кандидатов (candidates.csv) ---
+TP/FP/FN/TN       : 920/15/46/232
+Precision         : 0.9840
+Recall            : 0.9524
+F1                : 0.9679
+TNR               : 0.9547  (243 запросов без пары)
+PR-AUC            : 0.9900
+
+отчёт -> E:\Хакатон\results\official_validation\official_report.json
+
+
+метрика                   эталонный scorer      наш расчёт     разница
+----------------------------------------------------------------------
+mAP@10                            0.742072        0.742072    0.00e+00
+Rank-1                            0.707216        0.707216    0.00e+00
+Rank-5                            0.865979        0.865979    0.00e+00
+запросов в зачёте               970.000000      970.000000    0.00e+00
+F1 отказа                         0.967912        0.967912   -1.11e-16
+TNR отказа                        0.954733        0.954733    0.00e+00
+TP                              920.000000      920.000000    0.00e+00
+FP                               15.000000       15.000000    0.00e+00
+FN                               46.000000       46.000000    0.00e+00
+TN                              232.000000      232.000000    0.00e+00
+
+блок отказа по формуле организаторов 0.7*F1 + 0.3*TNR: 96.40
+
+наша реализация метрики совпала с эталонной  (максимальное расхождение 1.11e-16)
+[official] → E:\Хакатон\results\official_validation
+запросов 1213; с парой 970, из них с одно-камерным дубликатом 970 (100.0%)
+медиана уверенности у запросов с парой: A 0.912, B 0.517
+
+   порог  A: как сейчас  B: без дублей   худший    E p=0.7   E p=0.85   E p=0.95
+--------------------------------------------------------------------------------
+  0.4000          82.41          66.55    66.55      77.65      80.03      81.62
+  0.4200          85.03          67.94    67.94      79.90      82.47      84.18
+  0.4400          86.96          68.40    68.40      81.39      84.17      86.03
+  0.4600          88.77          67.85    67.85      82.49      85.63      87.72
+  0.4800          92.56          69.67    69.67      85.69      89.13      91.41
+  0.5000          93.95          68.62    68.62      86.35      90.15      92.69
+  0.5200          94.95          66.79    66.79      86.50      90.73      93.54
+  0.5400          95.84          64.54    64.54      86.45      91.14      94.27
+  0.5600          96.33          61.24    61.24      85.80      91.06      94.57
+  0.5800          96.30          57.42    57.42      84.64      90.47      94.35
+  0.6000          96.66          54.39    54.39      83.98      90.32      94.55
+  0.6200          96.71          50.97    50.97      82.99      89.85      94.42
+  0.6400          96.63          47.96    47.96      82.03      89.33      94.20
+  0.6600          96.36          45.28    45.28      81.03      88.69      93.80
+  0.6800          95.96          42.11    42.11      79.80      87.88      93.26
+  0.7000          95.35          39.29    39.29      78.53      86.94      92.55
+--------------------------------------------------------------------------------
+минимакс: порог 0.4800, худший балл 69.67
+максимум ожидания при вере p=0.70: порог 0.5200, ожидание 86.50
+максимум ожидания при вере p=0.85: порог 0.5500, ожидание 91.41
+максимум ожидания при вере p=0.95: порог 0.5500, ожидание 94.73
+
+[stress] → results/refusal_stress_fit.json
+[submit] candidates.csv: отказов 278/1213 → results\refusal_audit_fit_frozen_recipe_candidates.csv
+[submit] candidates.csv: отказов 325/1213 → results\refusal_audit_fit_selected_on_A_candidates.csv
+[audit] frozen_recipe  порог 0.5500  A 95.29  B 97.19  всё 96.40
+[audit] selected_on_A  порог 0.6417  A 96.71  B 96.52  всё 96.63
+[audit] → results\refusal_audit_fit.json
+[errors] mAP@10 74.21, rank-1 70.72
+[errors] rank1_ok                     686
+[errors] rank1_wrong_but_in_top10     209
+[errors] miss_top10                    75
+[errors] no_valid_positive            243
+[errors] → E:\Хакатон\results\error_analysis.json и E:\Хакатон\docs\ERROR_ANALYSIS.md
+Local diagnostic card; no official total score or A5000 result is asserted.
+блок                что меряется                                                               значение           баллы                                 источник                                  
+------------------  -------------------------------------------------------------------------  -----------------  ------------------------------------  ------------------------------------------
+Ранжирование        mAP@10 без постобработки                                                   70.5               31.7 / 45 (допущение: линейно)        results\hack_ft_soup_b336_fit_val.json    
+Ранжирование        mAP@10 с постобработкой (k-recip 3/2/0.2, validation; перенос не измерен)  74.2               33.4 / 45 (допущение: линейно)        results/rerank_grid.json, ft_soup_b336_fit
+Ранжирование        — для сравнения: dba k=5 + k-recip 6/2 ЗАПРЕЩЕНО (ответ 38)                74.9               не идёт в балл                        тот же файл, блок postprocess             
+Отказ               0.7*F1 + 0.3*TNR при пороге 0.55 (F1 96.8, TNR 95.5)                       96.4               диагностика, не балл релиза           results\refusal_stress_fit.json           
+Отказ               — то же без одно-камерных дубликатов (стресс)                              63.2               stress, не балл релиза                тот же файл                               
+Отказ               mINP (справочно, в балл не входит)                                         65.7               —                                     тот же файл                               
+Производительность  латентность batch=1, медиана (300 прогонов)                                33.2 мс            10.0/10, проекция на этом устройстве  results/bench_full.json                   
+Производительность  лучший FPS (batch 8)                                                       149.4              10.0/10, проекция на этом устройстве  results/bench_full.json                   
+Производительность  суммарный размер весов, МБ (лимит 2048)                                    164.0              —                                     results/bench_full.json                   
+Производительность  время загрузки весов, с                                                    3.25               —                                     results/bench_full.json                   
+Производительность  пик VRAM, МБ                                                               1455.9             —                                     results/bench_full.json                   
+Производительность  два прогона совпали бит в бит                                              True               —                                     results/bench_full.json                   
+Сдача               отказов на открытом тесте                                                  69 из 1110 (6.2%)  —                                     submission/run_info.json                  
+Сдача               размерность вектора                                                        1536               —                                     submission/run_info.json                  
+Сдача               весь прогон, с                                                             90.1               —                                     submission/run_info.json                  
+Перенос порога      сдвиг медианы уверенности релизной модели                                  +0.0025            —                                     results/threshold_transfer.json           
+Перенос порога      решений перевернулось бы при выравнивании доли                             1 из 1110          —                                     results/threshold_transfer.json           
+
+Блоки: ранжирование 45%, отказ 10%, производительность 20%. Защита и продукт (25%) не здесь.
+[manifest] файлов с хэшами 6, fit id 1233, val id 307, пересечение 0
+[manifest] → reports\MANIFEST.json
+ Network vreid_default Creating 
+ Network vreid_default Created 
+ Container vreid-db-1 Creating 
+ Container vreid-db-1 Created 
+ Container vreid-api-1 Creating 
+ Container vreid-api-1 Created 
+ Container vreid-web-1 Creating 
+ Container vreid-web-1 Created 
+ Container vreid-db-1 Starting 
+ Container vreid-db-1 Started 
+ Container vreid-db-1 Waiting 
+ Container vreid-db-1 Healthy 
+ Container vreid-api-1 Starting 
+ Container vreid-api-1 Started 
+ Container vreid-web-1 Starting 
+ Container vreid-web-1 Started 
+[wait] http://localhost:8080/health отвечает через 3 с
+Existing gallery preserved; checking whether it is exactly the demo gallery.
+{
+  "passed": true,
+  "scope": "HTTP execution smoke, not accuracy",
+  "imported": 0,
+  "gallery_count": 20,
+  "ranking_count": 10,
+  "accepted": true,
+  "top1": "df7ea50171af48df81584ab7e8107d15",
+  "device": "cuda",
+  "dimension": 1536,
+  "model_sha256": "608042f64c259b97590e57b81f6c03e7143fba43d9a9c320b4a2a346e9f5fd1c",
+  "recipe_sha256": "47c3993fd1289fa00e4884652cb4bee281f408281cd77b50826f5c0495c66abc",
+  "same_reference_release": false,
+  "exact_reference_top10": true,
+  "seconds": 5.92
+}
+Different model/recipe: only HTTP execution was checked, not equivalence to 19b.
+[logs] переписано 26, уже в UTF-8 273, не разобрано 0

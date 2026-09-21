@@ -1,13 +1,13 @@
 {
-  "собрано": "2026-09-20T23:50:24",
+  "собрано": "2026-09-21T17:21:56",
   "хэши": {
     "release/model.pt": {
       "sha256": "608042f64c259b97590e57b81f6c03e7143fba43d9a9c320b4a2a346e9f5fd1c",
       "байт": 171995879
     },
     "release/recipe.json": {
-      "sha256": "9eb6b74aa6423d3926db0b6ac6ee8e6cdc43f8c34c57db0f6211c962e0600c01",
-      "байт": 4206
+      "sha256": "47c3993fd1289fa00e4884652cb4bee281f408281cd77b50826f5c0495c66abc",
+      "байт": 4660
     },
     "submission/candidates.csv": {
       "sha256": "c37481f898a9fb94778ada67a94d44aff5e48eef9214b6ac656fa6130fb2403c",
@@ -18,12 +18,12 @@
       "байт": 11427968
     },
     "submission/run_info.json": {
-      "sha256": "7d04681261513404ed1e9b212dbed296c199e522be1e8e9e58c2a1f5efd8d877",
-      "байт": 5217
+      "sha256": "79a09345c071ca3e26e9095e17fa147dbbb509168d647f2bc8f8079536e4a3b2",
+      "байт": 5677
     },
     "submission/submission.csv": {
-      "sha256": "6b7ddbbd9509d973b8cd71745c96ad93a7c49e133816df60cdb2a215ed745d79",
-      "байт": 404181
+      "sha256": "0705f717318486bed69d573dcc66847ce39b3dc88a9ff0c22b9c81974d9da7c5",
+      "байт": 404040
     }
   },
   "рецепт": {
@@ -49,12 +49,12 @@
       "why": "Прежние 6/2/0.3 были первой строкой грубой сетки 6/10/15/20, то есть краем диапазона. Полная сетка 93 точки показала, что оптимум внутри: k1 3, k2 2, lambda 0.2. Выбор сделан на кеше двойника релиза и независимо подтверждён на кеше валидационной модели — лучшая точка совпала, ранговая корреляция поверхностей 0.957 на 93 точках.",
       "gain_map10": {
         "twin_fit": [
-          73.765,
-          74.331
+          73.62,
+          74.21
         ],
         "val": [
-          74.876,
-          75.969
+          74.78,
+          75.83
         ]
       },
       "gain_rank1": {
@@ -74,14 +74,15 @@
       "source": [
         "results/rerank_grid.json",
         "results/rerank_grid_fine.json"
-      ]
+      ],
+      "metric": "mAP@10 по эталонному organizer/evaluate.py: сначала обрезание до 10, потом junk-фильтр. Сетка пересчитана после сверки с эталоном, оптимум не сместился."
     },
     "source": {
       "weights": "weights/soup_b336_all/best.pt",
       "val": "results/hack_ft_soup_b336_fit_val.json",
       "protocol": "track",
-      "val_mAP_jury": 0.7065950130911473,
-      "val_rank1_jury": 0.6793814432989691,
+      "val_mAP_jury": 0.705155,
+      "val_rank1_jury": 0.679381,
       "val_mAP_cross_camera_strict": 0.7297707685594285,
       "val_mINP": 0.6933864353264946,
       "val_n_query": 1213,
@@ -93,7 +94,8 @@
         "precision": 0.9933920704845814,
         "recall": 0.9318181818181818,
         "tnr": 0.9835390946502057
-      }
+      },
+      "metric_verified_against": "organizer/evaluate.py, sha256 655c71db8c2e4d2cd7680c40c768afacfdffff360401111c1a46df921551ffa3; совпадение до 1e-16, см. results/official_validation/comparison.json"
     },
     "threshold_choice": {
       "value": 0.55,

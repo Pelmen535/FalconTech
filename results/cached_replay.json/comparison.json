@@ -2,7 +2,7 @@
   "n_query": 1110,
   "n_gallery": 750,
   "embeddings_sha256": "ffcea632e4f4050140fcde81cd48a9c38a759c04f54b20295100024377eb12fe",
-  "recipe_sha256": "9eb6b74aa6423d3926db0b6ac6ee8e6cdc43f8c34c57db0f6211c962e0600c01",
+  "recipe_sha256": "47c3993fd1289fa00e4884652cb4bee281f408281cd77b50826f5c0495c66abc",
   "top1_changes": 0,
   "changed_rank_cells": 0,
   "acceptance_changes": 0,

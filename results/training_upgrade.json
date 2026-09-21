@@ -65,17 +65,7 @@
           71.16,
           71.24
         ]
-      }
-    ],
-    "n": 2,
-    "mean_map10": 71.436,
-    "best_map10": 71.632,
-    "worst_map10": 71.24,
-    "spread": 0.392
-  },
-  "candidate": {
-    "name": "candidate",
-    "runs": [
+      },
       {
         "run": "weights\\fit18_s3",
         "epochs": 18,
@@ -99,47 +89,59 @@
           67.49,
           68.73
         ]
-      },
-      {
-        "run": "weights\\fit18_s0",
-        "epochs": 18,
-        "arc_ls": 0.0,
-        "seed": 0,
-        "distill_w": 20.0,
-        "no_select": true,
-        "final_epoch": 18,
-        "final_map10": 71.632,
-        "epoch0_map10": 7.688,
-        "curve": [
-          7.69,
-          33.75,
-          46.46,
-          54.5,
-          59.01,
-          61.62,
-          62.9,
-          65.26,
-          66.15,
-          67.44,
-          67.36,
-          69.26,
-          69.27,
-          70.82,
-          71.0,
-          70.99,
-          71.39,
-          71.21,
-          71.63
-        ]
       }
     ],
-    "n": 2,
-    "mean_map10": 70.184,
+    "n": 3,
+    "mean_map10": 70.536,
     "best_map10": 71.632,
     "worst_map10": 68.735,
     "spread": 2.897
   },
-  "gain_mean_map10": -1.252,
+  "candidate": {
+    "name": "candidate",
+    "runs": [
+      {
+        "run": "weights\\fit20ls_s0",
+        "epochs": 20,
+        "arc_ls": 0.1,
+        "seed": 0,
+        "distill_w": 20.0,
+        "no_select": true,
+        "final_epoch": 20,
+        "final_map10": 70.14,
+        "epoch0_map10": 7.688,
+        "curve": [
+          7.69,
+          34.5,
+          46.76,
+          54.27,
+          57.96,
+          60.23,
+          61.57,
+          63.58,
+          64.21,
+          66.01,
+          65.59,
+          67.42,
+          67.05,
+          68.7,
+          68.81,
+          68.9,
+          69.13,
+          70.11,
+          70.23,
+          70.18,
+          70.14
+        ]
+      }
+    ],
+    "n": 1,
+    "mean_map10": 70.14,
+    "best_map10": 70.14,
+    "worst_map10": 70.14,
+    "spread": 0.0
+  },
+  "gain_mean_map10": -0.396,
   "min_gain_required": 1.5,
   "same_split": true,
   "epoch0_values": [

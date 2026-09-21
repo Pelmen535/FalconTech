@@ -735,3 +735,62 @@ queue16 started 2026-09-20 23:29:26
 [23:37:06] START logs16
 [23:37:08] END   logs16  ok  0 min
 [23:37:08] queue16 finished: РџР РћР’РђР›РР›РРЎР¬ 2 С€Р°Рі(РѕРІ): tests16, cmp16_native
+queue18 started 2026-09-21 17:13:22
+[17:13:23] WAIT  for running vreid processes
+[17:13:24] WAIT  done - GPU free, service stack down
+[17:13:24] data folder: E:\Хакатон\Данные
+[17:13:24] START tests18
+[17:13:52] END   tests18  ok  0 min
+[17:13:52] START build18_release
+[17:15:18] END   build18_release  ok  1 min
+[17:15:18] START build18_dev
+[17:16:25] END   build18_dev  ok  1 min
+[17:16:25] START build18_api
+[17:16:52] END   build18_api  ok  0 min
+[17:16:52] START build18_web
+[17:16:53] END   build18_web  ok  0 min
+[17:16:53] START predict18
+[17:18:25] END   predict18  ok  2 min
+[17:18:25] START form18
+[17:18:26] END   form18  ok  0 min
+[17:18:26] START indep18
+[17:18:28] END   indep18  ok  0 min
+[17:18:28] START ties18
+[17:18:28] END   ties18  ok  0 min
+[17:18:28] START replay18
+[17:18:30] END   replay18  ok  0 min
+[17:18:30] START docker18_a
+[17:19:07] END   docker18_a  ok  1 min
+[17:19:07] START docker18_b
+[17:19:36] END   docker18_b  ok  0 min
+[17:19:36] START cmp18_det
+[17:19:37] END   cmp18_det  ok  0 min
+[17:19:37] START docker18_offline
+[17:20:04] END   docker18_offline  ok  0 min
+[17:20:04] START cmp18_offline
+[17:20:05] END   cmp18_offline  ok  0 min
+[17:20:05] START form18_docker
+[17:20:06] END   form18_docker  ok  0 min
+[17:20:06] START bench18
+[17:21:31] END   bench18  ok  1 min
+[17:21:31] START official18
+[17:21:37] END   official18  ok  0 min
+[17:21:37] START stress18
+[17:21:37] END   stress18  ok  0 min
+[17:21:37] START audit18
+[17:21:39] END   audit18  ok  0 min
+[17:21:39] START errors18
+[17:21:56] END   errors18  ok  0 min
+[17:21:56] START scorecard18
+[17:21:56] END   scorecard18  ok  0 min
+[17:21:56] START manifest18
+[17:22:03] END   manifest18  ok  0 min
+[17:22:03] START compose18
+[17:22:11] END   compose18  ok  0 min
+[17:22:11] START waitapi18
+[17:22:14] END   waitapi18  ok  0 min
+[17:22:14] START smoke18
+[17:22:20] END   smoke18  ok  0 min
+[17:22:20] START logs18
+[17:22:24] END   logs18  ok  0 min
+[17:22:24] queue18 finished: РІСЃРµ С€Р°РіРё РїСЂРѕС€Р»Рё
