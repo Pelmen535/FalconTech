@@ -91,21 +91,31 @@ def pr_auc(conf: np.ndarray, positive: np.ndarray) -> float:
 
 
 def minp(order: np.ndarray, sims_masked: np.ndarray, q_vids: np.ndarray, g_vids: np.ndarray,
-         has_match: np.ndarray) -> float:
-    """mean Inverse Negative Penalty (Ye et al. 2021): для каждого запроса
-    NP = (позиция последнего истинного совпадения − число совпадений) / позиция последнего;
-    INP = 1 − NP. Считается только по запросам с парой."""
+         has_match: np.ndarray, q_cams: np.ndarray | None = None,
+         g_cams: np.ndarray | None = None) -> float:
+    """mean Inverse Negative Penalty (Ye et al. 2021): n_pos / позиция последнего верного.
+
+    Junk-пары (тот же vehicle_id И та же camera_id) исключаются — так их считает эталонный
+    organizer/evaluate.py, и без этого исключения кадр своей камеры попадает в числитель как
+    дополнительный позитив, стоящий почти на первом месте. Мы так и считали, и получали
+    69.3 вместо 65.74: расхождение вскрылось при сверке с эталоном.
+
+    Метрика справочная, в балл не входит (ответы 14–16), но расходиться с эталоном ей незачем.
+    """
+    junk_known = q_cams is not None and g_cams is not None
     vals = []
     for i in range(order.shape[0]):
         if not has_match[i]:
             continue
-        valid = np.isfinite(sims_masked[i, order[i]])
-        ranked = g_vids[order[i]][valid]
-        m = np.nonzero(ranked == q_vids[i])[0]
-        if len(m) == 0:
+        candidates = order[i][np.isfinite(sims_masked[i, order[i]])]
+        if junk_known:
+            candidates = candidates[~((g_vids[candidates] == q_vids[i])
+                                      & (g_cams[candidates] == q_cams[i]))]
+        positions = np.nonzero(g_vids[candidates] == q_vids[i])[0]
+        if len(positions) == 0:
             continue
-        last = m[-1] + 1
-        vals.append(1.0 - (last - len(m)) / last)
+        last = positions[-1] + 1
+        vals.append(len(positions) / last)
     return float(np.mean(vals)) if vals else float("nan")
 
 
@@ -119,7 +129,8 @@ def evaluate_refusal(sims: np.ndarray, q_vids: np.ndarray, q_cams: np.ndarray,
     if "bits" in scores:
         scores["top1+bits"] = scores["top1"] + 0.02 * scores["bits"]
     res = {"n_query": int(len(q_vids)), "n_no_match": int((~has_match).sum()),
-           "mINP": minp(order, sm, q_vids, g_vids, has_match), "by_confidence": {}}
+           "mINP": minp(order, sm, q_vids, g_vids, has_match, q_cams, g_cams),
+           "by_confidence": {}}
     positive = has_match & top1_correct
     best_name, best = None, None
     for name, conf in scores.items():
