@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import io
 import sys
 from pathlib import Path
 
@@ -150,6 +151,46 @@ def main():
             # Не ошибка формата: на наборе, где ни у одного запроса нет пары, отказ по всем —
             # правильный ответ модели. Диагностируем, но не объявляем нарушением.
             warn("отказ по ВСЕМ запросам — проверь порог; на наборе без пар это может быть верно")
+
+    # --- то же самое, но ИХ кодом ---------------------------------------------------
+    # Наш разбор может совпадать с нашим же пониманием формата и всё равно расходиться с
+    # эталоном. Поэтому, если organizer/evaluate.py приложен, файлы прогоняются его
+    # собственными загрузчиками: они молча отбрасывают неизвестные и повторяющиеся
+    # идентификаторы, и любое такое отбрасывание — признак того, что формат не тот.
+    scorer = Path(__file__).resolve().parents[1] / "organizer/evaluate.py"
+    if scorer.is_file():
+        import contextlib
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location("organizer_evaluate", scorer)
+        official = importlib.util.module_from_spec(spec)
+        try:
+            spec.loader.exec_module(official)
+        except Exception as reason:                      # pandas может быть не установлен
+            warn(f"эталонный evaluate.py не импортировался ({type(reason).__name__}), "
+                 f"проверка его загрузчиками пропущена")
+        else:
+            noise = io.StringIO()
+            with contextlib.redirect_stdout(noise):
+                ranked = official.load_submission(sp, set(gids))
+                cands = official.load_candidates(sub / "candidates.csv")
+            complaints = [line for line in noise.getvalue().splitlines() if line.strip()]
+            for line in complaints:
+                err(f"эталонный загрузчик: {line.strip()}")
+            missing = [q for q in qids if q not in ranked]
+            if missing:
+                err(f"эталонный загрузчик не увидел {len(missing)} запросов в submission.csv")
+            extra = [q for q in ranked if q not in set(qids)]
+            if extra:
+                err(f"эталонный загрузчик увидел лишние query_id: {extra[:3]} — "
+                    f"обычно это строка заголовка, которой в официальном формате нет")
+            short = [q for q, lst in ranked.items() if q in set(qids) and len(lst) != a.topk]
+            if short:
+                err(f"у {len(short)} запросов эталонный загрузчик оставил не {a.topk} кандидатов")
+            print(f"[check] эталонный organizer/evaluate.py прочитал: "
+                  f"{len(ranked)} запросов в submission.csv, {len(cands)} в candidates.csv")
+    else:
+        warn("organizer/evaluate.py не приложен — проверка их собственным загрузчиком пропущена")
 
     for m in WARN:
         print(f"[ПРЕДУПРЕЖДЕНИЕ] {m}")
