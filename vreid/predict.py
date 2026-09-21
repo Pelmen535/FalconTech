@@ -24,6 +24,7 @@ from .extract import extract_split
 from .hackathon_data import read_annotations
 from .datasets import Split
 from .models import get_backbone
+from .cascade import heavy_scores, rescore, shortlist
 from .rerank import dba, frame_block_mask, k_reciprocal, k_reciprocal_chunked
 from .refusal import confidence_scores
 from .submit import save_embeddings, write_candidates, write_submission
@@ -42,6 +43,11 @@ DEFAULT_RECIPE = {
     # Legacy field retained for explicit rejection: competition always uses the frozen
     # absolute threshold. Test-wide quantiles would couple independent queries.
     "refuse_rate": None,
+    # Каскад: шортлист строит основная модель, порядок внутри него уточняет более тяжёлая
+    # (см. vreid/cascade.py — там же разбор, почему правила это допускают). Веса ре-ранкера
+    # лежат рядом с model.pt и входят в лимит 2 ГБ; embeddings.npy остаётся от основной
+    # модели, потому что именно она стоит в замеряемом жюри пути.
+    "cascade": False, "cascade_model": "reranker.pt", "cascade_topk": 30, "cascade_alpha": 0.9,
 }
 
 
@@ -97,9 +103,17 @@ def load_recipe(release: str | Path) -> dict:
     for key in ('k1', 'k2'):
         if isinstance(r[key], bool) or not isinstance(r[key], int) or r[key] < 1:
             raise ValueError(f'Positive integer {key} required')
-    for key in ('tta_flip', 'kr', 'fast_decode', 'mask_plate'):
+    for key in ('tta_flip', 'kr', 'fast_decode', 'mask_plate', 'cascade'):
         if not isinstance(r[key], bool):
             raise ValueError(f'JSON boolean {key} required')
+    if r['cascade']:
+        if isinstance(r['cascade_topk'], bool) or not isinstance(r['cascade_topk'], int)                 or r['cascade_topk'] < 1:
+            raise ValueError('Positive integer cascade_topk required')
+        if not np.isfinite(float(r['cascade_alpha'])) or not 0 <= r['cascade_alpha'] <= 1:
+            raise ValueError('Finite cascade_alpha in [0,1] required')
+        if not (Path(release) / r['cascade_model']).is_file():
+            raise SystemExit(f"рецепт включает каскад, но весов ре-ранкера "
+                             f"{r['cascade_model']} в {release} нет")
     if r['mask_plate']:
         raise ValueError('Plate masking belongs to ablation, not production')
     return r
@@ -213,6 +227,34 @@ def main():
         d[~np.isfinite(sims)] = np.inf
         rank_sims = -d
 
+    # --- каскад: тяжёлый ре-ранкер уточняет порядок внутри шортлиста ---------------------
+    # Считается ПОСЛЕ k-reciprocal и ПОСЛЕ сохранения confidence: уверенность режима отказа
+    # остаётся сырым косинусом основной модели к тому кандидату, который реально уйдёт в файл
+    # (это делает write_candidates через conf_sims). Порог 0.55 поэтому не надо перекалибровывать
+    # — проверено: 96.40 → 96.55 на отложенной валидации.
+    dt_rerank = 0.0
+    if rec["cascade"]:
+        t_rr = time.perf_counter()
+        heavy_path = release / rec["cascade_model"]
+        heavy_bb = get_backbone("ft:" + str(heavy_path), device=a.device)
+        heavy_ex = lambda s: extract_split(s, heavy_bb, a.batch_size, workers, None,
+                                           pad=rec["crop_pad"], mask=None, tta_flip=False,
+                                           fast_decode=bool(rec.get("fast_decode", False)))["emb"]
+        q_heavy, g_heavy = heavy_ex(q), heavy_ex(g)
+        for name, e in (("query", q_heavy), ("gallery", g_heavy)):
+            bad = int((~np.isfinite(e)).any(axis=1).sum())
+            if bad:
+                raise SystemExit(f"[predict] в эмбеддингах ре-ранкера {name} {bad} строк с NaN/inf")
+        order = shortlist(rank_sims, int(rec["cascade_topk"]))
+        rank_sims = rescore(rank_sims, order,
+                            heavy_scores(q_heavy, g_heavy, order, qg_block),
+                            float(rec["cascade_alpha"]))
+        dt_rerank = time.perf_counter() - t_rr
+        rerank_mode = f"{rerank_mode} + каскад top-{rec['cascade_topk']} (alpha={rec['cascade_alpha']})"
+        print(f"[predict] каскад: ре-ранкер {heavy_path.name}, D={q_heavy.shape[1]}, "
+              f"шортлист {rec['cascade_topk']}, alpha={rec['cascade_alpha']} — {dt_rerank:.1f} с")
+        del heavy_bb
+
     save_embeddings(np.concatenate([q_emb, g_emb]), out / "embeddings.npy")
     write_submission(q_keys, g_keys, rank_sims, out / "submission.csv", topk=rec["topk"], exclude_self=False)
     st = write_candidates(q_keys, g_keys, rank_sims, conf, threshold,
@@ -224,7 +266,13 @@ def main():
                    "seconds_total": round(dt, 1), "seconds_embed": round(dt_emb, 1),
                    "crops_per_second": round(n / dt_emb, 1), "refused": st["n_refused"],
                    "workers": workers, "batch_size": a.batch_size, "threshold_used": threshold,
-                   "rerank_mode": rerank_mode,
+                   "rerank_mode": rerank_mode, "seconds_rerank": round(dt_rerank, 1),
+                   # Честная стоимость запроса: жюри мерит только путь основной модели
+                   # (ответы 31/32), но второй форвард в каскаде реален, и его время тут видно.
+                   "cascade": {"on": bool(rec["cascade"]),
+                               "model_sha256": sha256(release / rec["cascade_model"])
+                               if rec["cascade"] else None,
+                               "topk": rec["cascade_topk"], "alpha": rec["cascade_alpha"]},
                    "model_sha256":sha256(release/'model.pt'),"recipe_sha256":sha256(release/'recipe.json'),
                    "input_csv_sha256":{n:sha256(data/n) for n in ('test_query.csv','test_gallery.csv')},
                    "algorithm_version":"19b-audit-fix", "official_scorer":"not_run",

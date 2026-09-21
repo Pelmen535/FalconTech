@@ -20,6 +20,9 @@ runs/*
 runs/hack/*
 !runs/hack/ft_soup_b336_fit/
 runs/hack/crops_cache/
+# Токены патчей для локального сопоставления: 140 МБ на кеш, а сам подход измерен и
+# отвергнут (results/local_verify.json) — держать их в истории незачем.
+runs/hack/*/val_*_local*.npz
 
 # --- рабочие каталоги сервиса ---
 var/

@@ -121,6 +121,34 @@ def main():
     print(f"[bench] латентность batch=1: медиана {ms:.1f} мс, среднее {lat.mean():.1f}, "
           f"90% {np.quantile(lat, .9):.1f} → балл {latency_score(ms) * 100:.0f}%")
 
+    # --- честная цена запроса, если включён каскад --------------------------------------
+    # Жюри мерит формирование признаков одного ТС, а rerank выносит за скобки (ответы 31/32).
+    # Второй форвард от этого не исчезает, поэтому меряем и его: декодирование общее (кроп уже
+    # готов), добавляется ровно время прогона ре-ранкера. Обе цифры идут в отчёт — прятать
+    # разницу было бы враньём, а показывать только большую — врать в другую сторону.
+    cascade_ms = None
+    if rec.get("cascade"):
+        heavy = get_backbone("ft:" + str(release / rec.get("cascade_model", "reranker.pt")),
+                             device=a.device)
+        for i in range(min(a.warmup, len(ds))):
+            heavy.embed_tensors(ds[i].unsqueeze(0))
+        sync()
+        extra = []
+        for i in range(len(ds)):
+            sync()
+            t0 = time.perf_counter()
+            heavy.embed_tensors(ds[i].unsqueeze(0))
+            sync()
+            extra.append((time.perf_counter() - t0) * 1000)
+        # у ре-ранкера тот же кроп, поэтому из его замера вычитаем общий ввод-вывод
+        cascade_ms = float(np.median(np.array(extra))) - io_ms
+        end_to_end = ms + max(cascade_ms, 0.0)
+        print(f"[bench] каскад включён: форвард ре-ранкера {max(cascade_ms, 0.0):.1f} мс; "
+              f"настоящая цена запроса {end_to_end:.1f} мс "
+              f"(балл по шкале жюри был бы {latency_score(end_to_end) * 100:.0f}%, "
+              f"но rerank в замер не входит — ответы 31/32)")
+        del heavy
+
     # --- пропускная способность: лучший FPS среди батчей ---
     # ВАЖНО: воркеры поднимаются заново на каждый новый загрузчик (на Windows это spawn, секунды).
     # Поэтому persistent_workers=True, первый проход прогревочный и не засекается, второй — замер.
@@ -199,6 +227,14 @@ def main():
                    "fast_decode": bool(a.fast_decode), "io_ms_per_item": round(io_ms, 2),
                    "latency_ms_median": ms, "latency_ms_mean": float(lat.mean()),
                    "latency_score": latency_score(ms), "throughput": rows,
+                   # Замеряемая величина — первая; вторая приведена для честности и в балл
+                   # по правилам не входит.
+                   "cascade_reranker_ms": (None if cascade_ms is None
+                                           else round(max(cascade_ms, 0.0), 2)),
+                   "latency_ms_end_to_end": (None if cascade_ms is None
+                                             else round(ms + max(cascade_ms, 0.0), 2)),
+                   "latency_score_if_reranker_counted": (None if cascade_ms is None else
+                                                         latency_score(ms + max(cascade_ms, 0.0))),
                    "best_fps": best_fps, "best_batch": best_b,
                    "throughput_score": throughput_score(best_fps), "score_of_20": total},
                   f, ensure_ascii=False, indent=2)

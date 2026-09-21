@@ -794,3 +794,7 @@ queue18 started 2026-09-21 17:13:22
 [17:22:20] START logs18
 [17:22:24] END   logs18  ok  0 min
 [17:22:24] queue18 finished: РІСЃРµ С€Р°РіРё РїСЂРѕС€Р»Рё
+queue19 started 2026-09-21 19:21:30
+[19:21:30] WAIT  for running vreid processes
+[19:21:30] WAIT  done - GPU free
+[19:21:30] START q19_train_l_fit

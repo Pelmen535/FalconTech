@@ -28,6 +28,14 @@ def main():
     ap.add_argument("--kr", action="store_true")
     ap.add_argument("--k1", type=int, default=10)
     ap.add_argument("--k2", type=int, default=3)
+    ap.add_argument("--lam", type=float, default=0.2,
+                    help="вес исходного косинуса в смеси k-reciprocal; без него рецепт молча "
+                         "откатывался к умолчанию 0.3, а в релизе стоит 0.2")
+    ap.add_argument("--reranker", default=None,
+                    help="веса тяжёлого ре-ранкера (weights/<run>/best.pt) — включает каскад; "
+                         "идут в лимит 2 ГБ вместе с основной моделью (ответы 34/37)")
+    ap.add_argument("--cascade-topk", type=int, default=30)
+    ap.add_argument("--cascade-alpha", type=float, default=0.9)
     ap.add_argument("--crop-pad", type=float, default=0.05)
     ap.add_argument("--cand-min", type=float, default=None,
                     help="порог косинуса для попадания в candidates.csv (не влияет на submission.csv)")
@@ -82,10 +90,30 @@ def main():
     torch.save(ck, out / "model.pt")
     mb = (out / "model.pt").stat().st_size / 1024 ** 2
 
+    # Ре-ранкер кладётся тем же способом и тем же fp16: в лимит 2 ГБ входит СУММА весов
+    # основного backbone, ensemble и reranker (ответы 34, 37), и превышение — это недопуск
+    # к замеру производительности, а не плавный штраф. Поэтому считаем сумму вслух.
+    rr_mb = 0.0
+    if a.reranker:
+        rr_ck = torch.load(a.reranker, map_location="cpu", weights_only=False)
+        if not a.fp32:
+            for part in ("backbone", "bnneck"):
+                rr_ck[part] = {k: (t.half() if t.is_floating_point() else t)
+                               for k, t in rr_ck[part].items()}
+        torch.save(rr_ck, out / "reranker.pt")
+        rr_mb = (out / "reranker.pt").stat().st_size / 1024 ** 2
+        if mb + rr_mb > 2048:
+            raise SystemExit(f"[release] веса не влезают в лимит: model.pt {mb:.0f} МБ + "
+                             f"reranker.pt {rr_mb:.0f} МБ = {mb + rr_mb:.0f} МБ > 2048")
+
     recipe = {"threshold": float(thr), "confidence": conf,
               "tau": float(v["bits"]["calibration"]["tau"]),
               "tta_flip": bool(a.tta_flip), "dba": int(a.dba), "kr": bool(a.kr),
-              "k1": int(a.k1), "k2": int(a.k2),
+              "k1": int(a.k1), "k2": int(a.k2), "lam": float(a.lam),
+              "cascade": bool(a.reranker),
+              "cascade_model": "reranker.pt",
+              "cascade_topk": int(a.cascade_topk),
+              "cascade_alpha": float(a.cascade_alpha),
               "crop_pad": float(a.crop_pad), "mask_plate": False, "topk": 10,
               "candidate_min_sim": (None if a.cand_min is None else float(a.cand_min)),
               "candidates_topk": int(a.cand_topk), "fast_decode": not a.no_fast_decode,
@@ -115,6 +143,11 @@ def main():
         json.dump(recipe, f, ensure_ascii=False, indent=2)
 
     print(f"[release] model.pt {mb:.0f} МБ ({'fp32' if a.fp32 else 'fp16'}), лимит ТЗ — 2048 МБ")
+    if a.reranker:
+        print(f"[release] reranker.pt {rr_mb:.0f} МБ из {a.reranker}; сумма весов "
+              f"{mb + rr_mb:.0f} МБ из 2048. Каскад: шортлист {a.cascade_topk}, "
+              f"alpha={a.cascade_alpha}. Замеряемая жюри латентность считается по model.pt "
+              f"(ответы 31/32), настоящая стоимость запроса выше — см. docs/SELF_REVIEW.md")
     print(f"[release] frozen threshold {thr:.4f}; evaluate emitted CSV with scripts/refusal_audit.py")
     print(f"[release] source validation point {chosen['threshold']:.4f}: F1={chosen['f1'] * 100:.1f}%, TNR={chosen['tnr'] * 100:.1f}% (not a measurement of this exported recipe)")
     rr = recipe["refuse_rate"]

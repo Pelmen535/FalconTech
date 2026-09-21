@@ -409,17 +409,24 @@ class ArcFace:
         return F.cross_entropy(logits, y, label_smoothing=self.label_smoothing)
 
 
-def similarity_distill(f_student, f_teacher):
+def similarity_distill(f_student, teacher_feats):
     """Дистилляция геометрии, а не самих векторов (Tung & Mori, 2019).
 
     Учитель и ученик могут иметь разную размерность (у нас 2048 против 1536), поэтому сравниваем
     не эмбеддинги, а матрицы попарных косинусов внутри батча: B×B у обоих, размерность не мешает.
     Ученик перенимает ровно то, что нужно для поиска — кто на кого похож и насколько, — а не
-    случайную систему координат учителя."""
+    случайную систему координат учителя.
+
+    teacher_feats — список признаков учителей. Цель усредняется по матрицам сходств: у каждого
+    учителя своя система координат, усреднять сами векторы нельзя, а матрицы B×B сравнимы.
+    Один учитель — деление на 1.0, то есть в точности прежнее поведение до бита."""
+    import torch
     import torch.nn.functional as F
+    if not isinstance(teacher_feats, (list, tuple)):
+        teacher_feats = [teacher_feats]
     s = F.normalize(f_student, dim=1)
-    t = F.normalize(f_teacher, dim=1)
-    return ((s @ s.T) - (t @ t.T)).pow(2).mean()
+    target = torch.stack([(lambda t: t @ t.T)(F.normalize(t, dim=1)) for t in teacher_feats]).mean(0)
+    return ((s @ s.T) - target).pow(2).mean()
 
 
 def triplet_batch_hard(f, y, margin: float = 0.3, cams=None):
@@ -456,7 +463,7 @@ def _is_oom(e: Exception) -> bool:
 # в no_grad или переводить в eval «раз память только меряем» нельзя: это меняет веса,
 # и число пробных шагов зависит от свободной VRAM
 def find_batch_P(model, arc, img_size: int, K: int, device: str, p_max: int = 24, p_min: int = 2,
-                 headroom: float = 0.80, teacher=None) -> int:
+                 headroom: float = 0.80, teachers=()) -> int:
     """Подбор числа машин в батче под память GPU без лобовых OOM:
     1) замер пика памяти на маленьком батче (P=2), 2) линейная экстраполяция на headroom·VRAM,
     3) проверка одним реальным шагом; если всё же не влезло — шаг вниз на 20% и повтор.
@@ -473,9 +480,9 @@ def find_batch_P(model, arc, img_size: int, K: int, device: str, p_max: int = 24
         with torch.autocast(device_type="cuda"):
             f, fb = model.features(x)
         loss = arc(fb.float(), y) + triplet_batch_hard(f.float(), y)
-        if teacher is not None:                      # учитель тоже занимает память, хоть и без градиентов
+        for one in teachers:                         # учителя тоже занимают память, хоть и без градиентов
             with torch.no_grad(), torch.autocast(device_type="cuda"):
-                teacher.features(x)
+                one.features(x)
         loss.backward()
         torch.cuda.synchronize()
         peak = torch.cuda.max_memory_allocated()
@@ -561,7 +568,7 @@ def validate(model, query: Split, gallery: Split, has_match, transform, device, 
 
 
 # --------------------------------------------------------------------------- обучение
-def train_one_epoch(model, loader, arc, teacher, opt, sched, scaler, params, args, device,
+def train_one_epoch(model, loader, arc, teachers, opt, sched, scaler, params, args, device,
                     throttle) -> list[float]:
     """Одна эпоха: тело цикла вынесено из main как есть, без перестановок. Порядок внутри шага
     (autocast → fp32 → scaler.step → scaler.update → sched.step) несущий. Возвращает лоссы
@@ -591,11 +598,11 @@ def train_one_epoch(model, loader, arc, teacher, opt, sched, scaler, params, arg
         # а не опечатка. Порядок слагаемых не менять и не собирать через sum([...]) — сложение
         # float некоммутативно по округлению, а под GradScaler это сдвигает и точки пропуска шага
         loss = arc(fb, y) + args.tri_w * triplet_batch_hard(f, y, cams=cam)
-        if teacher is not None:
+        if teachers:
             with torch.no_grad(), torch.autocast(device_type="cuda" if device == "cuda" else "cpu",
                                                  enabled=(device == "cuda")):
-                _, tb = teacher.features(x)
-            loss = loss + args.distill_w * similarity_distill(fb, tb.float())
+                teacher_out = [one.features(x)[1] for one in teachers]
+            loss = loss + args.distill_w * similarity_distill(fb, [t.float() for t in teacher_out])
         opt.zero_grad(set_to_none=True)
         scaler.scale(loss).backward()
         scaler.unscale_(opt)
@@ -654,7 +661,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--pretrained", default="true")
     parser.add_argument("--no-strong-aug", action="store_true")
     parser.add_argument("--distill", default=None,
-                        help="путь к весам учителя (weights/.../best.pt): переносим геометрию сходств")
+                        help="веса учителя (weights/.../best.pt); через запятую — несколько, "
+                             "цель усредняется по их матрицам сходств")
     parser.add_argument("--distill-w", type=float, default=1.0, help="вес слагаемого дистилляции")
     parser.add_argument("--cam-aware", action="store_true",
                         help="K кадров машины брать с разных камер (кросс-камерные позитивы в батче)")
@@ -729,23 +737,29 @@ def main(argv=None):
     arc = ArcFace(model.dim, len(ids), m=args.arc_m, device=device, label_smoothing=args.arc_ls)
     print(f"[train] {model_name}, D={model.dim}, id={len(ids)}, device={device}")
 
-    teacher = None
-    if args.distill:
-        teacher = ReIDModel.load(args.distill, device)
-        for sub in teacher.modules():
+    # --distill принимает несколько весов через запятую: цель дистилляции усредняется по
+    # матрицам сходств учителей. Один учитель разбирается в список из одного и даёт прежний
+    # результат до бита (см. similarity_distill).
+    teachers = []
+    for path in [part.strip() for part in str(args.distill).split(",") if part.strip()] if args.distill else []:
+        one = ReIDModel.load(path, device)
+        for sub in one.modules():
             sub.eval()
             for prm in sub.parameters():
                 prm.requires_grad_(False)
-        if teacher.img_size != args.img_size:
-            raise SystemExit(f"учитель обучен на входе {teacher.img_size}, ученик на {args.img_size} — "
+        if one.img_size != args.img_size:
+            raise SystemExit(f"учитель {path} обучен на входе {one.img_size}, ученик на {args.img_size} — "
                              f"нужен одинаковый вход, иначе кропы не совпадут")
-        print(f"[train] дистилляция от {args.distill}: D учителя {teacher.dim}, вес {args.distill_w}")
+        print(f"[train] дистилляция от {path}: D учителя {one.dim}, вес {args.distill_w}")
+        teachers.append(one)
+    if len(teachers) > 1:
+        print(f"[train] учителей {len(teachers)}: цель — среднее их матриц сходств")
 
     if str(args.P).lower() == "auto":
         # пишем обратно в args.P намеренно: vars(args) уходит в log.json, и там должен стоять
         # РАЗРЕШЁННЫЙ P — при --P auto он зависит от свободной памяти GPU и иначе прогон
         # не восстановим
-        args.P = find_batch_P(model, arc, args.img_size, args.K, device, teacher=teacher)
+        args.P = find_batch_P(model, arc, args.img_size, args.K, device, teachers=teachers)
     else:
         args.P = int(args.P)
 
@@ -803,7 +817,7 @@ def main(argv=None):
     torch.save(model.state(), out / "best.pt")
     for epoch in range(1, args.epochs + 1):
         t0 = time.time()
-        losses = train_one_epoch(model, loader, arc, teacher, opt, sched, scaler, params, args,
+        losses = train_one_epoch(model, loader, arc, teachers, opt, sched, scaler, params, args,
                                  device, throttle)
         if full_fit:   # валидации нет: держим последнюю эпоху
             # в mAP кладётся НОМЕР ЭПОХИ — так условие улучшения ниже истинно каждый раз
