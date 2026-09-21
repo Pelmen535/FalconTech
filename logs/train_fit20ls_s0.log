@@ -1,0 +1,60 @@
+[hackathon] train.csv: 9556 bbox, 1541 vehicle_id, 9556 кадров
+[hackathon] камеры из CSV: 96 шт. — псевдокамера не нужна
+[hackathon] протокол «track», fit: 7655 bbox / 1233 id; val query: 1213 (без пары: 243), gallery: 688
+[train] кропы fit: 7655 (0 c)
+[train] vit_base_patch14_dinov2.lvd142m, D=1536, id=1233, device=cuda
+[train] дистилляция от weights/hack_dinov2_l_336_cam/best.pt: D учителя 2048, вес 20.0
+[train] сэмплер: camera-aware (кадры одной машины — с разных камер)
+[val] до обучения: rank1=  7.6%  rank5= 14.7%  rank10= 20.5%  mAP@10=  7.7%  (queries 970/970, gallery 688)
+E:\Хакатон\vreid\train.py:585: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  scaler.step(opt); scaler.update(); sched.step(); step += 1
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "E:\Хакатон\vreid\train.py", line 626, in <module>
+    main()
+    ~~~~^^
+  File "E:\Хакатон\vreid\train.py", line 595, in main
+    m = validate(model, d["query"], d["gallery"], d["has_match"], tf_eval, device, a.batch_size_eval, a.workers)
+  File "E:\Хакатон\vreid\train.py", line 410, in validate
+    qe, ge = embed_records(model, q.records, tf, device, batch_size, workers), embed_records(model, g.records, tf, device, batch_size, workers)
+                                                                               ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Хакатон\vreid\train.py", line 403, in embed_records
+    for x, _, _ in dl:
+                   ^^
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 741, in __next__
+    data = self._next_data()
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 1548, in _next_data
+    return self._process_data(data, worker_id)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 1586, in _process_data
+    data.reraise()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\_utils.py", line 785, in reraise
+    raise exception
+RuntimeError: Caught RuntimeError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\worker.py", line 358, in _worker_loop
+    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\fetch.py", line 57, in fetch
+    return self.collate_fn(data)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\collate.py", line 401, in default_collate
+    return collate(batch, collate_fn_map=default_collate_fn_map)
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\collate.py", line 215, in collate
+    collate(samples, collate_fn_map=collate_fn_map)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\collate.py", line 155, in collate
+    return collate_fn_map[elem_type](batch, collate_fn_map=collate_fn_map)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\collate.py", line 273, in collate_tensor_fn
+    storage = elem._typed_storage()._new_shared(numel, device=elem.device)
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\storage.py", line 1210, in _new_shared
+    untyped_storage = torch.UntypedStorage._new_shared(
+        size * self._element_size(), device=device
+    )
+  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\storage.py", line 412, in _new_shared
+    return cls._new_using_filename_cpu(size)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+RuntimeError: Couldn't open shared file mapping: <torch_2996_3394523409_0>, error code: <1455>
+

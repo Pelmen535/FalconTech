@@ -1,0 +1,222 @@
+{
+  "train_toy": {
+    "returncode": 0,
+    "stdout": [
+      "[hackathon] train.csv: 136 bbox, 56 vehicle_id, 80 кадров",
+      "[pseudo-cam] кадров 80, разрешений 2, псевдокамер 5",
+      "[hackathon] протокол «id», fit: 104 bbox / 42 id; val query: 14 (без пары: 3), gallery: 15",
+      "[train] кропы fit: 104 <t>",
+      "[train] vit_small_patch14_dinov2.lvd142m, D=768, id=42, device=cpu",
+      "[val] до обучения: rank1=  0.0%  rank5= 36.4%  rank10= 90.9%  mAP@10= 17.9%  (queries 11/11, gallery 15)",
+      "[ep 01] loss=13.360 rank1=  0.0%  rank5= 36.4%  rank10= 90.9%  mAP@10= 16.3%  (queries 11/11, gallery 15) <t>",
+      "[ep 02] loss=13.526 rank1=  0.0%  rank5= 36.4%  rank10= 72.7%  mAP@10= 15.1%  (queries 11/11, gallery 15) <t>",
+      "[train] без отбора: сохранена эпоха 2 из 2, mAP на ней 15.1% → E:\\Хакатон\\runs\\equivalence\\train\\best.pt (метрика печаталась, но на выбор не влияла)"
+    ]
+  },
+  "train_toy_files": {
+    "log.json": "a4f846393a98a76191ebc8e5e1a3736e7d7eed9a84dd72f682701534fa2a7187"
+  },
+  "train_toy_weights": "f3b8bba04c422308b067e4bb4a4c9cb0a6a0f117baec0db3aa0e3a690bda9c55",
+  "train_camaware": {
+    "returncode": 0,
+    "stdout": [
+      "[train] ФИНАЛЬНЫЙ режим: все 56 id в обучении, валидации нет — сохраняется последняя эпоха, число эпох задай по лучшему прогону с валидацией",
+      "[train] кропы fit: 136 <t>",
+      "[train] vit_small_patch14_dinov2.lvd142m, D=768, id=56, device=cpu",
+      "[train] сэмплер: camera-aware (кадры одной машины — с разных камер)",
+      "[ep 01] loss=13.590 <t>",
+      "[ep 02] loss=13.465 <t>",
+      "[train] финальная модель: 2 эпох на всех id → E:\\Хакатон\\runs\\equivalence\\train_camaware\\best.pt (валидации не было)"
+    ]
+  },
+  "train_camaware_files": {
+    "log.json": "017672a95dcf93ce53d2de08fb1068e899623a4ba8ccc63617df4694e71b8dd7"
+  },
+  "train_camaware_weights": "2468401e523a024f250dd36a1316e101980f0dc6f58e303f2900d5d0aeccac2c",
+  "help_vreid_train": {
+    "returncode": 0,
+    "stdout": [
+      "                        id без валидации (финальная модель)",
+      "  --mask-p MASK_P       вероятность закрасить зону анонимизации номера при",
+      "                        обучении (0 — не закрывать). Учит не опираться на эту",
+      "                        зону, при этом на инференсе закрывать ничего не нужно",
+      "  --plate-cache PLATE_CACHE",
+      "                        кеш боксов зоны анонимизации (см.",
+      "                        scripts/build_plate_cache.py)",
+      "  --tri-w TRI_W",
+      "  --patience PATIENCE",
+      "  --no-select           ровно --epochs эпох, без выбора лучшей и без ранней",
+      "                        остановки (для валидационного двойника релиза, который",
+      "                        обучен с --val-frac 0)",
+      "  --workers WORKERS",
+      "  --batch-size-eval BATCH_SIZE_EVAL",
+      "  --out OUT",
+      "  --device DEVICE",
+      "  --pretrained PRETRAINED",
+      "  --no-strong-aug",
+      "  --distill DISTILL     путь к весам учителя (weights/.../best.pt): переносим",
+      "                        геометрию сходств",
+      "  --distill-w DISTILL_W",
+      "                        вес слагаемого дистилляции",
+      "  --cam-aware           K кадров машины брать с разных камер (кросс-камерные",
+      "                        позитивы в батче)",
+      "  --cross-cam-triplet   в triplet трудный позитив искать только с другой",
+      "                        камеры",
+      "  --seed SEED",
+      "  --throttle THROTTLE   доля паузы после каждого шага (0.15 = GPU занят ~85%),",
+      "                        чтобы компьютер не лагал; по умолчанию из переменной",
+      "                        окружения VREID_THROTTLE"
+    ]
+  },
+  "help_vreid_hack_cli_val": {
+    "returncode": 0,
+    "stdout": [
+      "  --workers WORKERS",
+      "  --device DEVICE",
+      "  --reuse               val: не пересчитывать эмбеддинги",
+      "  --out OUT             submit: папка артефактов",
+      "  --threshold THRESHOLD",
+      "  --confidence CONFIDENCE",
+      "                        top1 | margin | bits | top1+bits",
+      "  --rerank              val: абляции DBA / k-reciprocal",
+      "  --local               локальное сопоставление патчей для top-K",
+      "  --local-size LOCAL_SIZE",
+      "  --local-topk LOCAL_TOPK",
+      "  --local-min-sim LOCAL_MIN_SIM",
+      "  --dba DBA             submit: уточнить векторы по k взаимным соседям",
+      "  --kr                  submit: k-reciprocal для submission.csv",
+      "  --k1 K1               submit: k1 для k-reciprocal (см. таблицу val --rerank)",
+      "  --k2 K2               submit: k2 для k-reciprocal",
+      "  --cand-min CAND_MIN   не писать в candidates.csv кандидатов слабее этого",
+      "                        косинуса",
+      "  --cand-topk CAND_TOPK",
+      "                        строк на принятый запрос в candidates.csv (в метрику",
+      "                        идёт только топ-1)",
+      "  --mask-plate [{det,auto,band,up,rand}]",
+      "                        закрасить зону номера: det — только найденную",
+      "                        детектором, auto — плюс запасная полоса там, где не",
+      "                        нашли; up/rand — КОНТРОЛЬ той же площади в другом",
+      "                        месте (отделяет «потеряли номер» от «потеряли",
+      "                        пиксели»); band — старый грубый прямоугольник",
+      "  --fast-decode         ускоренное декодирование JPEG (как в боевом инференсе)",
+      "  --tta-flip            усреднить вектор кропа с вектором его зеркала",
+      "                        (инференс ×2 по времени)"
+    ]
+  },
+  "help_vreid_hack_cli_submit": {
+    "returncode": 0,
+    "stdout": [
+      "  --workers WORKERS",
+      "  --device DEVICE",
+      "  --reuse               val: не пересчитывать эмбеддинги",
+      "  --out OUT             submit: папка артефактов",
+      "  --threshold THRESHOLD",
+      "  --confidence CONFIDENCE",
+      "                        top1 | margin | bits | top1+bits",
+      "  --rerank              val: абляции DBA / k-reciprocal",
+      "  --local               локальное сопоставление патчей для top-K",
+      "  --local-size LOCAL_SIZE",
+      "  --local-topk LOCAL_TOPK",
+      "  --local-min-sim LOCAL_MIN_SIM",
+      "  --dba DBA             submit: уточнить векторы по k взаимным соседям",
+      "  --kr                  submit: k-reciprocal для submission.csv",
+      "  --k1 K1               submit: k1 для k-reciprocal (см. таблицу val --rerank)",
+      "  --k2 K2               submit: k2 для k-reciprocal",
+      "  --cand-min CAND_MIN   не писать в candidates.csv кандидатов слабее этого",
+      "                        косинуса",
+      "  --cand-topk CAND_TOPK",
+      "                        строк на принятый запрос в candidates.csv (в метрику",
+      "                        идёт только топ-1)",
+      "  --mask-plate [{det,auto,band,up,rand}]",
+      "                        закрасить зону номера: det — только найденную",
+      "                        детектором, auto — плюс запасная полоса там, где не",
+      "                        нашли; up/rand — КОНТРОЛЬ той же площади в другом",
+      "                        месте (отделяет «потеряли номер» от «потеряли",
+      "                        пиксели»); band — старый грубый прямоугольник",
+      "  --fast-decode         ускоренное декодирование JPEG (как в боевом инференсе)",
+      "  --tta-flip            усреднить вектор кропа с вектором его зеркала",
+      "                        (инференс ×2 по времени)"
+    ]
+  },
+  "val_toy": {
+    "returncode": 0,
+    "stdout": [
+      "[hackathon] train.csv: 136 bbox, 56 vehicle_id, 80 кадров",
+      "[pseudo-cam] кадров 80, разрешений 2, псевдокамер 5",
+      "[hackathon] протокол «id», fit: 104 bbox / 42 id; val query: 14 (без пары: 3), gallery: 15",
+      "[extract] query: (14, 40) → runs\\toy_hack\\dummy\\val_query.npz",
+      "[extract] gallery: (15, 40) → runs\\toy_hack\\dummy\\val_gallery.npz",
+      "[id] МЕТРИКА ЖЮРИ (убрано только vid+cam): rank1=  0.0%  rank5= 63.6%  rank10= 90.9%  mAP@10= 23.9%  (queries 11/11, gallery 15)",
+      "строгий cross-cam (диагностика, завышает): rank1= 36.4%  rank5= 81.8%  rank10=100.0%  mAP@10= 54.6%  (queries 11/11, gallery 15)",
+      "bits: tau=0.831, max 3.9 бит при галерее 15",
+      "     0.2–  0.6 бит  n=    6  rank-1 =  50.0%",
+      "     0.6–  0.6 бит  n=    5  rank-1 =  40.0%",
+      "     0.6–  0.6 бит  n=    5  rank-1 =  40.0%",
+      "     0.6–  0.7 бит  n=    7  rank-1 =  42.9%",
+      "     0.7–  1.2 бит  n=    3  rank-1 =  33.3%",
+      "     1.2–  2.3 бит  n=    2  rank-1 =   0.0%",
+      "режим отказа: запросов 14, без пары 3, mINP=53.7%",
+      "  top1       порог=0.918  балл= 67.3  F1= 53.3%  P= 66.7%  R= 44.4%  TNR=100.0%  accept=  43%",
+      "  margin     порог=0.016  балл= 51.5  F1= 30.8%  P=100.0%  R= 18.2%  TNR=100.0%  accept=  14%",
+      "  bits       порог=0.116  балл= 40.0  F1= 28.6%  P= 20.0%  R= 50.0%  TNR= 66.7%  accept=  71%",
+      "  top1+bits  порог=0.930  балл= 67.3  F1= 53.3%  P= 66.7%  R= 44.4%  TNR=100.0%  accept=  43%",
+      "  → лучшая уверенность: top1",
+      "[val] → results\\toy_hack_dummy_val.json"
+    ]
+  },
+  "val_toy_files": {
+    "toy_hack_dummy_val.json": "8988159ae9b2d1a57f2f403f195309ac63cdc56081ba349c375aa36d398e8aa5"
+  },
+  "submit_toy": {
+    "returncode": 0,
+    "stdout": [
+      "[extract] test: (54, 40) → runs\\toy_hack\\dummy\\test_test.npz",
+      "[submit] порог из val (протокол id): уверенность=top1, threshold=0.9179",
+      "[submit] ВНИМАНИЕ: порог калиброван с маской своей камеры, а на тесте камер нет — ожидай заниженную долю отказов. Лучше protocol: track в конфиге и заново val.",
+      "[submit] top-1 сходство на тесте: медиана 0.992, 10%=0.971, 90%=0.999; порог 0.918 → отказов ожидается 0.0%",
+      "[submit] для сравнения на val при этом пороге принималось 42.9% запросов",
+      "[submit] embeddings.npy (54, 40) → E:\\Хакатон\\submission_equivalence\\embeddings.npy",
+      "[submit] submission.csv (54 запросов, top-10) → E:\\Хакатон\\submission_equivalence\\submission.csv",
+      "[submit] candidates.csv: отказов 0/54 → E:\\Хакатон\\submission_equivalence\\candidates.csv"
+    ]
+  },
+  "submit_toy_files": {
+    "candidates.csv": "f7821f035e84b3c2f6716698064d2b172b5edf4cccc3892b58c033a839579c6c",
+    "embeddings.npy": "94342cdec2805590d63ab52a70f4f7b0c896e1342071186d4261a424c23dc224",
+    "submission.csv": "03c8c0e635819624c3670ba8a703caf141c2a69e8e1c4cabab5dd9e123199be3"
+  },
+  "refusal_stress": {
+    "returncode": 0,
+    "stdout": [
+      "запросов 1213; с парой 970, из них с одно-камерным дубликатом 970 (100.0%)",
+      "медиана уверенности у запросов с парой: A 0.912, B 0.517",
+      "   порог  A: как сейчас  B: без дублей   худший    E p=0.7   E p=0.85   E p=0.95",
+      "--------------------------------------------------------------------------------",
+      "  0.4000          82.41          66.55    66.55      77.65      80.03      81.62",
+      "  0.4200          85.03          67.94    67.94      79.90      82.47      84.18",
+      "  0.4400          86.96          68.40    68.40      81.39      84.17      86.03",
+      "  0.4600          88.77          67.85    67.85      82.49      85.63      87.72",
+      "  0.4800          92.56          69.67    69.67      85.69      89.13      91.41",
+      "  0.5000          93.95          68.62    68.62      86.35      90.15      92.69",
+      "  0.5200          94.95          66.79    66.79      86.50      90.73      93.54",
+      "  0.5400          95.84          64.54    64.54      86.45      91.14      94.27",
+      "  0.5600          96.33          61.24    61.24      85.80      91.06      94.57",
+      "  0.5800          96.30          57.42    57.42      84.64      90.47      94.35",
+      "  0.6000          96.66          54.39    54.39      83.98      90.32      94.55",
+      "  0.6200          96.71          50.97    50.97      82.99      89.85      94.42",
+      "  0.6400          96.63          47.96    47.96      82.03      89.33      94.20",
+      "  0.6600          96.36          45.28    45.28      81.03      88.69      93.80",
+      "  0.6800          95.96          42.11    42.11      79.80      87.88      93.26",
+      "  0.7000          95.35          39.29    39.29      78.53      86.94      92.55",
+      "--------------------------------------------------------------------------------",
+      "минимакс: порог 0.4800, худший балл 69.67",
+      "максимум ожидания при вере p=0.70: порог 0.5200, ожидание 86.50",
+      "максимум ожидания при вере p=0.85: порог 0.5500, ожидание 91.41",
+      "максимум ожидания при вере p=0.95: порог 0.5500, ожидание 94.73",
+      "[stress] → E:\\Хакатон\\results\\equivalence_stress.json"
+    ]
+  },
+  "refusal_stress_file": {
+    "equivalence_stress.json": "d2c97196d5011ee0bce07f9c13b49e5c134ba28c0a2b957075d2df0521e961d4"
+  }
+}
