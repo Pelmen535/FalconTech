@@ -245,6 +245,11 @@ def main():
             bad = int((~np.isfinite(e)).any(axis=1).sum())
             if bad:
                 raise SystemExit(f"[predict] в эмбеддингах ре-ранкера {name} {bad} строк с NaN/inf")
+        # Признаки ре-ранкера сохраняются рядом со сдачей, но НЕ вместо embeddings.npy:
+        # в официальный файл идут векторы основной модели, потому что именно она стоит в
+        # замеряемом пути. Этот файл нужен для воспроизводимости — без него submission.csv
+        # нельзя пересобрать из артефактов (scripts/check_cached_replay.py).
+        save_embeddings(np.concatenate([q_heavy, g_heavy]), out / "reranker_embeddings.npy")
         order = shortlist(rank_sims, int(rec["cascade_topk"]))
         rank_sims = rescore(rank_sims, order,
                             heavy_scores(q_heavy, g_heavy, order, qg_block),

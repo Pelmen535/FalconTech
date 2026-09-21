@@ -94,3 +94,45 @@ def test_rescore_does_not_mutate_input():
     order = shortlist(base, 9)
     rescore(base, order, heavy_scores(hq, hg, order), 0.5)
     assert np.array_equal(base, before)
+
+
+# --------------------------------------------------------------------- рецепт релиза
+def _release(tmp_path, **overrides):
+    """Минимальный релиз на диске: рецепт плюс файлы, на существование которых смотрит загрузчик."""
+    import json
+    recipe = {"threshold": 0.55, "confidence": "top1", "tau": 0.2, "tta_flip": False,
+              "dba": 0, "kr": True, "k1": 3, "k2": 2, "lam": 0.2, "crop_pad": 0.05,
+              "mask_plate": False, "topk": 10, "candidates_topk": 1,
+              "candidate_min_sim": None, "fast_decode": True, "refuse_rate": None}
+    recipe.update(overrides)
+    (tmp_path / "recipe.json").write_text(json.dumps(recipe), encoding="utf-8")
+    return tmp_path
+
+
+def test_recipe_without_cascade_stays_off(tmp_path):
+    """Старый рецепт без новых полей обязан читаться и работать как раньше."""
+    from vreid.predict import load_recipe
+    rec = load_recipe(_release(tmp_path))
+    assert rec["cascade"] is False
+
+
+def test_cascade_requires_weights_present(tmp_path):
+    """Каскад без файла ре-ранкера — не тихое отключение, а остановка: иначе сдача уедет
+    с порядком от одной модели, а отчёт будет говорить про две."""
+    from vreid.predict import load_recipe
+    release = _release(tmp_path, cascade=True)
+    with pytest.raises(SystemExit):
+        load_recipe(release)
+    (release / "reranker.pt").write_bytes(b"not a real checkpoint, but a file")
+    assert load_recipe(release)["cascade"] is True
+
+
+@pytest.mark.parametrize("field,value", [("cascade_topk", 0), ("cascade_topk", 2.5),
+                                         ("cascade_alpha", 1.7), ("cascade_alpha", float("nan")),
+                                         ("cascade", "yes")])
+def test_cascade_parameters_validated(tmp_path, field, value):
+    from vreid.predict import load_recipe
+    release = _release(tmp_path, **{"cascade": True, field: value})
+    (release / "reranker.pt").write_bytes(b"file")
+    with pytest.raises((ValueError, SystemExit)):
+        load_recipe(release)

@@ -24,6 +24,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from vreid.artifacts import read_submission                                # noqa: E402
+from vreid.cascade import heavy_scores, rescore, shortlist                 # noqa: E402
 from vreid.predict import load_recipe, rerank_chunk_size, sha256          # noqa: E402
 from vreid.rerank import frame_block_mask, k_reciprocal_chunked           # noqa: E402
 from vreid.submit import write_candidates, write_submission               # noqa: E402
@@ -67,6 +68,23 @@ def main() -> int:
     else:
         rank = raw.copy()
 
+    # Каскад воспроизводится из сохранённых признаков ре-ранкера. Без них сдача из
+    # артефактов не пересобирается: embeddings.npy — это векторы ТОЛЬКО основной модели,
+    # а порядок в submission.csv задают обе. Отсутствие файла — ошибка, а не повод
+    # молча проверить половину пайплайна и отчитаться «совпало».
+    if recipe['cascade']:
+        heavy_path = source / 'reranker_embeddings.npy'
+        if not heavy_path.is_file():
+            raise SystemExit(f'рецепт включает каскад, но {heavy_path.name} рядом со сдачей нет — '
+                             f'пересобрать ранжирование из артефактов невозможно')
+        heavy_all = np.load(heavy_path, allow_pickle=False)
+        if len(heavy_all) != len(query_keys) + len(gallery_keys):
+            raise ValueError('reranker_embeddings.npy не совпадает по длине с входными CSV')
+        q_heavy, g_heavy = heavy_all[:len(query_keys)], heavy_all[len(query_keys):]
+        order = shortlist(rank, int(recipe['cascade_topk']))
+        rank = rescore(rank, order, heavy_scores(q_heavy, g_heavy, order, blocked),
+                       float(recipe['cascade_alpha']))
+
     selected = np.argsort(-rank, axis=1, kind='stable')[:, 0]
     conf = raw[np.arange(len(raw)), selected]
     write_submission(query_keys, gallery_keys, rank, out / 'submission.csv', exclude_self=False)
@@ -84,6 +102,9 @@ def main() -> int:
     info = dict(
         n_query=len(query_keys), n_gallery=len(gallery_keys),
         embeddings_sha256=sha256(source / 'embeddings.npy'),
+        cascade=bool(recipe['cascade']),
+        reranker_embeddings_sha256=(sha256(source / 'reranker_embeddings.npy')
+                                    if recipe['cascade'] else None),
         recipe_sha256=sha256(Path(args.release) / 'recipe.json'),
         top1_changes=sum(a[1][0] != b[1][0] for a, b in zip(old, new)),
         changed_rank_cells=sum(x != y for a, b in zip(old, new) for x, y in zip(a[1], b[1])),

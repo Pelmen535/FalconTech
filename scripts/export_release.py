@@ -102,9 +102,13 @@ def main():
                                for k, t in rr_ck[part].items()}
         torch.save(rr_ck, out / "reranker.pt")
         rr_mb = (out / "reranker.pt").stat().st_size / 1024 ** 2
-        if mb + rr_mb > 2048:
-            raise SystemExit(f"[release] веса не влезают в лимит: model.pt {mb:.0f} МБ + "
-                             f"reranker.pt {rr_mb:.0f} МБ = {mb + rr_mb:.0f} МБ > 2048")
+        # Лимит берём тот же, что проверяет сборка образа (vreid.artifacts.weight_inventory):
+        # консервативные десятичные 2 000 000 000 байт, а не 2 ГиБ. Разойдись эти два числа —
+        # экспорт прошёл бы, а docker build упал, и узнали бы мы об этом в последний момент.
+        total = (out / "model.pt").stat().st_size + (out / "reranker.pt").stat().st_size
+        if total > 2_000_000_000:
+            raise SystemExit(f"[release] веса не влезают в лимит: {total} байт > 2 000 000 000 "
+                             f"(model.pt {mb:.0f} МБ + reranker.pt {rr_mb:.0f} МБ)")
 
     recipe = {"threshold": float(thr), "confidence": conf,
               "tau": float(v["bits"]["calibration"]["tau"]),
@@ -139,6 +143,20 @@ def main():
                          "val_n_gallery": v.get("n_gallery"),
                          "val_refusal_mask_cam": v.get("refusal_mask_cam"),
                          "val_refusal": {k: chosen[k] for k in ("f1", "precision", "recall", "tnr")}}}
+    # Пояснительные поля — это ОБОСНОВАНИЕ решения, а не его параметр: threshold_choice
+    # рассказывает, почему порог 0.55 и чем за это заплачено, rerank_choice — откуда взялись
+    # 3/2/0.2. Пересборка релиза не должна их терять: иначе рецепт молча худеет до голых чисел,
+    # и на защите нечем ответить на «почему так». Значения не пересчитываются — переносятся.
+    kept = {}
+    previous = out / "recipe.json"
+    if previous.is_file():
+        with open(previous, encoding="utf-8") as f:
+            old_recipe = json.load(f)
+        kept = {k: v for k, v in old_recipe.items()
+                if k.endswith("_choice") and k not in recipe}
+        if kept:
+            print(f"[release] перенёс обоснования из прежнего рецепта: {', '.join(sorted(kept))}")
+    recipe.update(kept)
     with open(out / "recipe.json", "w", encoding="utf-8") as f:
         json.dump(recipe, f, ensure_ascii=False, indent=2)
 
