@@ -1,0 +1,114 @@
+{
+  "question": "хватит ли выборочной тяжёлой проверки вместо сплошной",
+  "answer": "нет: при 46% проверенных запросов прирост шестая часть от полного",
+  "runs": {
+    "ft_soup_b336_fit": {
+      "no_cascade": 74.207,
+      "cascade_everywhere": 78.506,
+      "rows": [
+        {
+          "margin_threshold": 0.0,
+          "share_verified": 0.0,
+          "mAP": 74.207,
+          "rank1": 70.722
+        },
+        {
+          "margin_threshold": 0.02,
+          "share_verified": 3.05,
+          "mAP": 74.25,
+          "rank1": 70.722
+        },
+        {
+          "margin_threshold": 0.05,
+          "share_verified": 7.58,
+          "mAP": 74.26,
+          "rank1": 70.722
+        },
+        {
+          "margin_threshold": 0.1,
+          "share_verified": 17.39,
+          "mAP": 74.397,
+          "rank1": 70.825
+        },
+        {
+          "margin_threshold": 0.15,
+          "share_verified": 24.48,
+          "mAP": 74.697,
+          "rank1": 71.031
+        },
+        {
+          "margin_threshold": 0.2,
+          "share_verified": 31.24,
+          "mAP": 74.809,
+          "rank1": 70.928
+        },
+        {
+          "margin_threshold": 0.3,
+          "share_verified": 46.33,
+          "mAP": 74.937,
+          "rank1": 70.928
+        },
+        {
+          "margin_threshold": 1.0,
+          "share_verified": 100.0,
+          "mAP": 78.506,
+          "rank1": 74.948
+        }
+      ]
+    },
+    "ft_soup_b336_val": {
+      "no_cascade": 75.833,
+      "cascade_everywhere": 78.598,
+      "rows": [
+        {
+          "margin_threshold": 0.0,
+          "share_verified": 0.0,
+          "mAP": 75.833,
+          "rank1": 72.68
+        },
+        {
+          "margin_threshold": 0.02,
+          "share_verified": 2.39,
+          "mAP": 75.8,
+          "rank1": 72.577
+        },
+        {
+          "margin_threshold": 0.05,
+          "share_verified": 7.5,
+          "mAP": 75.816,
+          "rank1": 72.577
+        },
+        {
+          "margin_threshold": 0.1,
+          "share_verified": 17.56,
+          "mAP": 76.106,
+          "rank1": 72.887
+        },
+        {
+          "margin_threshold": 0.15,
+          "share_verified": 24.65,
+          "mAP": 76.314,
+          "rank1": 72.99
+        },
+        {
+          "margin_threshold": 0.2,
+          "share_verified": 31.74,
+          "mAP": 76.293,
+          "rank1": 72.887
+        },
+        {
+          "margin_threshold": 0.3,
+          "share_verified": 45.34,
+          "mAP": 76.153,
+          "rank1": 72.577
+        },
+        {
+          "margin_threshold": 1.0,
+          "share_verified": 100.0,
+          "mAP": 78.598,
+          "rank1": 75.67
+        }
+      ]
+    }
+  }
+}
