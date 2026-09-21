@@ -8,3 +8,4 @@
 E:\Хакатон\vreid\train.py:608: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
   sched.step()
 [ep 01] loss=15.497 rank1= 31.6%  rank5= 54.5%  rank10= 65.9%  mAP@10= 34.5%  (queries 970/970, gallery 688) (314 c)
+[ep 02] loss=12.165 rank1= 43.1%  rank5= 69.0%  rank10= 77.7%  mAP@10= 46.8%  (queries 970/970, gallery 688) (311 c)
