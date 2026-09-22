@@ -21,30 +21,26 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import sys
 import urllib.error
 import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-RELEASE_URL = "https://github.com/Pelmen535/FalconTech/releases/download"
-TAG = "v1.0"
+MANIFEST = ROOT / "release" / "weights.json"
 
-# Имя файла → (SHA-256, размер в байтах, что это такое).
-# Суммы не «для галочки»: model.pt — та модель, чей путь меряет жюри, reranker.pt — вторая
-# ступень каскада. Расхождение суммы означает, что числа в отчётах к этим файлам не относятся.
-WEIGHTS = {
-    "model.pt": (
-        "608042f64c259b97590e57b81f6c03e7143fba43d9a9c320b4a2a346e9f5fd1c",
-        171995879,
-        "DINOv2 ViT-B/14 336, основная модель: её вектор идёт в embeddings.npy",
-    ),
-    "reranker.pt": (
-        "6ac3f746aebb20c04526c81708224ebc90b715015d9e99e2e94af74580b66299",
-        607231914,
-        "DINOv2 ViT-L/14 336, ре-ранкер второй ступени: уточняет порядок внутри топ-30",
-    ),
-}
+
+def load_manifest(path: Path = MANIFEST) -> tuple[str, str, dict]:
+    """Какие файлы и с какими суммами ждать - записано рядом с recipe.json, а не в коде.
+
+    Так смена релиза - это правка одного JSON, который коммитится вместе с рецептом, и
+    рецепт с весами не могут разойтись: оба лежат в одном коммите. Имя файла → (SHA-256,
+    размер, описание). Совпадение суммы означает, что скачано ровно то, чем сняты числа."""
+    data = json.loads(path.read_text(encoding="utf-8"))
+    files = {name: (spec["sha256"], int(spec["size"]), spec.get("what", ""))
+             for name, spec in data["files"].items()}
+    return data["tag"], f"https://github.com/{data['repo']}/releases/download", files
 
 
 def sha256(path: Path, chunk: int = 1 << 20) -> str:
@@ -92,15 +88,17 @@ def main() -> int:
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--out", type=Path, default=ROOT / "release",
                         help="куда класть веса (по умолчанию release/ рядом с recipe.json)")
-    parser.add_argument("--tag", default=TAG, help="тег релиза на GitHub")
+    parser.add_argument("--tag", default=None, help="тег релиза (по умолчанию из release/weights.json)")
     parser.add_argument("--check", action="store_true",
                         help="ничего не скачивать, только проверить уже лежащее")
     parser.add_argument("--force", action="store_true",
                         help="перекачать, даже если файл на месте и сумма совпадает")
     args = parser.parse_args()
 
+    tag, release_url, weights = load_manifest()
+    tag = args.tag or tag
     bad = 0
-    for name, (expected, size, what) in WEIGHTS.items():
+    for name, (expected, size, what) in weights.items():
         target = args.out / name
         ok, reason = verify(target, expected, size)
         if ok and not args.force:
@@ -110,13 +108,13 @@ def main() -> int:
             print(f"[weights] {name}: ПРОБЛЕМА — {reason}")
             bad += 1
             continue
-        url = f"{RELEASE_URL}/{args.tag}/{name}"
+        url = f"{release_url}/{tag}/{name}"
         print(f"[weights] {name}: {reason}, качаю {size / 2**20:.0f} МиБ из {url}")
         try:
             download(url, target, size)
         except urllib.error.HTTPError as error:
             print(f"[weights] не скачалось ({error.code} {error.reason}). Проверь, что релиз "
-                  f"{args.tag} опубликован: {RELEASE_URL.rsplit('/', 1)[0]}/releases")
+                  f"{tag} опубликован: {release_url.rsplit('/', 1)[0]}/releases")
             bad += 1
             continue
         except urllib.error.URLError as error:
