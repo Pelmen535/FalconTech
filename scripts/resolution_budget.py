@@ -66,6 +66,9 @@ def main() -> int:
     parser.add_argument("--warmup", type=int, default=20)
     parser.add_argument("--bench", type=Path, default=ROOT / "results/bench_full.json",
                         help="откуда взять измеренный ввод-вывод текущего релиза")
+    parser.add_argument("--compile", action="store_true",
+                        help="прогнать backbone через torch.compile: в Linux-контейнере это "
+                             "обычно 20-50% к скорости форварда, а значит и к запасу по баллу")
     parser.add_argument("--out", type=Path, default=ROOT / "results/resolution_budget.json")
     args = parser.parse_args()
 
@@ -79,6 +82,8 @@ def main() -> int:
     for size in args.sizes:
         backbone, _, _ = build_model(args.model, size, pretrained=False)
         backbone = backbone.to(device).eval()
+        if args.compile:
+            backbone = torch.compile(backbone)
         one = forward_ms(backbone, size, 1, device, args.repeats, args.warmup)
         many = forward_ms(backbone, size, args.batch, device, args.repeats, args.warmup) / args.batch
         latency = io_ms + one
@@ -100,6 +105,7 @@ def main() -> int:
 
     full = [r for r in rows if r["score_of_20"] >= 20.0]
     report = {"device": torch.cuda.get_device_name(0) if device == "cuda" else "cpu",
+              "compiled": bool(args.compile),
               "io_ms_per_item": io_ms,
               "release_forward_ms_measured": base_fwd,
               "note": ("время форварда не зависит от значений весов, только от формы входа; "

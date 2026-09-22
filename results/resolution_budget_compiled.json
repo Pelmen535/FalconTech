@@ -1,0 +1,54 @@
+{
+  "device": "NVIDIA GeForce RTX 5060 Ti",
+  "compiled": true,
+  "io_ms_per_item": 24.04,
+  "release_forward_ms_measured": 7.85,
+  "note": "время форварда не зависит от значений весов, только от формы входа; поэтому модель создана без предобученных весов",
+  "max_size_with_full_score": 448,
+  "rows": [
+    {
+      "size": 336,
+      "tokens": 576,
+      "forward_ms_b1": 5.63,
+      "forward_ms_per_item_b8": 3.33,
+      "latency_ms": 29.67,
+      "latency_score": 1.0,
+      "fps": 300.0,
+      "throughput_score": 1.0,
+      "score_of_20": 20.0
+    },
+    {
+      "size": 392,
+      "tokens": 784,
+      "forward_ms_b1": 6.76,
+      "forward_ms_per_item_b8": 4.68,
+      "latency_ms": 30.8,
+      "latency_score": 1.0,
+      "fps": 213.6,
+      "throughput_score": 1.0,
+      "score_of_20": 20.0
+    },
+    {
+      "size": 420,
+      "tokens": 900,
+      "forward_ms_b1": 7.59,
+      "forward_ms_per_item_b8": 5.35,
+      "latency_ms": 31.63,
+      "latency_score": 1.0,
+      "fps": 186.8,
+      "throughput_score": 1.0,
+      "score_of_20": 20.0
+    },
+    {
+      "size": 448,
+      "tokens": 1024,
+      "forward_ms_b1": 7.89,
+      "forward_ms_per_item_b8": 6.2,
+      "latency_ms": 31.93,
+      "latency_score": 1.0,
+      "fps": 161.3,
+      "throughput_score": 1.0,
+      "score_of_20": 20.0
+    }
+  ]
+}

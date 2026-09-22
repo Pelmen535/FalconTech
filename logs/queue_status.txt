@@ -877,3 +877,17 @@ queue20 started 2026-09-22 07:21:17
 [07:34:28] START q20_logs
 [07:34:32] END   q20_logs  ok  0 min
 [07:34:32] queue20 finished: РІСЃРµ С€Р°РіРё РїСЂРѕС€Р»Рё
+queue21 started 2026-09-22 08:18:57
+[08:18:57] WAIT  for running vreid processes
+[08:19:01] WAIT  done - GPU free
+[08:19:01] START q21_train_392
+[09:46:18] END   q21_train_392  ok  87 min
+[09:46:18] START q21_val_392
+[09:47:26] END   q21_val_392  ok  1 min
+[09:47:26] START q21_train_448
+[11:33:48] END   q21_train_448  ok  106 min
+[11:33:48] START q21_val_448
+[11:35:03] END   q21_val_448  ok  1 min
+[11:35:03] START q21_compare
+[11:35:03] END   q21_compare  FAILED exit=1  0 min
+[11:35:03] queue21 finished: РџР РћР’РђР›РР›РРЎР¬ 1 С€Р°Рі(РѕРІ): q21_compare
