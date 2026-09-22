@@ -409,6 +409,15 @@ class ArcFace:
         return F.cross_entropy(logits, y, label_smoothing=self.label_smoothing)
 
 
+def teacher_input(x, size: int):
+    """Батч ученика, приведённый ко входу учителя. При совпадении размеров возвращается тот же
+    тензор — без копии и без интерполяции, поэтому поведение прежних прогонов не меняется."""
+    import torch.nn.functional as F
+    if x.shape[-1] == size and x.shape[-2] == size:
+        return x
+    return F.interpolate(x, size=(size, size), mode="bicubic", align_corners=False, antialias=True)
+
+
 def similarity_distill(f_student, teacher_feats):
     """Дистилляция геометрии, а не самих векторов (Tung & Mori, 2019).
 
@@ -482,7 +491,7 @@ def find_batch_P(model, arc, img_size: int, K: int, device: str, p_max: int = 24
         loss = arc(fb.float(), y) + triplet_batch_hard(f.float(), y)
         for one in teachers:                         # учителя тоже занимают память, хоть и без градиентов
             with torch.no_grad(), torch.autocast(device_type="cuda"):
-                one.features(x)
+                one.features(teacher_input(x, one.img_size))
         loss.backward()
         torch.cuda.synchronize()
         peak = torch.cuda.max_memory_allocated()
@@ -601,7 +610,7 @@ def train_one_epoch(model, loader, arc, teachers, opt, sched, scaler, params, ar
         if teachers:
             with torch.no_grad(), torch.autocast(device_type="cuda" if device == "cuda" else "cpu",
                                                  enabled=(device == "cuda")):
-                teacher_out = [one.features(x)[1] for one in teachers]
+                teacher_out = [one.features(teacher_input(x, one.img_size))[1] for one in teachers]
             loss = loss + args.distill_w * similarity_distill(fb, [t.float() for t in teacher_out])
         opt.zero_grad(set_to_none=True)
         scaler.scale(loss).backward()
@@ -748,8 +757,13 @@ def main(argv=None):
             for prm in sub.parameters():
                 prm.requires_grad_(False)
         if one.img_size != args.img_size:
-            raise SystemExit(f"учитель {path} обучен на входе {one.img_size}, ученик на {args.img_size} — "
-                             f"нужен одинаковый вход, иначе кропы не совпадут")
+            # Учителю отдаём тот же кроп, приведённый к ЕГО входу. Раньше здесь стоял запрет, и
+            # он мешал главному: поднять разрешение ученика, не переобучая учителя (ViT-L на 448
+            # это ещё несколько часов GPU и втрое больше памяти). Содержимое кропа от
+            # интерполяции не меняется, а дистиллируется геометрия сходств внутри батча —
+            # ей важно, КТО на кого похож, а не в каком разрешении учитель это увидел.
+            print(f"[train] учитель {path} обучен на {one.img_size}, ученик на {args.img_size}: "
+                  f"кроп для учителя масштабируется до его входа")
         print(f"[train] дистилляция от {path}: D учителя {one.dim}, вес {args.distill_w}")
         teachers.append(one)
     if len(teachers) > 1:
