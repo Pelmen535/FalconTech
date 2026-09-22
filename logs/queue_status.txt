@@ -891,3 +891,7 @@ queue21 started 2026-09-22 08:18:57
 [11:35:03] START q21_compare
 [11:35:03] END   q21_compare  FAILED exit=1  0 min
 [11:35:03] queue21 finished: РџР РћР’РђР›РР›РРЎР¬ 1 С€Р°Рі(РѕРІ): q21_compare
+queue22 started 2026-09-22 15:46:04
+[15:46:04] WAIT  for running vreid processes
+[15:46:05] WAIT  done - GPU free
+[15:46:05] START q22_fit_s2
