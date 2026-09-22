@@ -1,21 +1,15 @@
 {
-  "tag": "v1.0",
+  "tag": "v1.1",
   "repo": "Pelmen535/FalconTech",
   "files": {
     "model.pt": {
-      "sha256": "608042f64c259b97590e57b81f6c03e7143fba43d9a9c320b4a2a346e9f5fd1c",
-      "size": 171995879,
-      "what": "DINOv2 ViT-B/14 336, основная модель: её вектор идёт в embeddings.npy"
-    },
-    "reranker.pt": {
-      "sha256": "6ac3f746aebb20c04526c81708224ebc90b715015d9e99e2e94af74580b66299",
-      "size": 607231914,
-      "what": "DINOv2 ViT-L/14 336, ре-ранкер второй ступени каскада"
+      "sha256": "a2d7084bd882e7aa1afc42155a485b90b65c5478388c737c4c3df6b182e3c49c",
+      "size": 172315879,
+      "what": "DINOv2 ViT-B/14, основная модель: её вектор идёт в embeddings.npy, её путь меряет жюри"
     }
   },
-  "twin_map10": 74.207,
-  "twin_rank1": 70.722,
+  "twin_map10": 77.597,
+  "twin_rank1": 74.845,
   "twin_postprocess": "k-recip 3/2",
-  "twin_val": "results/hack_ft_soup_b336_fit_val.json",
-  "note": "число двойника - по безрисковому пути, без каскада: с каскадом v1.0 даёт 78.97, но этот балл держится на трактовке правил о латентности, и сравнивать следующие релизы решено по пути, который жюри меряет без оговорок"
+  "twin_val": "results/hack_ft_soup_r392_fit_val.json"
 }

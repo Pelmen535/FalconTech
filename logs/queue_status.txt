@@ -903,3 +903,71 @@ queue22 started 2026-09-22 15:46:04
 [19:01:22] START q22_val_fit
 [20:47:21] END   q22_all_s0  ok  105 min
 [20:47:21] START q22_all_s2
+queue24 started 2026-09-22 22:08:18
+[22:08:18] WAIT  for running vreid processes
+[22:08:18] WAIT  done - GPU free
+[22:08:18] удалён частичный all18_r392_s2
+[22:08:18] START q24_all_s2
+[23:43:22] END   q24_all_s2  ok  95 min
+[23:43:22] START q24_all_s3
+[01:18:06] END   q24_all_s3  ok  95 min
+[01:18:06] START q24_soup_all
+[01:18:13] END   q24_soup_all  ok  0 min
+[01:18:13] START q24_val_fit_s2
+[01:19:50] END   q24_val_fit_s2  ok  2 min
+[01:19:50] START q24_val_fit_s3
+[01:20:48] END   q24_val_fit_s3  ok  1 min
+[01:20:48] START q24_grid
+[01:22:43] END   q24_grid  ok  2 min
+[01:22:43] START q24_stress
+[01:22:43] END   q24_stress  ok  0 min
+[01:22:43] data folder: E:\Хакатон\Данные
+[01:22:43] START q24_tests
+[01:22:59] END   q24_tests  ok  0 min
+[01:22:59] START q24_export
+[01:23:02] END   q24_export  ok  0 min
+[01:23:02] START q24_predict
+[01:24:23] END   q24_predict  ok  1 min
+[01:24:23] START q24_form
+[01:24:23] END   q24_form  ok  0 min
+[01:24:23] START q24_indep
+[01:24:25] END   q24_indep  ok  0 min
+[01:24:25] START q24_ties
+[01:24:25] END   q24_ties  ok  0 min
+[01:24:25] START q24_replay
+[01:24:27] END   q24_replay  ok  0 min
+[01:24:28] docker не отвечает - запускаю Docker Desktop
+[01:24:43] docker готов
+[01:24:43] START q24_build_release
+[01:26:42] END   q24_build_release  ok  2 min
+[01:26:42] START q24_build_dev
+[01:27:52] END   q24_build_dev  ok  1 min
+[01:27:52] START q24_build_api
+[01:29:13] END   q24_build_api  ok  1 min
+[01:29:13] START q24_build_web
+[01:29:16] END   q24_build_web  ok  0 min
+[01:29:16] START q24_docker_a
+[01:29:43] END   q24_docker_a  ok  0 min
+[01:29:43] START q24_docker_b
+[01:30:09] END   q24_docker_b  ok  0 min
+[01:30:09] START q24_cmp_det
+[01:30:09] END   q24_cmp_det  ok  0 min
+[01:30:09] START q24_docker_offline
+[01:30:35] END   q24_docker_offline  ok  0 min
+[01:30:35] START q24_cmp_offline
+[01:30:35] END   q24_cmp_offline  ok  0 min
+[01:30:35] START q24_bench
+[01:31:57] END   q24_bench  ok  1 min
+[01:31:57] START q24_official
+[01:32:01] END   q24_official  ok  0 min
+[01:32:01] START q24_audit
+[01:32:03] END   q24_audit  ok  0 min
+[01:32:03] START q24_errors
+[01:32:19] END   q24_errors  ok  0 min
+[01:32:19] START q24_scorecard
+[01:32:19] END   q24_scorecard  ok  0 min
+[01:32:19] START q24_manifest
+[01:32:24] END   q24_manifest  ok  0 min
+[01:32:24] START q24_logs
+[01:32:26] END   q24_logs  ok  0 min
+[01:32:26] START q24_publish

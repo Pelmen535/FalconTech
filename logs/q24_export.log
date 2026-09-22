@@ -1,0 +1,7 @@
+[release] перенёс обоснования из прежнего рецепта: rerank_choice, threshold_choice
+[release] model.pt 164 МБ (fp16), лимит ТЗ — 2048 МБ
+[release] frozen threshold 0.5500; evaluate emitted CSV with scripts/refusal_audit.py
+[release] source validation point 0.5840: F1=96.6%, TNR=97.9% (not a measurement of this exported recipe)
+[release] отказов в рабочей точке: 24.2% (используется абсолютный порог)
+[release] val mAP@10 по правилу жюри 73.7% (строгий cross-cam для сравнения 75.4%, протокол track)
+[release] → release/model.pt, release/recipe.json

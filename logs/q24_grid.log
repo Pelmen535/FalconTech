@@ -1,0 +1,6 @@
+[grid] ft_soup_r392_fit: 93 точек
+[grid] ft_fit18_r392_s0: 93 точек
+[grid] лучшее на ft_soup_r392_fit: 3/2/0.3 = 77.597, на ft_fit18_r392_s0 даёт 76.826
+[grid] лучшее на ft_fit18_r392_s0: 4/2/0.3 = 77.317, на ft_soup_r392_fit даёт 77.293
+[grid] в рецепте 6/2/0.3: 77.562 / 76.582
+[grid] → results\rerank_grid_r392.json
