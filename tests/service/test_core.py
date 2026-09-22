@@ -240,6 +240,13 @@ def test_representative_cached_queries_match_received_output_on_full_750_gallery
         rows = rows[1:]
     rankings = {row[0]: row[1:] for row in rows}
     candidates = {row["query_id"]: row for row in _csv(EXAMPLE_OUTPUT / "candidates.csv")}
+    # Входные CSV в репозитории синтетические: настоящие - это разметка организаторов, и мы
+    # её не публикуем. Паритет адаптера и конкурсной сдачи проверяется только тогда, когда
+    # рядом лежит НАСТОЯЩИЙ прогон по тем же входам. Иначе тест обязан пропуститься, а не
+    # сравнивать выдачу с чужими идентификаторами и делать вид, что что-то проверил.
+    if not set(query_ids) & set(rankings):
+        pytest.skip("submission/ снят по другим входам, чем лежащие в фикстурах CSV: "
+                    "паритет проверяется только на настоящем прогоне")
     # Cover both refusal outcomes and separated positions in the original CSV.
     selected = {0, len(query_ids) // 3, len(query_ids) // 2, len(query_ids) - 1}
     selected.update(next(i for i, key in enumerate(query_ids) if (key in candidates) == accepted)

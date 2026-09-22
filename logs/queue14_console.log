@@ -18,7 +18,7 @@
 ============================== warnings summary ===============================
 tests/service/test_api.py: 448 warnings
 tests/service/test_extensions.py: 128 warnings
-  C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py:233: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+  C:\Users\<user>\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py:233: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
     is_coroutine = asyncio.iscoroutinefunction(dependant.call)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html

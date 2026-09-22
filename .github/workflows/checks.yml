@@ -13,10 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          # Веса лежат в Git LFS: без них тест паритета сервиса и конкурсного CLI
-          # просто пропустится, и проверка станет слабее, чем выглядит.
-          lfs: true
 
       - uses: actions/setup-python@v5
         with:
@@ -34,11 +30,13 @@ jobs:
       - name: pytest
         run: python -m pytest tests -q
 
-      - name: форма артефактов сдачи
-        # Датасета в репозитории нет, но CSV входа лежат в фикстурах тестов, и этого
-        # достаточно, чтобы проверить форму трёх файлов сдачи: покрытие запросов,
-        # порядок строк embeddings.npy, ровно десять кандидатов, формат candidates.csv.
-        run: python scripts/check_submission.py --submission submission --data tests/service/fixtures/inputs_csv
+      - name: фикстуры воспроизводятся побайтово
+        # Входные CSV в tests/ синтетические (настоящие - это разметка организаторов, её
+        # мы не публикуем). Скрипт с фиксированным seed обязан выдавать ровно то, что лежит
+        # в репозитории: разойдётся - значит фикстуры правили руками, и тесты проверяют не то.
+        run: |
+          python scripts/make_test_fixtures.py
+          git diff --exit-code tests/service/fixtures/inputs_csv
 
       - name: логи в UTF-8
         run: python scripts/normalize_logs.py
@@ -48,8 +46,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
+      # Веса не лежат в репозитории: они отдаются как файлы GitHub Release, потому что
+      # бесплатной квоты Git LFS (1 ГБ трафика в месяц) хватило бы на одно клонирование.
+      # Этот шаг заодно проверяет, что скрипт скачивания рабочий и суммы сходятся.
+      - name: веса из релиза
+        run: python scripts/fetch_weights.py
       # Образ собирается ровно той командой, которую выполняет жюри. Внутри сборки
       # работают pip check, инвентаризация весов против лимита 2 ГБ и разбор рецепта,
       # поэтому успешная сборка — это уже содержательная проверка, а не формальность.

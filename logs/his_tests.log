@@ -3,14 +3,14 @@ test_exact_latency_runs_and_sync (test_benchmark_artifacts.BenchArtifactTests.te
 test_throughput_runs_ten_seconds (test_benchmark_artifacts.BenchArtifactTests.test_throughput_runs_ten_seconds) ... ok
 test_all_reject_threshold_survives_float32 (test_protocol.ProtocolTests.test_all_reject_threshold_survives_float32) ... ok
 test_ap10_denominator_and_nomatch (test_protocol.ProtocolTests.test_ap10_denominator_and_nomatch) ... ok
-test_calibration_export_with_mock_features_and_report_tampering (test_protocol.ProtocolTests.test_calibration_export_with_mock_features_and_report_tampering) ... [submit] candidates.csv: отказов 2/10 → C:\Users\Sheka\AppData\Local\Temp\tmp47b8k99_\release\validation\calibration_candidates.csv
-[submit] submission.csv (10 запросов, top-10) → C:\Users\Sheka\AppData\Local\Temp\tmp47b8k99_\release\validation\calibration_submission.csv
-[submit] candidates.csv: отказов 2/10 → C:\Users\Sheka\AppData\Local\Temp\tmp47b8k99_\release\validation\holdout_candidates.csv
-[submit] submission.csv (10 запросов, top-10) → C:\Users\Sheka\AppData\Local\Temp\tmp47b8k99_\release\validation\holdout_submission.csv
+test_calibration_export_with_mock_features_and_report_tampering (test_protocol.ProtocolTests.test_calibration_export_with_mock_features_and_report_tampering) ... [submit] candidates.csv: отказов 2/10 → C:\Users\<user>\AppData\Local\Temp\tmp47b8k99_\release\validation\calibration_candidates.csv
+[submit] submission.csv (10 запросов, top-10) → C:\Users\<user>\AppData\Local\Temp\tmp47b8k99_\release\validation\calibration_submission.csv
+[submit] candidates.csv: отказов 2/10 → C:\Users\<user>\AppData\Local\Temp\tmp47b8k99_\release\validation\holdout_candidates.csv
+[submit] submission.csv (10 запросов, top-10) → C:\Users\<user>\AppData\Local\Temp\tmp47b8k99_\release\validation\holdout_submission.csv
 ok
 test_confusion_threshold_and_serialized_max_confidence (test_protocol.ProtocolTests.test_confusion_threshold_and_serialized_max_confidence) ... ok
-test_final_selected_confidence_and_saved_candidates (test_protocol.ProtocolTests.test_final_selected_confidence_and_saved_candidates) ... [submit] candidates.csv: отказов 1/1 → C:\Users\Sheka\AppData\Local\Temp\tmpbjep6tn_\c.csv
-[submit] submission.csv (1 запросов, top-10) → C:\Users\Sheka\AppData\Local\Temp\tmpbjep6tn_\s.csv
+test_final_selected_confidence_and_saved_candidates (test_protocol.ProtocolTests.test_final_selected_confidence_and_saved_candidates) ... [submit] candidates.csv: отказов 1/1 → C:\Users\<user>\AppData\Local\Temp\tmpbjep6tn_\c.csv
+[submit] submission.csv (1 запросов, top-10) → C:\Users\<user>\AppData\Local\Temp\tmpbjep6tn_\s.csv
 ok
 test_forbidden_options_and_uncalibrated_release (test_protocol.ProtocolTests.test_forbidden_options_and_uncalibrated_release) ... ok
 test_invalid_bbox_and_duplicate_id_fail (test_protocol.ProtocolTests.test_invalid_bbox_and_duplicate_id_fail) ... ok

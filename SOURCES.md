@@ -109,7 +109,8 @@ Swagger UI скачан на этапе подготовки и лежит в р
 
 `evaluate.py` запускается на нашей валидации скриптом
 `scripts/score_validation_with_official.py`; отчёт и сравнение с нашими числами —
-в `results/official_validation/`.
+в `results/official_validation/` (каталог локальный, в репозиторий не выкладывается:
+в нём лежит разметка организаторов).
 
 ## 3. Данные
 

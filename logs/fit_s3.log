@@ -27,43 +27,43 @@ Traceback (most recent call last):
   File "E:\Хакатон\vreid\train.py", line 568, in main
     for x, y, cam in dl:
                      ^^
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 741, in __next__
+  File "C:\Users\<user>\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 741, in __next__
     data = self._next_data()
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 1548, in _next_data
+  File "C:\Users\<user>\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 1548, in _next_data
     return self._process_data(data, worker_id)
            ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 1586, in _process_data
+  File "C:\Users\<user>\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\dataloader.py", line 1586, in _process_data
     data.reraise()
     ~~~~~~~~~~~~^^
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\_utils.py", line 785, in reraise
+  File "C:\Users\<user>\AppData\Roaming\Python\Python314\site-packages\torch\_utils.py", line 785, in reraise
     raise exception
 MemoryError: Caught MemoryError in DataLoader worker process 2.
 Original Traceback (most recent call last):
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\worker.py", line 358, in _worker_loop
+  File "C:\Users\<user>\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\worker.py", line 358, in _worker_loop
     data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\fetch.py", line 54, in fetch
+  File "C:\Users\<user>\AppData\Roaming\Python\Python314\site-packages\torch\utils\data\_utils\fetch.py", line 54, in fetch
     data = [self.dataset[idx] for idx in possibly_batched_index]
             ~~~~~~~~~~~~^^^^^
   File "E:\Хакатон\vreid\train.py", line 140, in __getitem__
     x = self.tf(im.convert("RGB"), r.bbox, mf)
   File "E:\Хакатон\vreid\train.py", line 99, in __call__
     crop = self.color(crop)
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\nn\modules\module.py", line 1779, in _wrapped_call_impl
+  File "C:\Users\<user>\AppData\Roaming\Python\Python314\site-packages\torch\nn\modules\module.py", line 1779, in _wrapped_call_impl
     return self._call_impl(*args, **kwargs)
            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torch\nn\modules\module.py", line 1790, in _call_impl
+  File "C:\Users\<user>\AppData\Roaming\Python\Python314\site-packages\torch\nn\modules\module.py", line 1790, in _call_impl
     return forward_call(*args, **kwargs)
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torchvision\transforms\transforms.py", line 1288, in forward
+  File "C:\Users\<user>\AppData\Roaming\Python\Python314\site-packages\torchvision\transforms\transforms.py", line 1288, in forward
     img = F.adjust_hue(img, hue_factor)
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torchvision\transforms\functional.py", line 968, in adjust_hue
+  File "C:\Users\<user>\AppData\Roaming\Python\Python314\site-packages\torchvision\transforms\functional.py", line 968, in adjust_hue
     return F_pil.adjust_hue(img, hue_factor)
            ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\torchvision\transforms\_functional_pil.py", line 114, in adjust_hue
+  File "C:\Users\<user>\AppData\Roaming\Python\Python314\site-packages\torchvision\transforms\_functional_pil.py", line 114, in adjust_hue
     np_h = np.array(h, dtype=np.uint8)
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\PIL\Image.py", line 735, in __array_interface__
+  File "C:\Users\<user>\AppData\Roaming\Python\Python314\site-packages\PIL\Image.py", line 735, in __array_interface__
     new["data"] = self.tobytes()
                   ~~~~~~~~~~~~^^
-  File "C:\Users\Sheka\AppData\Roaming\Python\Python314\site-packages\PIL\Image.py", line 819, in tobytes
+  File "C:\Users\<user>\AppData\Roaming\Python\Python314\site-packages\PIL\Image.py", line 819, in tobytes
     return b"".join(output)
            ~~~~~~~~^^^^^^^^
 MemoryError
