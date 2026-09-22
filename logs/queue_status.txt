@@ -895,3 +895,9 @@ queue22 started 2026-09-22 15:46:04
 [15:46:04] WAIT  for running vreid processes
 [15:46:05] WAIT  done - GPU free
 [15:46:05] START q22_fit_s2
+[17:22:44] END   q22_fit_s2  ok  97 min
+[17:22:44] START q22_fit_s3
+[19:01:09] END   q22_fit_s3  ok  98 min
+[19:01:09] START q22_soup_fit
+[19:01:22] END   q22_soup_fit  ok  0 min
+[19:01:22] START q22_val_fit
