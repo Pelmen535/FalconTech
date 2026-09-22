@@ -901,3 +901,5 @@ queue22 started 2026-09-22 15:46:04
 [19:01:09] START q22_soup_fit
 [19:01:22] END   q22_soup_fit  ok  0 min
 [19:01:22] START q22_val_fit
+[20:47:21] END   q22_all_s0  ok  105 min
+[20:47:21] START q22_all_s2

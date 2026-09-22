@@ -556,11 +556,21 @@ $('next').addEventListener('click', () => run(async () => {
 
 // ----------------------------------------------------------------- демонстрация
 /* Кнопки появляются только если демонстрационный набор реально лежит в сборке:
-   обещать в интерфейсе то, чего нет в контейнере, хуже, чем не обещать вовсе. */
+   обещать в интерфейсе то, чего нет в контейнере, хуже, чем не обещать вовсе.
+   Но молчать тоже нельзя: набор собран из кадров организаторов и в репозиторий не
+   выкладывается, поэтому вместо кнопок показываем команду, которой он собирается. */
 async function setupDemo() {
   let info;
   try { info = await (await api('/v1/demo')).json(); } catch { return; }
-  if (!info.available) return;
+  if (!info.available) {
+    const hint = $('demo-hint');
+    if (hint && info.hint) {
+      hint.textContent = 'Демонстрационный набор не собран (' + (info.why || '') +
+        '). Собрать одной командой: ' + info.hint;
+      hint.classList.remove('hidden');
+    }
+    return;
+  }
 
   $('use-demo').classList.remove('hidden');
   $('use-demo').addEventListener('click', () => run(async () => {
