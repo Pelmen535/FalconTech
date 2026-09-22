@@ -127,3 +127,26 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+def release_twin_run(root=None):
+    """Каталог кеша эмбеддингов ДВОЙНИКА текущего релиза.
+
+    Двойник - та же модель, обученная без валидационных личностей: на нём и только на нём
+    считаются все отчёты (метрика эталонным scorer, отказ, разбор ошибок). Раньше путь к нему
+    был зашит в четырёх скриптах по умолчанию, и после смены релиза на вход 392 ночная очередь
+    честно пересчитала отчёты - на старом двойнике 336. Теперь источник один: release/weights.json,
+    который коммитится вместе с рецептом. Поле twin_run, а если его нет - выводится из twin_val
+    по соглашению проекта results/hack_ft_<имя>_val.json <-> runs/hack/ft_<имя>."""
+    import json as _json
+    import re as _re
+    base = Path(root) if root else Path(__file__).resolve().parents[1]
+    manifest = base / 'release' / 'weights.json'
+    fallback = base / 'runs' / 'hack' / 'ft_soup_b336_fit'
+    if not manifest.is_file():
+        return fallback
+    data = _json.loads(manifest.read_text(encoding='utf-8'))
+    if data.get('twin_run'):
+        return base / data['twin_run']
+    match = _re.search(r'hack_(ft_[^/\\]+?)_val\.json$', str(data.get('twin_val', '')))
+    return base / 'runs' / 'hack' / match.group(1) if match else fallback

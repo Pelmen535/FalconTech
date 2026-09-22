@@ -52,7 +52,22 @@ def sha256(path: Path) -> str:
 
 
 def twin_score(val_path: Path, recipe: dict) -> tuple[float, float, str]:
-    """mAP@10 и rank-1 двойника ровно при той постобработке, что стоит в рецепте."""
+    """mAP@10 и rank-1 двойника ровно при той постобработке, что стоит в рецепте.
+
+    Приоритет - эталонному scorer организаторов (results/official_validation/comparison.json),
+    если он считал ИМЕННО этого двойника. Val-отчёт считает k-reciprocal по всей матрице, а
+    боевой путь - пачками с блокировкой кадров; на двойнике 392 это 77.60 против 77.41. Балл
+    жюри считается по боевому пути, поэтому публиковать надо его число, а не промежуточное:
+    v1.1 сначала вышел с 77.60, и прирост над v1.0 был завышен на 0.19."""
+    official = ROOT / "results" / "official_validation" / "comparison.json"
+    run_name = val_path.name.replace("hack_", "", 1).replace("_val.json", "")
+    if official.is_file():
+        data = json.loads(official.read_text(encoding="utf-8"))
+        if Path(str(data.get("run", ""))).name == run_name:
+            ranking = data["official"]["ranking"]
+            return 100 * ranking["mAP@10"], 100 * ranking["Rank-1"], "эталонный scorer"
+        print(f"[publish] эталонный scorer считал {Path(str(data.get('run'))).name}, а не "
+              f"{run_name} - беру val-отчёт; число может разойтись с боевым путём на десятые")
     data = json.loads(val_path.read_text(encoding="utf-8"))
     rows = data["postprocess"]["rows"]
     if recipe.get("kr"):

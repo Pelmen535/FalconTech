@@ -36,6 +36,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+from vreid.artifacts import release_twin_run  # noqa: E402 - двойник текущего релиза
 sys.path.insert(0, str(ROOT / 'scripts'))
 
 from eval_common import counts, score                     # noqa: E402
@@ -59,7 +60,7 @@ def write_rows(path: Path, header: list[str], rows) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--run', type=Path, default=ROOT / 'runs/hack/ft_soup_b336_fit')
+    parser.add_argument('--run', type=Path, default=release_twin_run(ROOT))
     parser.add_argument('--release', type=Path, default=ROOT / 'release')
     parser.add_argument('--scorer', type=Path, default=ROOT / 'organizer/evaluate.py')
     parser.add_argument('--out', type=Path, default=ROOT / 'results/official_validation')

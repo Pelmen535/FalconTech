@@ -8,8 +8,11 @@
       "what": "DINOv2 ViT-B/14, основная модель: её вектор идёт в embeddings.npy, её путь меряет жюри"
     }
   },
-  "twin_map10": 77.597,
-  "twin_rank1": 74.845,
-  "twin_postprocess": "k-recip 3/2",
-  "twin_val": "results/hack_ft_soup_r392_fit_val.json"
+  "twin_map10": 77.411,
+  "twin_rank1": 74.639,
+  "twin_postprocess": "k-recip 3/2, эталонный scorer",
+  "twin_val": "results/hack_ft_soup_r392_fit_val.json",
+  "twin_run": "runs/hack/ft_soup_r392_fit",
+  "twin_source": "results/official_validation/comparison.json",
+  "correction": "при публикации 23.09 01:33 было записано 77.60 из val-отчёта; боевой путь считает k-reciprocal пачками с блокировкой кадров, и эталон даёт 77.41. Исправлено тем же утром, прирост над v1.0 +3.20, а не +3.39"
 }

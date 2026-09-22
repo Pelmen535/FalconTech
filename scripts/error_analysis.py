@@ -33,6 +33,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+from vreid.artifacts import release_twin_run  # noqa: E402 - двойник текущего релиза
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from eval_common import score                      # noqa: E402
@@ -140,7 +141,7 @@ def contact_sheet(query_key, gallery_keys, rows_q, rows_g, data_root: Path, out:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--run", type=Path, default=ROOT / "runs/hack/ft_soup_b336_fit")
+    parser.add_argument("--run", type=Path, default=release_twin_run(ROOT))
     parser.add_argument("--release", type=Path, default=ROOT / "release")
     parser.add_argument("--data", type=Path, default=ROOT / "Данные")
     parser.add_argument("--examples", type=int, default=6)

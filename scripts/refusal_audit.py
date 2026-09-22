@@ -27,12 +27,15 @@ from pathlib import Path
 import numpy as np
 
 from eval_common import counts, emitted, load_pair, save, score
+import sys as _sys
+_sys.path.insert(0, str(__import__('pathlib').Path(__file__).resolve().parents[1]))
+from vreid.artifacts import release_twin_run  # noqa: E402 - двойник текущего релиза
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--run', default='runs/hack/ft_soup_b336_fit')
+    parser.add_argument('--run', default=str(release_twin_run()))
     parser.add_argument('--query-npz')
     parser.add_argument('--gallery-npz')
     parser.add_argument('--recipe', required=True)

@@ -57,9 +57,27 @@ class CoreAdapter:
         self._validate_recipe(recipe)
         self._recipe = MappingProxyType(recipe)
         self.embedding_sha256 = self._embedding_identity(recipe)
-        self._dimension = _KNOWN_DIMENSIONS.get(self.model_sha256)
+        self._dimension = (_KNOWN_DIMENSIONS.get(self.model_sha256)
+                           or self._checkpoint_dimension(self._model_path))
         self._backbone = None
         self._lock = threading.RLock()
+
+    @staticmethod
+    def _checkpoint_dimension(path: Path):
+        """Размерность вектора из самого чекпойнта, без сборки модели.
+
+        Раньше размерность знала только таблица _KNOWN_DIMENSIONS по SHA модели - и на первом же
+        новом релизе (v1.1, вход 392) сервис стал отдавать dimension=None до первой загрузки
+        модели, а тест паритета упал. Чекпойнт хранит поле dim верхнего уровня; с mmap=True
+        torch отображает файл в память, а не читает 164 МиБ ради одного числа. Если файл не
+        настоящий чекпойнт (заглушки в тестах) - остаётся None, как было."""
+        try:
+            import torch
+            checkpoint = torch.load(path, map_location="cpu", weights_only=False, mmap=True)
+            value = checkpoint.get("dim") if isinstance(checkpoint, dict) else None
+            return int(value) if value else None
+        except Exception:
+            return None
 
     # Поля рецепта, от которых зависит САМ ВЕКТОР. Всё остальное — порог отказа,
     # параметры ре-ранжирования, пояснения — на извлечение признаков не влияет.
