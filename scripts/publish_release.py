@@ -154,6 +154,8 @@ def main() -> int:
                              "здесь, а не передаётся из очереди: PowerShell 5.1 без BOM портит "
                              "кириллицу в аргументах командной строки")
     parser.add_argument("--img-size", type=int, default=None, help="вход модели, для названия")
+    parser.add_argument("--distill-w", type=float, default=None,
+                        help="вес дистилляции, для названия: v1.2 отличается от v1.1 только им")
     parser.add_argument("--repo", default="Pelmen535/FalconTech")
     parser.add_argument("--min-gain", type=float, default=0.3,
                         help="на сколько пунктов mAP@10 двойник обязан обогнать опубликованный")
@@ -163,6 +165,8 @@ def main() -> int:
     recipe = json.loads((RELEASE / "recipe.json").read_text(encoding="utf-8"))
     if args.title is None:
         parts = [f"вход {args.img_size}"] if args.img_size else []
+        if args.distill_w:
+            parts.append(f"дистилляция ×{args.distill_w:g}")
         parts.append("с каскадом" if recipe.get("cascade") else "без каскада")
         args.title = ", ".join(parts)
     prev = json.loads(MANIFEST.read_text(encoding="utf-8")) if MANIFEST.is_file() else None
@@ -191,7 +195,11 @@ def main() -> int:
                        "what": DESCRIPTIONS.get(name, "")}
         print(f"[publish] {name}: {files[name]['size'] / 2**20:.0f} МиБ, sha256 {files[name]['sha256'][:16]}…")
 
-    manifest = {"tag": args.tag, "repo": args.repo, "files": files,
+    # twin_run пишется явно: по нему все отчёты (vreid.artifacts.release_twin_run) находят
+    # двойника текущего релиза. Без него он выводится из имени val-отчёта - работает, но
+    # держится на соглашении об именах.
+    twin_run = "runs/hack/" + args.val.name.replace("hack_", "", 1).replace("_val.json", "")
+    manifest = {"tag": args.tag, "repo": args.repo, "files": files, "twin_run": twin_run,
                 "twin_map10": round(twin[0], 3), "twin_rank1": round(twin[1], 3),
                 "twin_postprocess": twin[2], "twin_val": str(args.val).replace("\\", "/")}
     body = notes(args.tag, recipe, twin, prev, files)

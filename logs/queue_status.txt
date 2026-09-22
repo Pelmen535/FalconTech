@@ -971,3 +971,22 @@ queue24 started 2026-09-22 22:08:18
 [01:32:24] START q24_logs
 [01:32:26] END   q24_logs  ok  0 min
 [01:32:26] START q24_publish
+[01:33:54] END   q24_publish  ok  1 min
+[01:33:54] START q24_compose
+[01:34:01] END   q24_compose  ok  0 min
+[01:34:01] START q24_waitapi
+[01:39:07] END   q24_waitapi  FAILED exit=1  5 min
+[01:39:07] START q24_smoke
+[01:39:22] END   q24_smoke  FAILED exit=1  0 min
+[01:39:22] PART A done, failed so far: q24_waitapi, q24_smoke
+[01:39:24] START q24_dw40_s0
+[03:06:20] END   q24_dw40_s0  ok  87 min
+[03:06:20] START q24_val_dw40_s0
+[03:07:20] END   q24_val_dw40_s0  ok  1 min
+[03:07:20] START q24_dw40_s2
+[04:32:44] END   q24_dw40_s2  ok  85 min
+[04:32:44] START q24_val_dw40_s2
+[04:33:41] END   q24_val_dw40_s2  ok  1 min
+[04:33:41] START q24_compare_dw40
+[04:33:41] END   q24_compare_dw40  ok  0 min
+[04:33:41] queue24 finished: ПРОВАЛИЛИСЬ 2 шаг(ов): q24_waitapi, q24_smoke
