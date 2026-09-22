@@ -1,28 +1,36 @@
 {
-  "собрано": "2026-09-21T17:21:56",
+  "собрано": "2026-09-22T07:33:52",
   "хэши": {
     "release/model.pt": {
       "sha256": "608042f64c259b97590e57b81f6c03e7143fba43d9a9c320b4a2a346e9f5fd1c",
       "байт": 171995879
     },
     "release/recipe.json": {
-      "sha256": "47c3993fd1289fa00e4884652cb4bee281f408281cd77b50826f5c0495c66abc",
-      "байт": 4660
+      "sha256": "6225c6a262614168f3bff9cd7812857a4facb4e11c31d7dd0921d3519be825b9",
+      "байт": 4662
+    },
+    "release/reranker.pt": {
+      "sha256": "6ac3f746aebb20c04526c81708224ebc90b715015d9e99e2e94af74580b66299",
+      "байт": 607231914
     },
     "submission/candidates.csv": {
-      "sha256": "c37481f898a9fb94778ada67a94d44aff5e48eef9214b6ac656fa6130fb2403c",
-      "байт": 78107
+      "sha256": "315f8a6d6462b6446c49c8c0872b3422ccc0b9232f0cd61c6756cf2b9a4eb7a6",
+      "байт": 78032
     },
     "submission/embeddings.npy": {
       "sha256": "ffcea632e4f4050140fcde81cd48a9c38a759c04f54b20295100024377eb12fe",
       "байт": 11427968
     },
+    "submission/reranker_embeddings.npy": {
+      "sha256": "54e4f13134c67813f8e6b78ca418cf77bed2002796ff48b2f8ebd2adeed979ec",
+      "байт": 15237248
+    },
     "submission/run_info.json": {
-      "sha256": "79a09345c071ca3e26e9095e17fa147dbbb509168d647f2bc8f8079536e4a3b2",
-      "байт": 5677
+      "sha256": "f524ce961363f2c8373d83376c6c28651d07d8e8774fdc294e064c97055ee473",
+      "байт": 5818
     },
     "submission/submission.csv": {
-      "sha256": "0705f717318486bed69d573dcc66847ce39b3dc88a9ff0c22b9c81974d9da7c5",
+      "sha256": "be96f0ecefdc8861c978862af99f2d820fcbe6d3b0f3c04075f1f588e22355c9",
       "байт": 404040
     }
   },
@@ -36,6 +44,10 @@
     "k1": 3,
     "k2": 2,
     "lam": 0.2,
+    "cascade": true,
+    "cascade_model": "reranker.pt",
+    "cascade_topk": 30,
+    "cascade_alpha": 0.9,
     "crop_pad": 0.05,
     "mask_plate": false,
     "topk": 10,
@@ -43,6 +55,25 @@
     "candidates_topk": 1,
     "fast_decode": true,
     "refuse_rate": null,
+    "source": {
+      "weights": "weights/soup_b336_all/best.pt",
+      "val": "results/hack_ft_soup_b336_fit_val.json",
+      "protocol": "track",
+      "val_mAP_jury": 0.7051517141220749,
+      "val_rank1_jury": 0.6793814432989691,
+      "val_mAP_cross_camera_strict": 0.7268681135111548,
+      "val_mINP": 0.6573870663650437,
+      "val_n_query": 1213,
+      "val_n_no_match": 243,
+      "val_n_gallery": 688,
+      "val_refusal_mask_cam": false,
+      "val_refusal": {
+        "f1": 0.9616204690831557,
+        "precision": 0.9933920704845814,
+        "recall": 0.9318181818181818,
+        "tnr": 0.9835390946502057
+      }
+    },
     "rerank_choice": {
       "value": "k-reciprocal k1=3, k2=2, lambda=0.2",
       "previous": "k1=6, k2=2, lambda=0.3",
@@ -76,26 +107,6 @@
         "results/rerank_grid_fine.json"
       ],
       "metric": "mAP@10 по эталонному organizer/evaluate.py: сначала обрезание до 10, потом junk-фильтр. Сетка пересчитана после сверки с эталоном, оптимум не сместился."
-    },
-    "source": {
-      "weights": "weights/soup_b336_all/best.pt",
-      "val": "results/hack_ft_soup_b336_fit_val.json",
-      "protocol": "track",
-      "val_mAP_jury": 0.705155,
-      "val_rank1_jury": 0.679381,
-      "val_mAP_cross_camera_strict": 0.7297707685594285,
-      "val_mINP": 0.6933864353264946,
-      "val_n_query": 1213,
-      "val_n_no_match": 243,
-      "val_n_gallery": 688,
-      "val_refusal_mask_cam": false,
-      "val_refusal": {
-        "f1": 0.9616204690831557,
-        "precision": 0.9933920704845814,
-        "recall": 0.9318181818181818,
-        "tnr": 0.9835390946502057
-      },
-      "metric_verified_against": "organizer/evaluate.py, sha256 655c71db8c2e4d2cd7680c40c768afacfdffff360401111c1a46df921551ffa3; совпадение до 1e-16, см. results/official_validation/comparison.json"
     },
     "threshold_choice": {
       "value": 0.55,
@@ -1945,7 +1956,7 @@
     "torch": "2.11.0+cu128",
     "torchvision": "0.26.0+cu128",
     "timm": "1.0.29",
-    "numpy": "2.4.0",
+    "numpy": "2.5.3",
     "PIL": "11.3.0",
     "nvidia-smi": "NVIDIA GeForce RTX 5060 Ti, 610.47, 16311 MiB"
   },

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import csv
 import json
+import json
 import os
 from pathlib import Path
 import sys
@@ -243,10 +244,27 @@ def test_representative_cached_queries_match_received_output_on_full_750_gallery
     selected = {0, len(query_ids) // 3, len(query_ids) // 2, len(query_ids) - 1}
     selected.update(next(i for i, key in enumerate(query_ids) if (key in candidates) == accepted)
                     for accepted in (True, False))
+    # Когда релиз собран с каскадом, порядок сдачи задают ДВЕ модели, и повторить его можно
+    # только с векторами ре-ранкера — их predict.py кладёт рядом со сдачей. Смысл проверки от
+    # этого не меняется: адаптер обязан воспроизводить выдачу конкурсного прогона ровно.
+    cascade = bool(adapter.recipe().get("cascade")) if hasattr(adapter, "recipe")         else bool(json.loads((CORE / "release/recipe.json").read_text(encoding="utf-8")).get("cascade"))
+    heavy = None
+    if cascade:
+        heavy_path = EXAMPLE_OUTPUT / "reranker_embeddings.npy"
+        if not heavy_path.is_file():
+            pytest.skip("релиз с каскадом, но рядом со сдачей нет reranker_embeddings.npy")
+        heavy = np.load(heavy_path, allow_pickle=False)
+        assert heavy.shape[0] == len(query_ids) + len(gallery_ids)
+
     saw = set()
     for index in sorted(selected):
         key = query_ids[index]
-        result = adapter.rank(embeddings[index], embeddings[len(query_ids):], gallery_ids, key)
+        extra = {} if heavy is None else {
+            "heavy_query_vector": heavy[index],
+            "heavy_gallery_vectors": heavy[len(query_ids):]}
+        result = adapter.rank(embeddings[index], embeddings[len(query_ids):], gallery_ids, key,
+                              **extra)
+        assert result["stage"] == ("cascade" if cascade else "shortlist")
         assert [row["image_id"] for row in result["ranking"]] == rankings[key]
         assert result["accepted"] == (key in candidates)
         saw.add(result["accepted"])

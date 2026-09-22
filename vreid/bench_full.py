@@ -126,28 +126,39 @@ def main():
     # Второй форвард от этого не исчезает, поэтому меряем и его: декодирование общее (кроп уже
     # готов), добавляется ровно время прогона ре-ранкера. Обе цифры идут в отчёт — прятать
     # разницу было бы враньём, а показывать только большую — врать в другую сторону.
-    cascade_ms = None
+    cascade_ms, heavy_bb, cascade_fps = None, None, None
     if rec.get("cascade"):
         heavy = get_backbone("ft:" + str(release / rec.get("cascade_model", "reranker.pt")),
                              device=a.device)
-        for i in range(min(a.warmup, len(ds))):
-            heavy.embed_tensors(ds[i].unsqueeze(0))
-        sync()
-        extra = []
-        for i in range(len(ds)):
+        # Меряем ЧИСТЫЙ форвард обеих моделей на уже готовом тензоре. Прежний вариант засекал
+        # ре-ранкер вместе с чтением кропа и вычитал отдельно измеренный io_ms — разность двух
+        # шумных величин давала бессмыслицу (в одном прогоне 1.5 мс на форвард ViT-L).
+        # Кроп готовится ДО замера и переиспользуется: нас интересует разница между моделями,
+        # а ввод-вывод у них общий и в латентности уже учтён.
+        prepared = [ds[i].unsqueeze(0) for i in range(min(32, len(ds)))]
+        def forward_ms(model):
+            for i in range(min(a.warmup, len(prepared) * 4)):
+                model.embed_tensors(prepared[i % len(prepared)])
             sync()
-            t0 = time.perf_counter()
-            heavy.embed_tensors(ds[i].unsqueeze(0))
-            sync()
-            extra.append((time.perf_counter() - t0) * 1000)
-        # у ре-ранкера тот же кроп, поэтому из его замера вычитаем общий ввод-вывод
-        cascade_ms = float(np.median(np.array(extra))) - io_ms
+            taken = []
+            for i in range(len(ds)):
+                x = prepared[i % len(prepared)]
+                sync()
+                t0 = time.perf_counter()
+                model.embed_tensors(x)
+                sync()
+                taken.append((time.perf_counter() - t0) * 1000)
+            return float(np.median(np.array(taken)))
+        main_fwd, heavy_fwd = forward_ms(bb), forward_ms(heavy)
+        cascade_ms = heavy_fwd
+        print(f"[bench] чистый форвард: основная модель {main_fwd:.1f} мс, "
+              f"ре-ранкер {heavy_fwd:.1f} мс (на готовом кропе, без ввода-вывода)")
         end_to_end = ms + max(cascade_ms, 0.0)
         print(f"[bench] каскад включён: форвард ре-ранкера {max(cascade_ms, 0.0):.1f} мс; "
               f"настоящая цена запроса {end_to_end:.1f} мс "
               f"(балл по шкале жюри был бы {latency_score(end_to_end) * 100:.0f}%, "
               f"но rerank в замер не входит — ответы 31/32)")
-        del heavy
+        heavy_bb = heavy
 
     # --- пропускная способность: лучший FPS среди батчей ---
     # ВАЖНО: воркеры поднимаются заново на каждый новый загрузчик (на Windows это spawn, секунды).
@@ -182,6 +193,32 @@ def main():
                      "items": done, "seconds": round(dt, 1), "passes": passes})
         print(f"[bench] batch={b:>2}: {fps:6.1f} кроп/с ({dt / done * 1000:5.1f} мс/ТС), "
               f"{done} кропов за {dt:.1f} с в {passes} прохода(х)")
+        # Та же методика, но по каждому кропу идут ОБА форварда: так выглядит настоящая
+        # пропускная способность каскада. В балл по правилам не идёт (ответы 31/32), но
+        # публиковать «если бы засчитали» по латентности и умалчивать по пропускной нечестно.
+        if heavy_bb is not None:
+            loader2 = DataLoader(ds, batch_size=b, shuffle=False, num_workers=a.workers,
+                                 pin_memory=cuda, persistent_workers=(a.workers > 0))
+            for x in loader2:
+                bb.embed_tensors(x); heavy_bb.embed_tensors(x)
+            sync()
+            t1 = time.perf_counter()
+            done2 = 0
+            while True:
+                for x in loader2:
+                    bb.embed_tensors(x)
+                    heavy_bb.embed_tensors(x)
+                    done2 += len(x)
+                sync()
+                if time.perf_counter() - t1 >= a.min_seconds:
+                    break
+            dt2 = time.perf_counter() - t1
+            del loader2
+            rows[-1]["fps_with_reranker"] = round(done2 / dt2, 1)
+            if cascade_fps is None or done2 / dt2 > cascade_fps:
+                cascade_fps = done2 / dt2
+            print(f"[bench] batch={b:>2}: с ре-ранкером {done2 / dt2:6.1f} кроп/с "
+                  f"(в балл не идёт, ответы 31/32)")
         if fps > best_fps:
             best_fps, best_b = fps, b
     print(f"[bench] лучший FPS {best_fps:.1f} при batch={best_b} → балл {throughput_score(best_fps) * 100:.0f}%")
@@ -231,10 +268,19 @@ def main():
                    # по правилам не входит.
                    "cascade_reranker_ms": (None if cascade_ms is None
                                            else round(max(cascade_ms, 0.0), 2)),
+                   "forward_ms_main": (None if cascade_ms is None else round(main_fwd, 2)),
+                   "forward_ms_reranker": (None if cascade_ms is None else round(heavy_fwd, 2)),
                    "latency_ms_end_to_end": (None if cascade_ms is None
                                              else round(ms + max(cascade_ms, 0.0), 2)),
                    "latency_score_if_reranker_counted": (None if cascade_ms is None else
                                                          latency_score(ms + max(cascade_ms, 0.0))),
+                   "best_fps_with_reranker": (None if cascade_fps is None else round(cascade_fps, 2)),
+                   "throughput_score_if_reranker_counted": (None if cascade_fps is None else
+                                                            throughput_score(cascade_fps)),
+                   "score_of_20_if_reranker_counted": (
+                       None if (cascade_ms is None or cascade_fps is None) else
+                       round(10 * latency_score(ms + max(cascade_ms, 0.0))
+                             + 10 * throughput_score(cascade_fps), 2)),
                    "best_fps": best_fps, "best_batch": best_b,
                    "throughput_score": throughput_score(best_fps), "score_of_20": total},
                   f, ensure_ascii=False, indent=2)

@@ -816,3 +816,64 @@ queue19 started 2026-09-21 20:19:55
 [03:22:22] START q19_compare
 [03:22:22] END   q19_compare  FAILED exit=1  0 min
 [03:22:22] queue19 finished: РџР РћР’РђР›РР›РРЎР¬ 1 С€Р°Рі(РѕРІ): q19_compare
+queue20 started 2026-09-22 07:21:17
+[07:21:17] WAIT  for running vreid processes
+[07:21:20] WAIT  done - GPU free, service stack down
+[07:21:20] data folder: E:\Хакатон\Данные
+[07:21:20] START q20_tests
+[07:21:47] END   q20_tests  ok  0 min
+[07:21:47] START q20_export
+[07:21:51] END   q20_export  ok  0 min
+[07:21:51] START q20_predict
+[07:24:51] END   q20_predict  ok  3 min
+[07:24:51] START q20_form
+[07:24:52] END   q20_form  ok  0 min
+[07:24:52] START q20_indep
+[07:24:53] END   q20_indep  ok  0 min
+[07:24:53] START q20_ties
+[07:24:53] END   q20_ties  ok  0 min
+[07:24:53] START q20_replay
+[07:24:56] END   q20_replay  ok  0 min
+[07:24:56] START q20_build_release
+[07:26:22] END   q20_build_release  ok  1 min
+[07:26:22] START q20_build_dev
+[07:27:16] END   q20_build_dev  ok  1 min
+[07:27:16] START q20_build_api
+[07:28:16] END   q20_build_api  ok  1 min
+[07:28:16] START q20_build_web
+[07:28:17] END   q20_build_web  ok  0 min
+[07:28:17] START q20_docker_a
+[07:29:15] END   q20_docker_a  ok  1 min
+[07:29:15] START q20_docker_b
+[07:30:12] END   q20_docker_b  ok  1 min
+[07:30:12] START q20_cmp_det
+[07:30:12] END   q20_cmp_det  ok  0 min
+[07:30:12] START q20_docker_offline
+[07:31:08] END   q20_docker_offline  ok  1 min
+[07:31:08] START q20_cmp_offline
+[07:31:08] END   q20_cmp_offline  ok  0 min
+[07:31:08] START q20_form_docker
+[07:31:10] END   q20_form_docker  ok  0 min
+[07:31:10] START q20_bench
+[07:32:49] END   q20_bench  ok  2 min
+[07:32:49] START q20_official
+[07:32:55] END   q20_official  ok  0 min
+[07:32:55] START q20_stress
+[07:32:55] END   q20_stress  ok  0 min
+[07:32:55] START q20_audit
+[07:32:58] END   q20_audit  ok  0 min
+[07:32:58] START q20_errors
+[07:33:51] END   q20_errors  ok  1 min
+[07:33:51] START q20_scorecard
+[07:33:51] END   q20_scorecard  ok  0 min
+[07:33:51] START q20_manifest
+[07:34:12] END   q20_manifest  ok  0 min
+[07:34:12] START q20_compose
+[07:34:19] END   q20_compose  ok  0 min
+[07:34:19] START q20_waitapi
+[07:34:22] END   q20_waitapi  ok  0 min
+[07:34:22] START q20_smoke
+[07:34:28] END   q20_smoke  ok  0 min
+[07:34:28] START q20_logs
+[07:34:32] END   q20_logs  ok  0 min
+[07:34:32] queue20 finished: РІСЃРµ С€Р°РіРё РїСЂРѕС€Р»Рё

@@ -99,6 +99,23 @@ def main():
         if f:
             add("Ранжирование", f"— для сравнения: {f['name']} ЗАПРЕЩЕНО (ответ 38)",
                 f"{f['mAP'] * 100:.1f}", "не идёт в балл", "тот же файл, блок postprocess")
+        # Каскад меряется отдельным скриптом на паре кешей, а не в val-отчёте одной модели:
+        # в нём участвуют две модели сразу. Берём ЧЕСТНЫЙ замер — с ре-ранкером, который
+        # не выбирал лучшую эпоху по этой же валидации.
+        if rec.get("cascade"):
+            casc = load(RES / "cascade_verify_honest.json") or load(RES / "cascade_verify.json")
+            alpha = f"{float(rec.get('cascade_alpha', 0.9)):g}"
+            pair = next(iter((casc or {}).get("pairs", {}).items()), None)
+            point = (pair[1]["mixed"].get(alpha) if pair else None)
+            if point:
+                add("Ранжирование",
+                    f"mAP@10 с каскадом ViT-L по топ-{rec.get('cascade_topk')} "
+                    f"(alpha={alpha}, validation; перенос не измерен)",
+                    f"{point['mAP']:.1f}", f"{45 * point['mAP'] / 100:.1f} / 45 (допущение: линейно)",
+                    f"results/cascade_verify_honest.json, {pair[0]}")
+            else:
+                add("Ранжирование", "рецепт включает каскад, но замера для этой alpha нет",
+                    "—", "прогони scripts/cascade_verify.py", "results/cascade_verify_honest.json")
         # Блок отказа считается ДЛЯ ФАКТИЧЕСКОГО порога релиза, а не для точки максимума
         # из val-отчёта. Порог сознательно смещён ниже оптимума (см. threshold_choice в рецепте),
         # и подставлять сюда 97.2 от старого порога значило бы отчитываться не за то, что сдаём.
@@ -134,6 +151,14 @@ def main():
             f"{lat:.1f} мс", f"{10 * bench['latency_score']:.1f}/10, проекция на этом устройстве", "results/bench_full.json")
         add("Производительность", f"лучший FPS (batch {bench.get('best_batch')})",
             f"{fps:.1f}", f"{10 * bench['throughput_score']:.1f}/10, проекция на этом устройстве", "results/bench_full.json")
+        # Замеряемая жюри латентность не включает rerank (ответы 31/32). Вторая строка —
+        # настоящая цена запроса с форвардом ре-ранкера. В балл по правилам не идёт, но
+        # показывать только первую значило бы скрывать половину картины.
+        if bench.get("latency_ms_end_to_end"):
+            add("Производительность", "— настоящая цена запроса с форвардом ре-ранкера",
+                f"{bench['latency_ms_end_to_end']:.1f} мс",
+                f"по правилам не в балл; будь иначе — {10 * bench['latency_score_if_reranker_counted']:.1f}/10",
+                "results/bench_full.json")
         for k, label in (("weights_mb", "суммарный размер весов, МБ (лимит 2048)"),
                          ("weights_load_seconds", "время загрузки весов, с"),
                          ("peak_vram_mb", "пик VRAM, МБ"),

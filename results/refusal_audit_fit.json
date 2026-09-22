@@ -1,7 +1,7 @@
 {
   "query_npz_sha256": "4e135c174ad6a560139a9db62580699d56a9ebf2ed579a847294fe06bf364be5",
   "gallery_npz_sha256": "0a84ce9a7eccc663f43c77f4e090b117c284299e14a6e4b5f0fce55e7cd0846c",
-  "recipe_sha256": "47c3993fd1289fa00e4884652cb4bee281f408281cd77b50826f5c0495c66abc",
+  "recipe_sha256": "6225c6a262614168f3bff9cd7812857a4facb4e11c31d7dd0921d3519be825b9",
   "cache_provenance": "Requires model SHA and extraction log from producer; hashes alone do not prove decoder/model",
   "seed": 0,
   "n_query": 1213,

@@ -8,6 +8,10 @@
   "k1": 3,
   "k2": 2,
   "lam": 0.2,
+  "cascade": true,
+  "cascade_model": "reranker.pt",
+  "cascade_topk": 30,
+  "cascade_alpha": 0.9,
   "crop_pad": 0.05,
   "mask_plate": false,
   "topk": 10,
@@ -15,6 +19,25 @@
   "candidates_topk": 1,
   "fast_decode": true,
   "refuse_rate": null,
+  "source": {
+    "weights": "weights/soup_b336_all/best.pt",
+    "val": "results/hack_ft_soup_b336_fit_val.json",
+    "protocol": "track",
+    "val_mAP_jury": 0.7051517141220749,
+    "val_rank1_jury": 0.6793814432989691,
+    "val_mAP_cross_camera_strict": 0.7268681135111548,
+    "val_mINP": 0.6573870663650437,
+    "val_n_query": 1213,
+    "val_n_no_match": 243,
+    "val_n_gallery": 688,
+    "val_refusal_mask_cam": false,
+    "val_refusal": {
+      "f1": 0.9616204690831557,
+      "precision": 0.9933920704845814,
+      "recall": 0.9318181818181818,
+      "tnr": 0.9835390946502057
+    }
+  },
   "rerank_choice": {
     "value": "k-reciprocal k1=3, k2=2, lambda=0.2",
     "previous": "k1=6, k2=2, lambda=0.3",
@@ -48,26 +71,6 @@
       "results/rerank_grid_fine.json"
     ],
     "metric": "mAP@10 по эталонному organizer/evaluate.py: сначала обрезание до 10, потом junk-фильтр. Сетка пересчитана после сверки с эталоном, оптимум не сместился."
-  },
-  "source": {
-    "weights": "weights/soup_b336_all/best.pt",
-    "val": "results/hack_ft_soup_b336_fit_val.json",
-    "protocol": "track",
-    "val_mAP_jury": 0.705155,
-    "val_rank1_jury": 0.679381,
-    "val_mAP_cross_camera_strict": 0.7297707685594285,
-    "val_mINP": 0.6933864353264946,
-    "val_n_query": 1213,
-    "val_n_no_match": 243,
-    "val_n_gallery": 688,
-    "val_refusal_mask_cam": false,
-    "val_refusal": {
-      "f1": 0.9616204690831557,
-      "precision": 0.9933920704845814,
-      "recall": 0.9318181818181818,
-      "tnr": 0.9835390946502057
-    },
-    "metric_verified_against": "organizer/evaluate.py, sha256 655c71db8c2e4d2cd7680c40c768afacfdffff360401111c1a46df921551ffa3; совпадение до 1e-16, см. results/official_validation/comparison.json"
   },
   "threshold_choice": {
     "value": 0.55,

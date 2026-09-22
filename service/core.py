@@ -272,8 +272,15 @@ class CoreAdapter:
         # raw cosine values and leave the original rerank normalization intact.
         return np.ascontiguousarray(array)
 
-    def rank(self, query_vector, gallery_vectors, gallery_ids, query_id=None) -> dict:
-        """Rank against the entire gallery; a refusal still includes ten results."""
+    def rank(self, query_vector, gallery_vectors, gallery_ids, query_id=None,
+             heavy_query_vector=None, heavy_gallery_vectors=None) -> dict:
+        """Rank against the entire gallery; a refusal still includes ten results.
+
+        Когда рецепт включает каскад, точный порядок конкурсной сдачи получается только с
+        векторами ре-ранкера: их задают heavy_query_vector и heavy_gallery_vectors. Без них
+        возвращается порядок ПЕРВОЙ ступени, и это видно в ответе полем ``stage`` — молча
+        отдавать другой порядок под видом конкурсного нельзя.
+        """
         query = np.asarray(query_vector, dtype=np.float32)
         if query.shape != (self.dimension,):
             raise ValueError(f"query_vector must have shape ({self.dimension},)")
@@ -313,6 +320,24 @@ class CoreAdapter:
             scores[~valid] = -np.inf
         else:
             scores = raw
+        stage = "shortlist"
+        if self._recipe.get("cascade") and heavy_gallery_vectors is not None:
+            from vreid.cascade import heavy_scores, rescore, shortlist
+            heavy_q = np.asarray(heavy_query_vector, dtype=np.float32)
+            heavy_g = np.asarray(heavy_gallery_vectors, dtype=np.float32)
+            if heavy_q.ndim != 1 or heavy_g.ndim != 2 or heavy_g.shape[0] != len(ids)                     or heavy_g.shape[1] != heavy_q.shape[0]:
+                raise ValueError("heavy vectors must be [D] and [len(gallery_ids), D]")
+            if not (np.isfinite(heavy_q).all() and np.isfinite(heavy_g).all()):
+                raise ValueError("heavy vectors must be finite")
+            row = scores[None, :]
+            blocked = ~np.isfinite(row)
+            picked = shortlist(row, int(self._recipe.get("cascade_topk", 30)))
+            scores = rescore(row, picked,
+                             heavy_scores(heavy_q[None, :], heavy_g, picked, blocked),
+                             float(self._recipe.get("cascade_alpha", 0.9)))[0]
+            stage = "cascade"
+        elif self._recipe.get("cascade"):
+            stage = "shortlist_only_cascade_available"
         order = np.argsort(-scores, kind="stable")[:10]
         if not np.isfinite(scores[order]).all():
             raise RuntimeError("Kernel returned nonfinite ranking scores")
@@ -325,5 +350,5 @@ class CoreAdapter:
         return {
             "ranking": ranking, "accepted": bool(accepted),
             "candidate": dict(ranking[0]) if accepted else None,
-            "threshold": threshold,
+            "threshold": threshold, "stage": stage,
         }

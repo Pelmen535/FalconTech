@@ -2,12 +2,14 @@
   "n_query": 1110,
   "n_gallery": 750,
   "embeddings_sha256": "ffcea632e4f4050140fcde81cd48a9c38a759c04f54b20295100024377eb12fe",
-  "recipe_sha256": "47c3993fd1289fa00e4884652cb4bee281f408281cd77b50826f5c0495c66abc",
+  "cascade": true,
+  "reranker_embeddings_sha256": "54e4f13134c67813f8e6b78ca418cf77bed2002796ff48b2f8ebd2adeed979ec",
+  "recipe_sha256": "6225c6a262614168f3bff9cd7812857a4facb4e11c31d7dd0921d3519be825b9",
   "top1_changes": 0,
   "changed_rank_cells": 0,
   "acceptance_changes": 0,
-  "old_accepted": 1041,
-  "new_accepted": 1041,
+  "old_accepted": 1040,
+  "new_accepted": 1040,
   "candidate_id_changes": 0,
   "scope": "Cached ranking regression only; no new extraction, accuracy or GPU performance measurement."
 }
