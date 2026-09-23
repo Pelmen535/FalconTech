@@ -47,7 +47,7 @@ def gallery_archive(content, settings):
             names = {}
             for info in entries:
                 path = PurePosixPath(info.filename)
-                if path.is_absolute() or '..' in path.parts or '\\\\' in info.filename or ':' in info.filename:
+                if path.is_absolute() or '..' in path.parts or '\\' in info.filename or ':' in info.filename:
                     raise ValueError('Недопустимый путь в ZIP.')
                 if info.filename in names:
                     raise ValueError('Повторяющееся имя файла в ZIP.')
@@ -86,4 +86,3 @@ def gallery_archive(content, settings):
             return result
     except (zipfile.BadZipFile, UnicodeError, RuntimeError) as exc:
         raise ValueError('Не удалось прочитать ZIP/CSV.') from exc
-

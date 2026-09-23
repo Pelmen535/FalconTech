@@ -7,11 +7,13 @@ anyio==4.4.0
 fastapi==0.115.12
 h11==0.16.0
 python-multipart==0.0.20
-pydantic==2.13.5
-pydantic-core==2.46.5
+# Совместимы с typing-extensions 4.11.0 из закреплённого базового образа.
+# Более новые Pydantic 2.13 / typing-inspection требуют >=4.15, но pip в этой
+# conda-базе фактически оставляет 4.12.1 даже при явном пине 4.15.0.
+pydantic==2.8.2
+pydantic-core==2.20.1
 sniffio==1.3.1
 starlette==0.46.2
-typing-inspection==0.4.4
 uvicorn==0.34.2
 # Векторное хранилище: PostgreSQL с pgvector поднимает docker compose (ТЗ §6).
 psycopg==3.2.12
