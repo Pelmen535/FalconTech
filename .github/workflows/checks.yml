@@ -1,9 +1,10 @@
 # Проверки, которые должны проходить на любой машине, а не только на нашей.
-# Запускается на каждый push и pull request. Ничего не публикует и никуда не деплоит.
+# Запускается на main и pull request. Ничего не публикует и никуда не деплоит.
 name: checks
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
