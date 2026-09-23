@@ -24,11 +24,29 @@ jobs:
           python -m pip install --upgrade pip
           # CPU-сборка torch: GPU в CI нет, а тестам он и не нужен.
           pip install torch==2.3.1 torchvision==0.18.1 --index-url https://download.pytorch.org/whl/cpu
-          pip install -r requirements.txt
-          pip install -r requirements-service.txt
+          # Используем версии релизного образа. Незакреплённый requirements.txt
+          # предназначен для экспериментов и может поставить другой NumPy/Faiss.
+          pip install -r requirements-infer.txt -r requirements-service.txt
+          pip install pytest==8.3.5 scikit-learn==1.6.1
+          python -m pip check
 
       - name: pytest
-        run: python -m pytest tests -q
+        run: |
+          # Публичная страница Actions показывает только код возврата, если
+          # читатель не вошёл в GitHub. Короткая аннотация называет упавший тест.
+          set +e
+          python -m pytest tests -q --tb=short 2>&1 | tee "$RUNNER_TEMP/falcon-pytest.log"
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            failures=$(grep -E '^(FAILED|ERROR) ' "$RUNNER_TEMP/falcon-pytest.log" | head -5 || true)
+            if [ -z "$failures" ]; then
+              failures=$(tail -n 5 "$RUNNER_TEMP/falcon-pytest.log")
+            fi
+            while IFS= read -r line; do
+              printf '::error title=pytest::%s\n' "$line"
+            done <<< "$failures"
+          fi
+          exit "$status"
 
       - name: фикстуры воспроизводятся побайтово
         # Входные CSV в tests/ синтетические (настоящие - это разметка организаторов, её
@@ -42,7 +60,7 @@ jobs:
         run: python scripts/normalize_logs.py
 
   image:
-    name: сборка конкурсного образа
+    name: сборка образов и сквозной прогон
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -58,3 +76,26 @@ jobs:
         run: docker build -t vreid:1.0 .
       - name: что реально установлено в образе
         run: docker run --rm --entrypoint python vreid:1.0 /app/scripts/image_report.py
+      - name: offline-инференс настоящими весами и контракт трёх файлов
+        run: |
+          mkdir -p "$RUNNER_TEMP/falcon-smoke-data" "$RUNNER_TEMP/falcon-smoke-out"
+          docker run --rm --network none --entrypoint python \
+            -v "$RUNNER_TEMP/falcon-smoke-data:/data" \
+            vreid:1.0 /app/scripts/ci_offline_contract.py create --data /data
+          docker run --rm --network none \
+            -v "$RUNNER_TEMP/falcon-smoke-data:/data:ro" \
+            -v "$RUNNER_TEMP/falcon-smoke-out:/out" \
+            vreid:1.0 --device cpu --workers 0 --batch-size 2
+          docker run --rm --network none --entrypoint python \
+            -v "$RUNNER_TEMP/falcon-smoke-data:/data:ro" \
+            -v "$RUNNER_TEMP/falcon-smoke-out:/out:ro" \
+            vreid:1.0 /app/scripts/ci_offline_contract.py check --data /data --out /out
+      - name: API с настоящей моделью совпадает с конкурсным CLI
+        run: |
+          docker build -f Dockerfile.service -t vreid-service:ci .
+          docker run --rm --network none --entrypoint python \
+            -v "$RUNNER_TEMP/falcon-smoke-data:/data:ro" \
+            -v "$RUNNER_TEMP/falcon-smoke-out:/out:ro" \
+            vreid-service:ci /app/scripts/ci_backend_contract.py \
+            --data /data --cli-out /out --release /app/release \
+            --work /tmp/falcon-service-smoke
