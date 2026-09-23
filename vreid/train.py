@@ -645,6 +645,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--wd", type=float, default=0.05)
     parser.add_argument("--warmup", type=int, default=1, help="эпох разогрева")
     parser.add_argument("--freeze-blocks", type=int, default=0, help="заморозить первые N блоков ViT")
+    parser.add_argument("--grad-ckpt", action="store_true",
+                        help="gradient checkpointing: тот же градиент, меньше памяти, ~30%% дольше")
     parser.add_argument("--arc-m", type=float, default=0.3)
     parser.add_argument("--arc-ls", type=float, default=0.0,
                         help="label smoothing в ArcFace; 0.1 против переобучения (loss уходит в 0.1 к 12-й эпохе)")
@@ -743,6 +745,15 @@ def main(argv=None):
         for blk in model.backbone.blocks[: args.freeze_blocks]:
             for p in blk.parameters():
                 p.requires_grad_(False)
+    if args.grad_ckpt:
+        # Пересчёт активаций на обратном проходе вместо хранения: тот же градиент, меньше
+        # памяти, ~30% дольше. Нужен, чтобы учить ViT-L на входе 392 с прежним батчем P=5:
+        # без него на 16 ГиБ влезает только P=3, а это уже другой рецепт учителя, и сравнивать
+        # его с прежним было бы не с чем.
+        if not hasattr(model.backbone, "set_grad_checkpointing"):
+            raise SystemExit(f"{model_name} не умеет gradient checkpointing")
+        model.backbone.set_grad_checkpointing(True)
+        print("[train] gradient checkpointing включён")
     arc = ArcFace(model.dim, len(ids), m=args.arc_m, device=device, label_smoothing=args.arc_ls)
     print(f"[train] {model_name}, D={model.dim}, id={len(ids)}, device={device}")
 
