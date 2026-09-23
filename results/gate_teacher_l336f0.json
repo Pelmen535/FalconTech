@@ -1,0 +1,12 @@
+{
+  "mode": "raw",
+  "candidate": "runs\\hack\\ft_l336f0_fit",
+  "baseline": "runs\\hack\\ft_l336cam_fit",
+  "candidate_map10": 76.049,
+  "candidate_rank1": 73.402,
+  "baseline_map10": 78.317,
+  "baseline_rank1": 75.773,
+  "gain": -2.268,
+  "min_gain": 0.3,
+  "passed": false
+}
