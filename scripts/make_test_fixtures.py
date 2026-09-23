@@ -48,11 +48,11 @@ def main() -> int:
     args.out.mkdir(parents=True, exist_ok=True)
     for name, count in (("test_query.csv", 1110), ("test_gallery.csv", 750)):
         with (args.out / name).open("w", newline="", encoding="utf-8") as stream:
-            writer = csv.writer(stream)
+            writer = csv.writer(stream, lineterminator="\n")
             writer.writerow(["image_id", "x", "y", "w", "h"])
             writer.writerows(make_rows(rng, count))
         print(f"[fixtures] {name}: {count} строк")
-    print(f"[fixtures] → {args.out}")
+    print(f"[fixtures] -> {args.out}")
     return 0
 
 
