@@ -1060,3 +1060,28 @@ queue25 started 2026-09-23 04:41:14
 [11:06:35] START q25_logs
 [11:06:37] END   q25_logs  ok  0 min
 [11:06:37] START q25_publish
+[11:07:45] END   q25_publish  ok  1 min
+[11:07:45] START q25_compose
+[11:07:52] END   q25_compose  ok  0 min
+[11:07:52] START q25_waitapi
+[11:07:55] END   q25_waitapi  ok  0 min
+[11:07:55] START q25_smoke
+[11:08:01] END   q25_smoke  ok  0 min
+[11:08:01] queue25 finished: все шаги прошли
+queue26 started 2026-09-23 15:09:05
+[15:09:05] WAIT  for running vreid processes
+[15:09:06] WAIT  done - GPU free
+[15:09:06] прототип остановлен: учителю ViT-L нужна вся видеопамять
+[15:09:06] START q26_teacher
+[18:37:12] END   q26_teacher  ok  208 min
+[18:37:12] START q26_val_teacher
+[18:38:45] END   q26_val_teacher  ok  2 min
+[18:38:45] ворота учителя: НЕ пройдены - ученики не учатся
+[18:38:46] docker готов
+[18:38:46] START q26_compose
+[18:38:54] END   q26_compose  ok  0 min
+[18:38:54] START q26_waitapi
+[18:39:00] END   q26_waitapi  ok  0 min
+[18:39:00] START q26_smoke
+[18:39:07] END   q26_smoke  ok  0 min
+[18:39:07] queue26 finished: все шаги прошли (учитель НЕ лучше, ученики не собирались или НЕ лучше)

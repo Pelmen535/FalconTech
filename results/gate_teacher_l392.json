@@ -1,0 +1,12 @@
+{
+  "mode": "raw",
+  "candidate": "runs\\hack\\ft_l392cam_fit",
+  "baseline": "runs\\hack\\ft_hack_dinov2_l_336_cam",
+  "candidate_map10": 77.616,
+  "candidate_rank1": 75.052,
+  "baseline_map10": 77.949,
+  "baseline_rank1": 74.948,
+  "gain": -0.333,
+  "min_gain": 0.3,
+  "passed": false
+}
