@@ -990,3 +990,73 @@ queue24 started 2026-09-22 22:08:18
 [04:33:41] START q24_compare_dw40
 [04:33:41] END   q24_compare_dw40  ok  0 min
 [04:33:41] queue24 finished: ПРОВАЛИЛИСЬ 2 шаг(ов): q24_waitapi, q24_smoke
+queue25 started 2026-09-23 04:41:14
+[04:41:14] WAIT  for running vreid processes
+[04:41:14] WAIT  done - GPU free
+[04:41:14] START q25_fit_s3
+[06:06:28] END   q25_fit_s3  ok  85 min
+[06:06:28] START q25_soup_fit
+[06:06:33] END   q25_soup_fit  ok  0 min
+[06:06:33] START q25_val_fit
+[06:07:29] END   q25_val_fit  ok  1 min
+[06:07:29] START q25_all_s0
+[07:42:15] END   q25_all_s0  ok  95 min
+[07:42:15] START q25_all_s2
+[09:22:35] END   q25_all_s2  ok  100 min
+[09:22:35] START q25_all_s3
+[10:58:10] END   q25_all_s3  ok  96 min
+[10:58:10] START q25_soup_all
+[10:58:15] END   q25_soup_all  ok  0 min
+[10:58:15] START q25_grid
+[11:00:15] END   q25_grid  ok  2 min
+[11:00:15] START q25_stress
+[11:00:16] END   q25_stress  ok  0 min
+[11:00:16] data folder: E:\Хакатон\Данные
+[11:00:16] START q25_tests
+[11:00:35] END   q25_tests  ok  0 min
+[11:00:35] START q25_export
+[11:00:37] END   q25_export  ok  0 min
+[11:00:37] START q25_predict
+[11:01:59] END   q25_predict  ok  1 min
+[11:01:59] START q25_form
+[11:02:00] END   q25_form  ok  0 min
+[11:02:00] START q25_indep
+[11:02:01] END   q25_indep  ok  0 min
+[11:02:01] START q25_ties
+[11:02:01] END   q25_ties  ok  0 min
+[11:02:01] START q25_replay
+[11:02:03] END   q25_replay  ok  0 min
+[11:02:04] docker готов
+[11:02:04] START q25_build_release
+[11:02:32] END   q25_build_release  ok  0 min
+[11:02:32] START q25_build_dev
+[11:02:52] END   q25_build_dev  ok  0 min
+[11:02:52] START q25_build_api
+[11:03:10] END   q25_build_api  ok  0 min
+[11:03:10] START q25_build_web
+[11:03:11] END   q25_build_web  ok  0 min
+[11:03:11] START q25_docker_a
+[11:03:38] END   q25_docker_a  ok  0 min
+[11:03:38] START q25_docker_b
+[11:04:04] END   q25_docker_b  ok  0 min
+[11:04:04] START q25_cmp_det
+[11:04:05] END   q25_cmp_det  ok  0 min
+[11:04:05] START q25_docker_offline
+[11:04:31] END   q25_docker_offline  ok  0 min
+[11:04:31] START q25_cmp_offline
+[11:04:31] END   q25_cmp_offline  ok  0 min
+[11:04:31] START q25_bench
+[11:05:53] END   q25_bench  ok  1 min
+[11:05:53] START q25_official
+[11:05:58] END   q25_official  ok  0 min
+[11:05:58] START q25_audit
+[11:05:59] END   q25_audit  ok  0 min
+[11:05:59] START q25_errors
+[11:06:30] END   q25_errors  ok  1 min
+[11:06:30] START q25_scorecard
+[11:06:30] END   q25_scorecard  ok  0 min
+[11:06:30] START q25_manifest
+[11:06:35] END   q25_manifest  ok  0 min
+[11:06:35] START q25_logs
+[11:06:37] END   q25_logs  ok  0 min
+[11:06:37] START q25_publish

@@ -1,0 +1,6 @@
+[errors] mAP@10 78.42, rank-1 75.05
+[errors] rank1_ok                     728
+[errors] rank1_wrong_but_in_top10     180
+[errors] miss_top10                    62
+[errors] no_valid_positive            243
+[errors] → E:\Хакатон\results\error_analysis.json и E:\Хакатон\docs\ERROR_ANALYSIS.md

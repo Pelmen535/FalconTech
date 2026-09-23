@@ -1,28 +1,24 @@
 {
-  "собрано": "2026-09-23T01:32:20",
+  "собрано": "2026-09-23T11:06:30",
   "хэши": {
     "release/model.pt": {
-      "sha256": "a2d7084bd882e7aa1afc42155a485b90b65c5478388c737c4c3df6b182e3c49c",
+      "sha256": "df0ecac587a71bc2b16dcf0973a2298fe0ecaa354215eac2552020454ba8191d",
       "байт": 172315879
     },
     "release/recipe.json": {
-      "sha256": "8edb6b68bc5fc7b1b3654d3fdc9a7cf910317862fa4b5bc5dc3e37362290fc6a",
-      "байт": 4661
-    },
-    "release/reranker.pt": {
-      "sha256": "6ac3f746aebb20c04526c81708224ebc90b715015d9e99e2e94af74580b66299",
-      "байт": 607231914
+      "sha256": "27e3be9a9d02517671a6820fc6bafd255851fb5caa68b5d30801f48fc968584f",
+      "байт": 4670
     },
     "release/weights.json": {
-      "sha256": "158eac2d47a1a914a1000dc58f9dfdaee3707bb995b9930b96be01322a3012b2",
-      "байт": 1090
+      "sha256": "656e59ad7262cc62a4a67d65f0744c5048a7689fc1b8a35fa5bb2d59cd6d2ca1",
+      "байт": 989
     },
     "submission/candidates.csv": {
-      "sha256": "68a2ffebedfd35668f61f1f503d0aeb16e1a2763791906df8bbf3720f91a2269",
-      "байт": 78407
+      "sha256": "aa62b1be29ef4e1e140a2eacceaae54cd30bb0057314a277eb5a0b3d06ab98f0",
+      "байт": 78482
     },
     "submission/embeddings.npy": {
-      "sha256": "02b93e9cfdb354a3fa3a6e490667fda736a1281b5376719cf45e90d5c5a5dbe0",
+      "sha256": "93a3bcb688516cf50125d173b43b01db3081bd3090f80f7043b3103db2627946",
       "байт": 11427968
     },
     "submission/reranker_embeddings.npy": {
@@ -30,18 +26,18 @@
       "байт": 15237248
     },
     "submission/run_info.json": {
-      "sha256": "11ec936bfdb7565a9ea44ed466259fa751ca7487258bf662fbdf52e3abb45b57",
-      "байт": 5719
+      "sha256": "c71da311f6a3a89c44d93b8af276095382f6f4600c61249bb64cfec8c63aefe9",
+      "байт": 5728
     },
     "submission/submission.csv": {
-      "sha256": "62149298fc6bfc00713eeff1308d84530496f117ab075275fd6bc753d20a3f58",
+      "sha256": "75de8750130cee945d23d8d9ddf7695a1a085c8e7a539972578b25b97577b2c2",
       "байт": 404040
     }
   },
   "рецепт": {
     "threshold": 0.55,
     "confidence": "top1",
-    "tau": 0.2157391905784607,
+    "tau": 0.23046861588954926,
     "tta_flip": false,
     "dba": 0,
     "kr": true,
@@ -60,21 +56,21 @@
     "fast_decode": true,
     "refuse_rate": null,
     "source": {
-      "weights": "weights/soup_r392_all/best.pt",
-      "val": "results/hack_ft_soup_r392_fit_val.json",
+      "weights": "weights/soup_r392dw40_all/best.pt",
+      "val": "results/hack_ft_soup_r392dw40_fit_val.json",
       "protocol": "track",
-      "val_mAP_jury": 0.7374146416298478,
-      "val_rank1_jury": 0.7072164948453609,
-      "val_mAP_cross_camera_strict": 0.7544345851742759,
-      "val_mINP": 0.6972724929438707,
+      "val_mAP_jury": 0.7523160557464681,
+      "val_rank1_jury": 0.7206185567010309,
+      "val_mAP_cross_camera_strict": 0.767241790759832,
+      "val_mINP": 0.7151428251620472,
       "val_n_query": 1213,
       "val_n_no_match": 243,
       "val_n_gallery": 688,
       "val_refusal_mask_cam": false,
       "val_refusal": {
-        "f1": 0.9660657476139979,
-        "precision": 0.9902173913043478,
-        "recall": 0.943064182194617,
+        "f1": 0.9677077818951827,
+        "precision": 0.9934782608695653,
+        "recall": 0.9432404540763674,
         "tnr": 0.9794238683127572
       }
     },
@@ -137,7 +133,7 @@
     }
   },
   "разбиение": {
-    "источник": "runs\\hack\\ft_soup_r392_fit",
+    "источник": "runs\\hack\\ft_soup_r392dw40_fit",
     "fit_ids": [
       0,
       1,
@@ -1965,7 +1961,7 @@
     "nvidia-smi": "NVIDIA GeForce RTX 5060 Ti, 610.47, 16311 MiB"
   },
   "отчёты": {
-    "валидация": "results\\hack_ft_soup_r392_fit_val.json",
+    "валидация": "results\\hack_ft_soup_r392dw40_fit_val.json",
     "производительность": "results\\bench_full.json",
     "прогон": "submission\\run_info.json"
   },
@@ -1975,7 +1971,7 @@
     "сборка релиза": "python scripts/export_release.py --weights weights/soup_b336_all/best.pt --val results/hack_ft_soup_b336_val_val.json --kr --k1 3 --k2 2 --out release",
     "инференс": "docker run --rm --gpus all --shm-size=2g -v <данные>:/data:ro -v <выход>:/out vreid-release",
     "независимость запросов": "python scripts/check_query_independence.py --submission submission --data <данные>",
-    "аудит отказа": "python scripts/refusal_audit.py --run runs\\hack\\ft_soup_r392_fit --k1 3 --k2 2",
+    "аудит отказа": "python scripts/refusal_audit.py --run runs\\hack\\ft_soup_r392dw40_fit --k1 3 --k2 2",
     "производительность": "docker run --rm --gpus all --shm-size=2g -v <данные>:/data:ro -v <результаты>:/app/results --entrypoint python vreid-dev -m vreid.bench_full --data /data --release /app/release --n 600 --workers 8 --fast-decode"
   }
 }

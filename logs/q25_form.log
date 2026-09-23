@@ -1,0 +1,8 @@
+[check] test_query 1110 строк, test_gallery 750
+[check] embeddings.npy (1860, 1536) float32
+[check] норма строк: мин 1.0000, макс 1.0000
+[check] submission.csv: строк 1110, ячеек в строке 11
+[check] candidates.csv: строк 1046, отвечено 1046, отказов 64 (5.8%), запросов с >1 строкой: 0
+[check] эталонный organizer/evaluate.py прочитал: 1110 запросов в submission.csv, 1046 в candidates.csv
+
+[check] все три файла по форме в порядке

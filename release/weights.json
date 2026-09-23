@@ -1,18 +1,16 @@
 {
-  "tag": "v1.1",
+  "tag": "v1.2",
   "repo": "Pelmen535/FalconTech",
   "files": {
     "model.pt": {
-      "sha256": "a2d7084bd882e7aa1afc42155a485b90b65c5478388c737c4c3df6b182e3c49c",
+      "sha256": "df0ecac587a71bc2b16dcf0973a2298fe0ecaa354215eac2552020454ba8191d",
       "size": 172315879,
       "what": "DINOv2 ViT-B/14, основная модель: её вектор идёт в embeddings.npy, её путь меряет жюри"
     }
   },
-  "twin_map10": 77.411,
-  "twin_rank1": 74.639,
-  "twin_postprocess": "k-recip 3/2, эталонный scorer",
-  "twin_val": "results/hack_ft_soup_r392_fit_val.json",
-  "twin_run": "runs/hack/ft_soup_r392_fit",
-  "twin_source": "results/official_validation/comparison.json",
-  "correction": "при публикации 23.09 01:33 было записано 77.60 из val-отчёта; боевой путь считает k-reciprocal пачками с блокировкой кадров, и эталон даёт 77.41. Исправлено тем же утром, прирост над v1.0 +3.20, а не +3.39"
+  "twin_run": "runs/hack/ft_soup_r392dw40_fit",
+  "twin_map10": 78.417,
+  "twin_rank1": 75.052,
+  "twin_postprocess": "эталонный scorer",
+  "twin_val": "results/hack_ft_soup_r392dw40_fit_val.json"
 }
