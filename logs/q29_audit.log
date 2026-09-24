@@ -1,0 +1,5 @@
+[submit] candidates.csv: отказов 287/1213 → results\refusal_audit_r392dw40f4_frozen_recipe_candidates.csv
+[submit] candidates.csv: отказов 324/1213 → results\refusal_audit_r392dw40f4_selected_on_A_candidates.csv
+[audit] frozen_recipe  порог 0.6500  A 96.42  B 97.48  всё 97.04
+[audit] selected_on_A  порог 0.7258  A 96.94  B 96.44  всё 96.71
+[audit] → results\refusal_audit_r392dw40f4.json

@@ -1,0 +1,28 @@
+[train] ФИНАЛЬНЫЙ режим: все 1541 id в обучении, валидации нет — сохраняется последняя эпоха, число эпох задай по лучшему прогону с валидацией
+[train] кропы fit: 9556 (0 c)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[train] vit_base_patch14_dinov2.lvd142m, D=1536, id=1541, device=cuda
+[train] учитель weights/hack_dinov2_l_336_cam/best.pt обучен на 336, ученик на 392: кроп для учителя масштабируется до его входа
+[train] дистилляция от weights/hack_dinov2_l_336_cam/best.pt: D учителя 2048, вес 40.0
+[train] сэмплер: camera-aware (кадры одной машины — с разных камер)
+E:\Хакатон\vreid\train.py:657: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  sched.step()
+[ep 01] loss=17.585 (328 c)
+[ep 02] loss=13.817 (328 c)
+[ep 03] loss=10.023 (328 c)
+[ep 04] loss=7.276 (328 c)
+[ep 05] loss=5.235 (328 c)
+[ep 06] loss=4.100 (327 c)
+[ep 07] loss=3.153 (328 c)
+[ep 08] loss=2.589 (328 c)
+[ep 09] loss=2.000 (328 c)
+[ep 10] loss=1.743 (328 c)
+[ep 11] loss=1.486 (328 c)
+[ep 12] loss=1.303 (328 c)
+[ep 13] loss=1.165 (327 c)
+[ep 14] loss=1.055 (328 c)
+[ep 15] loss=0.988 (331 c)
+[ep 16] loss=0.948 (330 c)
+[ep 17] loss=0.950 (329 c)
+[ep 18] loss=0.940 (328 c)
+[train] финальная модель: 18 эпох на всех id → weights\all18_r392_dw40f4_s3\best.pt (валидации не было)

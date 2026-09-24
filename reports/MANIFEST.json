@@ -1,24 +1,24 @@
 {
-  "собрано": "2026-09-23T11:06:30",
+  "собрано": "2026-09-25T01:04:57",
   "хэши": {
     "release/model.pt": {
-      "sha256": "df0ecac587a71bc2b16dcf0973a2298fe0ecaa354215eac2552020454ba8191d",
+      "sha256": "4994dcadb885c8a499ad768f69f6dba8ebb9fd440b64f6e9dd93e5522dc1a336",
       "байт": 172315879
     },
     "release/recipe.json": {
-      "sha256": "27e3be9a9d02517671a6820fc6bafd255851fb5caa68b5d30801f48fc968584f",
-      "байт": 4670
+      "sha256": "a8019c83bb8d4961dc7573d5cfaddec020f95a6cd91887cfd09ae50951bc4303",
+      "байт": 5295
     },
     "release/weights.json": {
-      "sha256": "656e59ad7262cc62a4a67d65f0744c5048a7689fc1b8a35fa5bb2d59cd6d2ca1",
-      "байт": 989
+      "sha256": "c1d5609057e3efc0326f71f5ee476db5b685d32929c449ef3df26633a5ba040d",
+      "байт": 574
     },
     "submission/candidates.csv": {
-      "sha256": "aa62b1be29ef4e1e140a2eacceaae54cd30bb0057314a277eb5a0b3d06ab98f0",
-      "байт": 78482
+      "sha256": "a54cc5cd352188b7e4aea9710451bda485e76879c1ea537c827606b5846e05cd",
+      "байт": 77057
     },
     "submission/embeddings.npy": {
-      "sha256": "93a3bcb688516cf50125d173b43b01db3081bd3090f80f7043b3103db2627946",
+      "sha256": "227ae59b4f6edcd29cd9f84a1df8b8795a29fe24f9aa1611c2be9d6ef3bb9c48",
       "байт": 11427968
     },
     "submission/reranker_embeddings.npy": {
@@ -26,18 +26,18 @@
       "байт": 15237248
     },
     "submission/run_info.json": {
-      "sha256": "c71da311f6a3a89c44d93b8af276095382f6f4600c61249bb64cfec8c63aefe9",
-      "байт": 5728
+      "sha256": "6bdfbc7da7882dc77588962ed1f20b0674f018cba58e6cf6b14d4aab0fbd603c",
+      "байт": 6377
     },
     "submission/submission.csv": {
-      "sha256": "75de8750130cee945d23d8d9ddf7695a1a085c8e7a539972578b25b97577b2c2",
+      "sha256": "c8ae0e05cb87e385f0c61df585662defeec7bc2bf106a44b03830db4c0cc58e4",
       "байт": 404040
     }
   },
   "рецепт": {
-    "threshold": 0.55,
+    "threshold": 0.65,
     "confidence": "top1",
-    "tau": 0.23046861588954926,
+    "tau": 0.3038594126701355,
     "tta_flip": false,
     "dba": 0,
     "kr": true,
@@ -56,23 +56,58 @@
     "fast_decode": true,
     "refuse_rate": null,
     "source": {
-      "weights": "weights/soup_r392dw40_all/best.pt",
-      "val": "results/hack_ft_soup_r392dw40_fit_val.json",
+      "weights": "weights/soup_r392dw40f4_all/best.pt",
+      "val": "results/hack_ft_soup_r392dw40f4_fit_val.json",
       "protocol": "track",
-      "val_mAP_jury": 0.7523160557464681,
-      "val_rank1_jury": 0.7206185567010309,
-      "val_mAP_cross_camera_strict": 0.767241790759832,
-      "val_mINP": 0.7151428251620472,
+      "val_mAP_jury": 0.7945479667812142,
+      "val_rank1_jury": 0.7690721649484537,
+      "val_mAP_cross_camera_strict": 0.8035397234495173,
+      "val_mINP": 0.763361955467036,
       "val_n_query": 1213,
       "val_n_no_match": 243,
       "val_n_gallery": 688,
       "val_refusal_mask_cam": false,
       "val_refusal": {
-        "f1": 0.9677077818951827,
-        "precision": 0.9934782608695653,
-        "recall": 0.9432404540763674,
+        "f1": 0.9671610169491526,
+        "precision": 0.9923913043478261,
+        "recall": 0.9431818181818182,
         "tnr": 0.9794238683127572
       }
+    },
+    "threshold_choice": {
+      "value": 0.65,
+      "selected_by": "максимум ожидаемого балла отказа 0.7·F1 + 0.3·TNR при вере 0.85 в сценарий A, сетка 0.01 (scripts/choose_threshold.py)",
+      "belief_in_A": 0.85,
+      "reason": "В валидации и в открытом тесте галерея собрана по одному кадру на трек «машина × камера», поэтому у запроса с парой почти всегда есть кадр той же машины с той же камеры (сценарий A). На открытом тесте это видно по уверенности v1.2: медиана лучшего ответа 0.918, у 77% запросов не ниже 0.8 — как в сценарии A валидации (64%) и совсем не как без дубликатов (1.6%). Закрытый тест гарантирует только кросс-камерную пару (ответ 17), поэтому вера в A — 0.85, а не единица.",
+      "validation_optimum": 0.66,
+      "minimax": 0.53,
+      "refusal_score": {
+        "note": "0.7*F1 + 0.3*TNR, отложенная валидация двойника релиза, 1213 запросов",
+        "0.65": {
+          "with_duplicates": 97.04,
+          "without_duplicates": 67.06,
+          "expected_at_belief_0.85": 92.54
+        },
+        "0.66": {
+          "with_duplicates": 97.2,
+          "without_duplicates": 65.58,
+          "expected_at_belief_0.85": 92.46
+        },
+        "0.53": {
+          "with_duplicates": 89.53,
+          "without_duplicates": 75.78,
+          "expected_at_belief_0.85": 87.47
+        },
+        "0.55 (прежний)": {
+          "with_duplicates": 91.0,
+          "without_duplicates": 75.58,
+          "expected_at_belief_0.85": 88.68
+        }
+      },
+      "indifference_probability": 0.537,
+      "previous_threshold": 0.55,
+      "reproduce": "python scripts/choose_threshold.py --stress results/refusal_stress_r392dw40f4.json --belief 0.85",
+      "source": "results/refusal_stress_r392dw40f4.json"
     },
     "rerank_choice": {
       "value": "k-reciprocal k1=3, k2=2, lambda=0.2",
@@ -107,33 +142,10 @@
         "results/rerank_grid_fine.json"
       ],
       "metric": "mAP@10 по эталонному organizer/evaluate.py: сначала обрезание до 10, потом junk-фильтр. Сетка пересчитана после сверки с эталоном, оптимум не сместился."
-    },
-    "threshold_choice": {
-      "value": 0.55,
-      "selected_by": "не оптимум валидации, а решение с учётом устройства закрытого теста",
-      "validation_optimum": 0.6,
-      "minimax": 0.48,
-      "reason": "В нашей валидации и в открытом тесте галерея собрана по одному кадру на трек «машина × камера», поэтому у всех запросов с парой лежит кадр той же машины с той же камеры — почти дубликат, медиана косинуса 0.912. Закрытый тест гарантирует только кросс-камерную пару (ответ 17). Без дубликатов медиана падает до 0.517, и высокий порог начинает отказывать тем, кому надо отвечать.",
-      "refusal_score": {
-        "note": "0.7*F1 + 0.3*TNR, отложенная валидация двойника релиза, 1213 запросов",
-        "with_duplicates": {
-          "0.60": 96.66,
-          "0.55": 96.4,
-          "0.48": 92.56
-        },
-        "without_duplicates": {
-          "0.60": 54.39,
-          "0.55": 63.16,
-          "0.48": 69.67
-        }
-      },
-      "indifference_probability": 0.913,
-      "reproduce": "python scripts/refusal_stress.py --run runs/hack/ft_soup_b336_fit --release release",
-      "source": "results/refusal_stress_fit.json"
     }
   },
   "разбиение": {
-    "источник": "runs\\hack\\ft_soup_r392dw40_fit",
+    "источник": "runs\\hack\\ft_soup_r392dw40f4_fit",
     "fit_ids": [
       0,
       1,
@@ -1961,7 +1973,7 @@
     "nvidia-smi": "NVIDIA GeForce RTX 5060 Ti, 610.47, 16311 MiB"
   },
   "отчёты": {
-    "валидация": "results\\hack_ft_soup_r392dw40_fit_val.json",
+    "валидация": "results\\hack_ft_soup_r392dw40f4_fit_val.json",
     "производительность": "results\\bench_full.json",
     "прогон": "submission\\run_info.json"
   },
@@ -1971,7 +1983,7 @@
     "сборка релиза": "python scripts/export_release.py --weights weights/soup_b336_all/best.pt --val results/hack_ft_soup_b336_val_val.json --kr --k1 3 --k2 2 --out release",
     "инференс": "docker run --rm --gpus all --shm-size=2g -v <данные>:/data:ro -v <выход>:/out vreid-release",
     "независимость запросов": "python scripts/check_query_independence.py --submission submission --data <данные>",
-    "аудит отказа": "python scripts/refusal_audit.py --run runs\\hack\\ft_soup_r392dw40_fit --k1 3 --k2 2",
+    "аудит отказа": "python scripts/refusal_audit.py --run runs\\hack\\ft_soup_r392dw40f4_fit --k1 3 --k2 2",
     "производительность": "docker run --rm --gpus all --shm-size=2g -v <данные>:/data:ro -v <результаты>:/app/results --entrypoint python vreid-dev -m vreid.bench_full --data /data --release /app/release --n 600 --workers 8 --fast-decode"
   }
 }

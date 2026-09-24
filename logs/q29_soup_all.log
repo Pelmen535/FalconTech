@@ -1,0 +1,6 @@
+[soup] «backbone»: усреднено 174 тензоров, скопировано без изменений 0
+[soup] «bnneck»: усреднено 4 тензоров, скопировано без изменений 1
+[soup] 3 моделей -> weights\soup_r392dw40f4_all\best.pt (329 МБ)
+        weights/all18_r392_dw40f4_s0/best.pt
+        weights/all18_r392_dw40f4_s2/best.pt
+        weights/all18_r392_dw40f4_s3/best.pt

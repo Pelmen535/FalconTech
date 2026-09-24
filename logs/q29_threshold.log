@@ -1,0 +1,5 @@
+[threshold] порог 0.65 (вера в A 0.85); оптимум A 0.66, минимакс 0.53, прежний 0.55
+[threshold]   0.65: {'with_duplicates': 97.04, 'without_duplicates': 67.06, 'expected_at_belief_0.85': 92.54}
+[threshold]   0.66: {'with_duplicates': 97.2, 'without_duplicates': 65.58, 'expected_at_belief_0.85': 92.46}
+[threshold]   0.53: {'with_duplicates': 89.53, 'without_duplicates': 75.78, 'expected_at_belief_0.85': 87.47}
+[threshold]   0.55 (прежний): {'with_duplicates': 91.0, 'without_duplicates': 75.58, 'expected_at_belief_0.85': 88.68}

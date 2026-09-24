@@ -1,0 +1,12 @@
+{
+  "mode": "raw",
+  "candidate": "runs\\hack\\ft_soup_r392dw40f4_fit",
+  "baseline": "runs\\hack\\ft_soup_r392dw40_fit",
+  "candidate_map10": 79.455,
+  "candidate_rank1": 76.907,
+  "baseline_map10": 75.232,
+  "baseline_rank1": 72.062,
+  "gain": 4.223,
+  "min_gain": 0.0,
+  "passed": true
+}

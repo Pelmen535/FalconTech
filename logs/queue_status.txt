@@ -1124,3 +1124,79 @@ queue28 started 2026-09-24 07:24:01
 [10:21:13] START q28_smoke
 [10:21:20] END   q28_smoke  ok  0 min
 [10:21:20] queue28 finished: все шаги прошли
+queue29 started 2026-09-24 16:47:03
+[16:47:03] WAIT  for running vreid processes
+[16:47:03] WAIT  done - GPU free
+[16:47:06] прототип остановлен: ученикам нужна видеопамять
+[16:47:06] START q29_fit_s2
+[18:19:38] END   q29_fit_s2  ok  93 min
+[18:19:38] START q29_fit_s3
+[19:56:00] END   q29_fit_s3  ok  96 min
+[19:56:00] START q29_soup_fit
+[19:56:08] END   q29_soup_fit  ok  0 min
+[19:56:08] START q29_val_fit
+[19:57:08] END   q29_val_fit  ok  1 min
+[19:57:10] ворота двойника: пройдены - собираю v1.3
+[19:57:10] START q29_grid
+[19:59:27] END   q29_grid  ok  2 min
+[19:59:27] START q29_stress
+[19:59:27] END   q29_stress  ok  0 min
+[19:59:27] START q29_threshold
+[19:59:27] END   q29_threshold  ok  0 min
+[19:59:27] порог отказа v1.3: 0.65
+[19:59:27] START q29_all_s0
+[21:39:48] END   q29_all_s0  ok  100 min
+[21:39:48] START q29_all_s2
+[23:19:33] END   q29_all_s2  ok  100 min
+[23:19:33] START q29_all_s3
+[00:58:18] END   q29_all_s3  ok  99 min
+[00:58:18] START q29_soup_all
+[00:58:22] END   q29_soup_all  ok  0 min
+[00:58:22] START q29_tests
+[00:58:44] END   q29_tests  ok  0 min
+[00:58:44] START q29_export
+[00:58:46] END   q29_export  ok  0 min
+[00:58:46] START q29_predict
+[01:00:11] END   q29_predict  ok  1 min
+[01:00:11] START q29_form
+[01:00:12] END   q29_form  ok  0 min
+[01:00:12] START q29_indep
+[01:00:13] END   q29_indep  ok  0 min
+[01:00:13] START q29_ties
+[01:00:13] END   q29_ties  ok  0 min
+[01:00:13] START q29_replay
+[01:00:16] END   q29_replay  ok  0 min
+[01:00:17] docker готов
+[01:00:17] START q29_build_release
+[01:00:42] END   q29_build_release  ok  0 min
+[01:00:42] START q29_build_dev
+[01:01:04] END   q29_build_dev  ok  0 min
+[01:01:04] START q29_build_api
+[01:01:22] END   q29_build_api  ok  0 min
+[01:01:22] START q29_build_web
+[01:01:23] END   q29_build_web  ok  0 min
+[01:01:23] START q29_docker_a
+[01:01:52] END   q29_docker_a  ok  0 min
+[01:01:52] START q29_docker_b
+[01:02:21] END   q29_docker_b  ok  0 min
+[01:02:21] START q29_cmp_det
+[01:02:21] END   q29_cmp_det  ok  0 min
+[01:02:21] START q29_docker_offline
+[01:02:50] END   q29_docker_offline  ok  0 min
+[01:02:50] START q29_cmp_offline
+[01:02:50] END   q29_cmp_offline  ok  0 min
+[01:02:50] START q29_bench
+[01:04:18] END   q29_bench  ok  1 min
+[01:04:18] START q29_official
+[01:04:24] END   q29_official  ok  0 min
+[01:04:24] START q29_audit
+[01:04:25] END   q29_audit  ok  0 min
+[01:04:25] START q29_errors
+[01:04:56] END   q29_errors  ok  1 min
+[01:04:56] START q29_scorecard
+[01:04:56] END   q29_scorecard  ok  0 min
+[01:04:56] START q29_manifest
+[01:05:01] END   q29_manifest  ok  0 min
+[01:05:01] START q29_logs
+[01:05:04] END   q29_logs  ok  0 min
+[01:05:04] START q29_publish

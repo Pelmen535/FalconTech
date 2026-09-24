@@ -1,0 +1,78 @@
+[hackathon] train.csv: 9556 bbox, 1541 vehicle_id, 9556 кадров
+[hackathon] камеры из CSV: 96 шт. — псевдокамера не нужна
+[hackathon] протокол «track», fit: 7655 bbox / 1233 id; val query: 1213 (без пары: 243), gallery: 688
+[models] ft:soup_r392dw40f4_fit: vit_base_patch14_dinov2.lvd142m, D=1536, input=392, device=cuda
+
+extract[query]:   0%|          | 0/19 [00:00<?, ?batch/s]
+extract[query]:   5%|▌         | 1/19 [00:17<05:07, 17.09s/batch]
+extract[query]:  11%|█         | 2/19 [00:17<02:03,  7.26s/batch]
+extract[query]:  16%|█▌        | 3/19 [00:17<01:05,  4.12s/batch]
+extract[query]:  21%|██        | 4/19 [00:18<00:39,  2.64s/batch]
+extract[query]:  26%|██▋       | 5/19 [00:18<00:25,  1.84s/batch]
+extract[query]:  32%|███▏      | 6/19 [00:19<00:17,  1.35s/batch]
+extract[query]:  37%|███▋      | 7/19 [00:19<00:12,  1.03s/batch]
+extract[query]:  42%|████▏     | 8/19 [00:19<00:09,  1.21batch/s]
+extract[query]:  47%|████▋     | 9/19 [00:20<00:06,  1.46batch/s]
+extract[query]:  53%|█████▎    | 10/19 [00:20<00:05,  1.69batch/s]
+extract[query]:  58%|█████▊    | 11/19 [00:20<00:04,  1.89batch/s]
+extract[query]:  63%|██████▎   | 12/19 [00:21<00:03,  2.07batch/s]
+extract[query]:  68%|██████▊   | 13/19 [00:21<00:02,  2.21batch/s]
+extract[query]:  74%|███████▎  | 14/19 [00:22<00:02,  2.32batch/s]
+extract[query]:  79%|███████▉  | 15/19 [00:22<00:01,  2.40batch/s]
+extract[query]:  84%|████████▍ | 16/19 [00:22<00:01,  2.47batch/s]
+extract[query]:  89%|████████▉ | 17/19 [00:23<00:00,  2.51batch/s]
+extract[query]:  95%|█████████▍| 18/19 [00:23<00:00,  2.55batch/s]
+extract[query]: 100%|██████████| 19/19 [00:23<00:00,  2.61batch/s]
+extract[query]: 100%|██████████| 19/19 [00:25<00:00,  1.32s/batch]
+[extract] query: 20.8 мс/кроп всего = 6.4 сеть + 14.4 чтение кадров с диска
+[extract] query: (1213, 1536) → runs\hack\ft_soup_r392dw40f4_fit\val_query_track.npz
+
+extract[gallery]:   0%|          | 0/11 [00:00<?, ?batch/s]
+extract[gallery]:   9%|▉         | 1/11 [00:15<02:31, 15.11s/batch]
+extract[gallery]:  18%|█▊        | 2/11 [00:15<00:57,  6.44s/batch]
+extract[gallery]:  27%|██▋       | 3/11 [00:15<00:29,  3.67s/batch]
+extract[gallery]:  36%|███▋      | 4/11 [00:16<00:16,  2.37s/batch]
+extract[gallery]:  45%|████▌     | 5/11 [00:16<00:09,  1.66s/batch]
+extract[gallery]:  55%|█████▍    | 6/11 [00:17<00:06,  1.22s/batch]
+extract[gallery]:  64%|██████▎   | 7/11 [00:17<00:03,  1.06batch/s]
+extract[gallery]:  73%|███████▎  | 8/11 [00:17<00:02,  1.31batch/s]
+extract[gallery]:  82%|████████▏ | 9/11 [00:18<00:01,  1.55batch/s]
+extract[gallery]:  91%|█████████ | 10/11 [00:18<00:00,  1.77batch/s]
+extract[gallery]: 100%|██████████| 11/11 [00:18<00:00,  2.09batch/s]
+extract[gallery]: 100%|██████████| 11/11 [00:20<00:00,  1.82s/batch]
+[extract] gallery: 29.1 мс/кроп всего = 5.9 сеть + 23.1 чтение кадров с диска
+[extract] gallery: (688, 1536) → runs\hack\ft_soup_r392dw40f4_fit\val_gallery_track.npz
+[track] МЕТРИКА ЖЮРИ (убрано только vid+cam): rank1= 76.9%  rank5= 91.2%  rank10= 93.7%  mAP@10= 79.5%  (queries 970/970, gallery 688)
+строгий cross-cam (диагностика, завышает): rank1= 78.2%  rank5= 91.5%  rank10= 93.7%  mAP@10= 80.4%  (queries 970/970, gallery 688)
+bits: tau=0.304, max 9.4 бит при галерее 688
+     4.5–  5.6 бит  n=  189  rank-1 =  63.0%
+     5.6–  6.1 бит  n=  237  rank-1 =  78.9%
+     6.1–  6.4 бит  n=  221  rank-1 =  81.9%
+     6.4–  6.8 бит  n=  248  rank-1 =  85.5%
+     6.8–  7.4 бит  n=  220  rank-1 =  82.3%
+     7.4–  9.4 бит  n=  191  rank-1 =  83.2%
+постобработка (метрика жюри):
+   base                         mAP= 79.5%  rank1= 76.9%  rank5= 91.2%
+   dba k=1                      mAP= 79.9%  rank1= 77.4%  rank5= 91.4%
+   dba k=2                      mAP= 80.6%  rank1= 77.6%  rank5= 91.4%
+   dba k=3                      mAP= 80.8%  rank1= 78.7%  rank5= 90.9%
+   dba k=5                      mAP= 81.9%  rank1= 80.0%  rank5= 90.9%
+   k-recip 3/2                  mAP= 81.7%  rank1= 79.3%  rank5= 91.6%
+   k-recip 6/2                  mAP= 81.9%  rank1= 79.8%  rank5= 91.9%
+   k-recip 10/3                 mAP= 80.5%  rank1= 77.9%  rank5= 89.8%
+   k-recip 15/4                 mAP= 80.2%  rank1= 77.9%  rank5= 90.5%
+   k-recip 20/6                 mAP= 77.3%  rank1= 73.8%  rank5= 90.4%
+   dba k=5 + k-recip 3/2        mAP= 82.8%  rank1= 80.3%  rank5= 91.0%  ← лучшее
+   dba k=5 + k-recip 6/2        mAP= 82.7%  rank1= 80.5%  rank5= 91.3%
+   dba k=5 + k-recip 10/3       mAP= 82.4%  rank1= 80.1%  rank5= 90.8%
+   dba k=5 + k-recip 15/4       mAP= 81.5%  rank1= 79.0%  rank5= 89.9%
+   dba k=5 + k-recip 20/6       mAP= 80.7%  rank1= 78.8%  rank5= 90.4%
+   (разница < ~0.7 п.п. при 970 запросах — шум; выбирай самое простое из лучших)
+режим отказа: запросов 1213, без пары 243, mINP=76.3%
+  top1       порог=0.663  балл= 97.1  F1= 96.7%  P= 99.2%  R= 94.3%  TNR= 97.9%  accept=  76%
+  margin     порог=0.103  балл= 92.4  F1= 93.2%  P= 97.4%  R= 89.4%  TNR= 90.5%  accept=  73%
+  bits       порог=4.426  балл= 61.8  F1= 88.4%  P= 79.1%  R=100.0%  TNR=  0.0%  accept= 100%
+  top1+bits  порог=0.793  балл= 97.4  F1= 96.7%  P= 99.6%  R= 94.0%  TNR= 99.2%  accept=  75%
+  → лучшая уверенность: top1+bits   (камера запроса не маскируется — как на тесте)
+[val] → results\hack_ft_soup_r392dw40f4_fit_val.json
+[W924 19:57:08.000000000 CudaIPCTypes.cpp:16] Producer process has been terminated before all shared CUDA tensors released. See Note [Sharing CUDA tensors]
