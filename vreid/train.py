@@ -418,7 +418,30 @@ def teacher_input(x, size: int):
     return F.interpolate(x, size=(size, size), mode="bicubic", align_corners=False, antialias=True)
 
 
-def similarity_distill(f_student, teacher_feats):
+def distill_focus_weights(target, y, cams, focus: float, hard_k: int):
+    """Веса пар для similarity_distill: 1 у всех, 1 + focus у трудных.
+
+    Трудные — это пары, на которых ошибается поиск: та же машина с ДРУГОЙ камеры (без cams —
+    с любой) и hard_k самых похожих на кадр чужих машин. «Похожих» — по мнению учителя
+    (target), а не ученика: так набор трудных пар не зависит от того, куда ученик успел уйти.
+    При батче v1.2 (P=8, K=4) это до 9% позитивов и 13% трудных негативов среди всех пар; при
+    focus=4 на них приходится около 60% веса лосса, а не пятая часть."""
+    import torch
+    with torch.no_grad():
+        same = y[:, None] == y[None, :]
+        hard = same.clone()
+        hard.fill_diagonal_(False)
+        if cams is not None:
+            hard &= cams[:, None] != cams[None, :]
+        k = min(hard_k, int((~same).sum(1).min()))
+        if k > 0:
+            nearest = target.masked_fill(same, float("-inf")).topk(k, dim=1).indices
+            hard.scatter_(1, nearest, True)
+        return 1.0 + focus * hard.float()
+
+
+def similarity_distill(f_student, teacher_feats, y=None, cams=None, focus: float = 0.0,
+                       hard_k: int = 4):
     """Дистилляция геометрии, а не самих векторов (Tung & Mori, 2019).
 
     Учитель и ученик могут иметь разную размерность (у нас 2048 против 1536), поэтому сравниваем
@@ -428,14 +451,22 @@ def similarity_distill(f_student, teacher_feats):
 
     teacher_feats — список признаков учителей. Цель усредняется по матрицам сходств: у каждого
     учителя своя система координат, усреднять сами векторы нельзя, а матрицы B×B сравнимы.
-    Один учитель — деление на 1.0, то есть в точности прежнее поведение до бита."""
+    Один учитель — деление на 1.0, то есть в точности прежнее поведение до бита.
+
+    focus > 0 — взвешенное среднее с весами distill_focus_weights: ошибка на трудных парах
+    стоит дороже. Нормировка на сумму весов держит масштаб лосса прежним, так что distill_w
+    не надо подбирать заново. focus=0 — прежняя формула до бита, веса не считаются."""
     import torch
     import torch.nn.functional as F
     if not isinstance(teacher_feats, (list, tuple)):
         teacher_feats = [teacher_feats]
     s = F.normalize(f_student, dim=1)
     target = torch.stack([(lambda t: t @ t.T)(F.normalize(t, dim=1)) for t in teacher_feats]).mean(0)
-    return ((s @ s.T) - target).pow(2).mean()
+    err = ((s @ s.T) - target).pow(2)
+    if focus <= 0:
+        return err.mean()
+    w = distill_focus_weights(target, y, cams, focus, hard_k)
+    return (err * w).sum() / w.sum()
 
 
 def triplet_batch_hard(f, y, margin: float = 0.3, cams=None):
@@ -611,7 +642,9 @@ def train_one_epoch(model, loader, arc, teachers, opt, sched, scaler, params, ar
             with torch.no_grad(), torch.autocast(device_type="cuda" if device == "cuda" else "cpu",
                                                  enabled=(device == "cuda")):
                 teacher_out = [one.features(teacher_input(x, one.img_size))[1] for one in teachers]
-            loss = loss + args.distill_w * similarity_distill(fb, [t.float() for t in teacher_out])
+            loss = loss + args.distill_w * similarity_distill(
+                fb, [t.float() for t in teacher_out], y=y, cams=cam,
+                focus=args.distill_focus, hard_k=args.distill_hard_k)
         opt.zero_grad(set_to_none=True)
         scaler.scale(loss).backward()
         scaler.unscale_(opt)
@@ -675,6 +708,11 @@ def build_parser() -> argparse.ArgumentParser:
                         help="веса учителя (weights/.../best.pt); через запятую — несколько, "
                              "цель усредняется по их матрицам сходств")
     parser.add_argument("--distill-w", type=float, default=1.0, help="вес слагаемого дистилляции")
+    parser.add_argument("--distill-focus", type=float, default=0.0,
+                        help="доп. вес трудных пар в дистилляции: кросс-камерных позитивов и "
+                             "ближайших по учителю чужих машин; 0 — прежняя формула до бита")
+    parser.add_argument("--distill-hard-k", type=int, default=4,
+                        help="сколько ближайших чужих машин на кадр считать трудными (при --distill-focus)")
     parser.add_argument("--cam-aware", action="store_true",
                         help="K кадров машины брать с разных камер (кросс-камерные позитивы в батче)")
     parser.add_argument("--cross-cam-triplet", action="store_true",
