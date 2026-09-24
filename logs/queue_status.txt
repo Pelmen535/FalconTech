@@ -1200,3 +1200,12 @@ queue29 started 2026-09-24 16:47:03
 [01:05:01] START q29_logs
 [01:05:04] END   q29_logs  ok  0 min
 [01:05:04] START q29_publish
+[01:06:03] END   q29_publish  ok  1 min
+[01:06:04] docker готов
+[01:06:04] START q29_compose
+[01:06:11] END   q29_compose  ok  0 min
+[01:06:11] START q29_waitapi
+[01:06:14] END   q29_waitapi  ok  0 min
+[01:06:14] START q29_smoke
+[01:06:20] END   q29_smoke  ok  0 min
+[01:06:20] queue29 finished: все шаги прошли (двойник лучше - v1.3 собран)
