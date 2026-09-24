@@ -1,0 +1,12 @@
+{
+  "mode": "kr",
+  "candidate": "runs\\hack\\ft_fit18_r392_dw80_s0",
+  "baseline": "runs\\hack\\ft_fit18_r392_dw40_s0",
+  "candidate_map10": 79.716,
+  "candidate_rank1": 76.289,
+  "baseline_map10": 80.266,
+  "baseline_rank1": 77.938,
+  "gain": -0.55,
+  "min_gain": 0.5,
+  "passed": false
+}

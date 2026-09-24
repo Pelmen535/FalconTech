@@ -1103,3 +1103,24 @@ queue27 started 2026-09-23 18:47:12
 [21:41:53] START q27_smoke
 [21:42:01] END   q27_smoke  ok  0 min
 [21:42:01] queue27 finished: все шаги прошли (учитель НЕ лучше, ученики не собирались или НЕ лучше)
+queue28 started 2026-09-24 07:24:01
+[07:24:01] WAIT  for running vreid processes
+[07:24:01] WAIT  done - GPU free
+[07:24:05] прототип остановлен: ученикам нужна видеопамять
+[07:24:05] START q28_focus
+[08:53:23] END   q28_focus  ok  89 min
+[08:53:23] START q28_val_focus
+[08:54:21] END   q28_val_focus  ok  1 min
+[08:54:21] START q28_dw80
+[10:19:58] END   q28_dw80  ok  86 min
+[10:19:58] START q28_val_dw80
+[10:20:55] END   q28_val_dw80  ok  1 min
+[10:20:58] пробы: фокус ПРОШЁЛ, вес 80 ПРОШЁЛ
+[10:20:59] docker готов
+[10:20:59] START q28_compose
+[10:21:06] END   q28_compose  ok  0 min
+[10:21:06] START q28_waitapi
+[10:21:13] END   q28_waitapi  ok  0 min
+[10:21:13] START q28_smoke
+[10:21:20] END   q28_smoke  ok  0 min
+[10:21:20] queue28 finished: все шаги прошли
