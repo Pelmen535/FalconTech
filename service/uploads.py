@@ -47,7 +47,9 @@ def gallery_archive(content, settings):
             names = {}
             for info in entries:
                 path = PurePosixPath(info.filename)
-                if path.is_absolute() or '..' in path.parts or '\\\\' in info.filename or ':' in info.filename:
+                # Обратный слеш — один символ '\\'. zipfile на Windows сам меняет его на '/', и
+                # '..\x' ловит проверка '..'; в Linux-контейнере сервиса он остаётся в имени как есть
+                if path.is_absolute() or '..' in path.parts or '\\' in info.filename or ':' in info.filename:
                     raise ValueError('Недопустимый путь в ZIP.')
                 if info.filename in names:
                     raise ValueError('Повторяющееся имя файла в ZIP.')
