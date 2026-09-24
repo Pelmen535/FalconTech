@@ -23,6 +23,8 @@ def main():
     ap.add_argument("--confidence", default="top1",
                     help="вид уверенности; auto — взять лучшую по val (осторожно, см. комментарий)")
     ap.add_argument("--threshold", type=float, default=None)
+    ap.add_argument("--threshold-choice", default=None,
+                    help="обоснование порога от scripts/choose_threshold.py; без него переносится прежнее")
     ap.add_argument("--tta-flip", action="store_true")
     ap.add_argument("--dba", type=int, default=0)
     ap.add_argument("--kr", action="store_true")
@@ -147,6 +149,14 @@ def main():
     # рассказывает, почему порог 0.55 и чем за это заплачено, rerank_choice — откуда взялись
     # 3/2/0.2. Пересборка релиза не должна их терять: иначе рецепт молча худеет до голых чисел,
     # и на защите нечем ответить на «почему так». Значения не пересчитываются — переносятся.
+    # Новый порог приходит со своим обоснованием (scripts/choose_threshold.py): переносить
+    # прежнее, где написано «почему 0.55», при другом числе значило бы записать неправду
+    if a.threshold_choice:
+        choice = json.loads(Path(a.threshold_choice).read_text(encoding="utf-8"))
+        if abs(float(choice["value"]) - thr) > 1e-9:
+            raise SystemExit(f"[release] порог {thr} не совпадает с обоснованием "
+                             f"{a.threshold_choice} ({choice['value']})")
+        recipe["threshold_choice"] = choice
     kept = {}
     previous = out / "recipe.json"
     if previous.is_file():

@@ -156,6 +156,8 @@ def main() -> int:
     parser.add_argument("--img-size", type=int, default=None, help="вход модели, для названия")
     parser.add_argument("--distill-w", type=float, default=None,
                         help="вес дистилляции, для названия: v1.2 отличается от v1.1 только им")
+    parser.add_argument("--distill-focus", type=float, default=None,
+                        help="--distill-focus обучения, для названия: v1.3 отличается от v1.2 только им")
     parser.add_argument("--repo", default="Pelmen535/FalconTech")
     parser.add_argument("--min-gain", type=float, default=0.3,
                         help="на сколько пунктов mAP@10 двойник обязан обогнать опубликованный")
@@ -167,6 +169,8 @@ def main() -> int:
         parts = [f"вход {args.img_size}"] if args.img_size else []
         if args.distill_w:
             parts.append(f"дистилляция ×{args.distill_w:g}")
+        if args.distill_focus:
+            parts.append(f"фокус на трудных парах ×{1 + args.distill_focus:g}")
         parts.append("с каскадом" if recipe.get("cascade") else "без каскада")
         args.title = ", ".join(parts)
     prev = json.loads(MANIFEST.read_text(encoding="utf-8")) if MANIFEST.is_file() else None
