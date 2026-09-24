@@ -7,4 +7,5 @@ tqdm
 pyyaml
 scikit-learn
 pytest
+httpx                     # тестовый клиент FastAPI (tests/service); раньше приходил через huggingface_hub, с 2.0 - нет
 opencv-python-headless    # детектор зоны анонимизации номера (vreid/plate.py); в бою не нужен
