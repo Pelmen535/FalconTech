@@ -1238,3 +1238,82 @@ queue30 started 2026-09-25 23:45:39
 [05:48:47] START q30_smoke
 [05:48:55] END   q30_smoke  ok  0 min
 [05:48:55] queue30 finished: все шаги прошли
+queue31 started 2026-09-26 05:51:45
+[05:51:45] WAIT  for running vreid processes
+[05:51:46] WAIT  done - GPU free
+[05:51:48] прототип остановлен: ученикам нужна видеопамять
+[05:51:48] START q31_fit_s2
+[07:30:00] END   q31_fit_s2  ok  98 min
+[07:30:00] START q31_fit_s3
+[09:15:09] END   q31_fit_s3  ok  105 min
+[09:15:09] START q31_soup_fit
+[09:15:17] END   q31_soup_fit  ok  0 min
+[09:15:17] START q31_val_fit
+[09:16:19] END   q31_val_fit  ok  1 min
+[09:16:21] ворота двойника: ре-ранжирование +0.3 есть, сырой косинус не хуже -> собираю v1.4
+[09:16:22] docker готов
+[09:16:30] прототип поднят на день; релизная часть ждёт 22:00 (logs\q31_go_now - сразу, logs\q31_cancel - отмена)
+[09:31:32] релизная часть начата
+[09:31:32] START q31_grid
+[09:33:35] END   q31_grid  ok  2 min
+[09:33:35] START q31_stress
+[09:33:36] END   q31_stress  ok  0 min
+[09:33:36] START q31_threshold
+[09:33:36] END   q31_threshold  ok  0 min
+[09:33:36] порог отказа v1.4: 0.67
+[09:33:36] START q31_all_s0
+[11:34:38] END   q31_all_s0  ok  121 min
+[11:34:38] START q31_all_s2
+[13:40:03] END   q31_all_s2  ok  125 min
+[13:40:03] START q31_all_s3
+[15:38:39] END   q31_all_s3  ok  119 min
+[15:38:39] START q31_soup_all
+[15:38:49] END   q31_soup_all  ok  0 min
+[15:38:49] START q31_tests
+[15:39:10] END   q31_tests  ok  0 min
+[15:39:10] START q31_export
+[15:39:13] END   q31_export  ok  0 min
+[15:39:13] START q31_predict
+[15:40:44] END   q31_predict  ok  2 min
+[15:40:44] START q31_form
+[15:40:45] END   q31_form  ok  0 min
+[15:40:45] START q31_indep
+[15:40:46] END   q31_indep  ok  0 min
+[15:40:46] START q31_ties
+[15:40:47] END   q31_ties  ok  0 min
+[15:40:47] START q31_replay
+[15:40:49] END   q31_replay  ok  0 min
+[15:40:50] docker готов
+[15:40:50] START q31_build_release
+[15:41:19] END   q31_build_release  ok  0 min
+[15:41:19] START q31_build_dev
+[15:41:41] END   q31_build_dev  ok  0 min
+[15:41:41] START q31_build_api
+[15:42:00] END   q31_build_api  ok  0 min
+[15:42:00] START q31_build_web
+[15:42:01] END   q31_build_web  ok  0 min
+[15:42:01] START q31_docker_a
+[15:42:30] END   q31_docker_a  ok  0 min
+[15:42:30] START q31_docker_b
+[15:42:57] END   q31_docker_b  ok  0 min
+[15:42:57] START q31_cmp_det
+[15:42:58] END   q31_cmp_det  ok  0 min
+[15:42:58] START q31_docker_offline
+[15:43:25] END   q31_docker_offline  ok  0 min
+[15:43:25] START q31_cmp_offline
+[15:43:25] END   q31_cmp_offline  ok  0 min
+[15:43:25] START q31_bench
+[15:44:49] END   q31_bench  ok  1 min
+[15:44:49] START q31_official
+[15:44:54] END   q31_official  ok  0 min
+[15:44:54] START q31_audit
+[15:44:55] END   q31_audit  ok  0 min
+[15:44:55] START q31_errors
+[15:45:27] END   q31_errors  ok  1 min
+[15:45:27] START q31_scorecard
+[15:45:27] END   q31_scorecard  ok  0 min
+[15:45:27] START q31_manifest
+[15:45:31] END   q31_manifest  ok  0 min
+[15:45:31] START q31_logs
+[15:45:34] END   q31_logs  ok  0 min
+[15:45:34] START q31_publish

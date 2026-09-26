@@ -1,0 +1,6 @@
+[grid] ft_soup_r392dw40f4t2_fit: 93 точек
+[grid] ft_fit18_r392_dw40f4t2_s0: 93 точек
+[grid] лучшее на ft_soup_r392dw40f4t2_fit: 4/2/0.3 = 82.921, на ft_fit18_r392_dw40f4t2_s0 даёт 82.578
+[grid] лучшее на ft_fit18_r392_dw40f4t2_s0: 5/2/0.2 = 82.854, на ft_soup_r392dw40f4t2_fit даёт 82.657
+[grid] в рецепте 6/2/0.3: 82.767 / 82.577
+[grid] → results\rerank_grid_r392dw40f4t2.json

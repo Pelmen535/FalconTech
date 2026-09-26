@@ -1,15 +1,15 @@
 {
   "n_query": 1110,
   "n_gallery": 750,
-  "embeddings_sha256": "227ae59b4f6edcd29cd9f84a1df8b8795a29fe24f9aa1611c2be9d6ef3bb9c48",
+  "embeddings_sha256": "a2d3b0bab9ae2ce52e0dc8c6fc42a6ace0bd087d4cdc4a64b9cde460ed66ce33",
   "cascade": false,
   "reranker_embeddings_sha256": null,
-  "recipe_sha256": "a8019c83bb8d4961dc7573d5cfaddec020f95a6cd91887cfd09ae50951bc4303",
+  "recipe_sha256": "1602da0cf0da8c46eef455407ca2ffbc57e1ddcb7b530f48d2e1312a7692aea7",
   "top1_changes": 0,
   "changed_rank_cells": 0,
   "acceptance_changes": 0,
-  "old_accepted": 1027,
-  "new_accepted": 1027,
+  "old_accepted": 1024,
+  "new_accepted": 1024,
   "candidate_id_changes": 0,
   "scope": "Cached ranking regression only; no new extraction, accuracy or GPU performance measurement."
 }

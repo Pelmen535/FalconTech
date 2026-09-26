@@ -1,0 +1,32 @@
+[hackathon] train.csv: 9556 bbox, 1541 vehicle_id, 9556 кадров
+[hackathon] камеры из CSV: 96 шт. — псевдокамера не нужна
+[hackathon] протокол «track», fit: 7655 bbox / 1233 id; val query: 1213 (без пары: 243), gallery: 688
+[train] кропы fit: 7655 (0 c)
+[train] vit_base_patch14_dinov2.lvd142m, D=1536, id=1233, device=cuda
+[train] учитель weights/hack_dinov2_l_336_cam/best.pt обучен на 336, ученик на 392: кроп для учителя масштабируется до его входа
+[train] дистилляция от weights/hack_dinov2_l_336_cam/best.pt: D учителя 2048, вес 40.0
+[train] дистилляция от weights/soup_r392dw40f4_fit/best.pt: D учителя 1536, вес 40.0
+[train] учителей 2: цель — среднее их матриц сходств
+[train] сэмплер: camera-aware (кадры одной машины — с разных камер)
+[val] до обучения: rank1=  7.5%  rank5= 16.4%  rank10= 19.8%  mAP@10=  8.0%  (queries 970/970, gallery 688)
+E:\Хакатон\vreid\train.py:657: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  sched.step()
+[ep 01] loss=17.638 rank1= 45.1%  rank5= 73.3%  rank10= 81.1%  mAP@10= 50.5%  (queries 970/970, gallery 688) (325 c)
+[ep 02] loss=13.689 rank1= 56.9%  rank5= 81.9%  rank10= 87.4%  mAP@10= 61.2%  (queries 970/970, gallery 688) (325 c)
+[ep 03] loss=10.156 rank1= 64.6%  rank5= 85.8%  rank10= 89.9%  mAP@10= 68.2%  (queries 970/970, gallery 688) (325 c)
+[ep 04] loss=7.508 rank1= 66.8%  rank5= 85.5%  rank10= 89.8%  mAP@10= 69.5%  (queries 970/970, gallery 688) (325 c)
+[ep 05] loss=5.265 rank1= 68.7%  rank5= 87.0%  rank10= 91.2%  mAP@10= 71.3%  (queries 970/970, gallery 688) (345 c)
+[ep 06] loss=4.175 rank1= 71.6%  rank5= 87.9%  rank10= 91.9%  mAP@10= 73.6%  (queries 970/970, gallery 688) (358 c)
+[ep 07] loss=3.070 rank1= 72.9%  rank5= 88.7%  rank10= 92.3%  mAP@10= 74.9%  (queries 970/970, gallery 688) (331 c)
+[ep 08] loss=2.550 rank1= 72.8%  rank5= 89.5%  rank10= 92.9%  mAP@10= 75.4%  (queries 970/970, gallery 688) (352 c)
+[ep 09] loss=1.974 rank1= 74.6%  rank5= 89.5%  rank10= 93.5%  mAP@10= 76.6%  (queries 970/970, gallery 688) (358 c)
+[ep 10] loss=1.632 rank1= 74.0%  rank5= 90.1%  rank10= 93.4%  mAP@10= 76.9%  (queries 970/970, gallery 688) (373 c)
+[ep 11] loss=1.301 rank1= 75.1%  rank5= 90.3%  rank10= 93.3%  mAP@10= 77.4%  (queries 970/970, gallery 688) (354 c)
+[ep 12] loss=1.150 rank1= 75.9%  rank5= 90.1%  rank10= 93.6%  mAP@10= 77.8%  (queries 970/970, gallery 688) (371 c)
+[ep 13] loss=1.049 rank1= 76.3%  rank5= 89.3%  rank10= 93.9%  mAP@10= 78.3%  (queries 970/970, gallery 688) (348 c)
+[ep 14] loss=0.916 rank1= 76.1%  rank5= 90.3%  rank10= 94.1%  mAP@10= 78.3%  (queries 970/970, gallery 688) (344 c)
+[ep 15] loss=0.869 rank1= 76.7%  rank5= 91.2%  rank10= 94.3%  mAP@10= 79.1%  (queries 970/970, gallery 688) (358 c)
+[ep 16] loss=0.820 rank1= 77.2%  rank5= 90.8%  rank10= 94.4%  mAP@10= 79.3%  (queries 970/970, gallery 688) (359 c)
+[ep 17] loss=0.798 rank1= 77.1%  rank5= 90.8%  rank10= 94.1%  mAP@10= 79.3%  (queries 970/970, gallery 688) (350 c)
+[ep 18] loss=0.806 rank1= 77.4%  rank5= 90.9%  rank10= 94.5%  mAP@10= 79.5%  (queries 970/970, gallery 688) (360 c)
+[train] без отбора: сохранена эпоха 18 из 18, mAP на ней 79.5% → weights\fit18_r392_dw40f4t2_s3\best.pt (метрика печаталась, но на выбор не влияла)

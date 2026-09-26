@@ -1,0 +1,44 @@
+[submit] embeddings.npy (1901, 1536) → E:\Хакатон\results\official_validation\embeddings.npy
+[submit] submission.csv (1213 запросов, top-10) → E:\Хакатон\results\official_validation\submission.csv
+[submit] candidates.csv: отказов 288/1213 → E:\Хакатон\results\official_validation\candidates.csv
+ground truth   : 1213 query, 688 gallery, 268 ТС в галерее
+
+--- Ранжирование (submission.csv) ---
+запросов в зачёте : 970
+open-set вне mAP  : 243
+mAP@10           : 0.8270   <- основная метрика
+Rank-1            : 0.8041
+Rank-5            : 0.9165
+
+--- Полное ранжирование (embeddings.npy, справочно) ---
+mAP (полный)      : 0.8045
+mINP              : 0.7677
+
+--- Режим предложения кандидатов (candidates.csv) ---
+TP/FP/FN/TN       : 915/10/53/235
+Precision         : 0.9892
+Recall            : 0.9452
+F1                : 0.9667
+TNR               : 0.9671  (243 запросов без пары)
+PR-AUC            : 0.9887
+
+отчёт -> E:\Хакатон\results\official_validation\official_report.json
+
+
+метрика                   эталонный scorer      наш расчёт     разница
+----------------------------------------------------------------------
+mAP@10                            0.826997        0.826997    0.00e+00
+Rank-1                            0.804124        0.804124    0.00e+00
+Rank-5                            0.916495        0.916495    0.00e+00
+запросов в зачёте               970.000000      970.000000    0.00e+00
+F1 отказа                         0.966719        0.966719    0.00e+00
+TNR отказа                        0.967078        0.967078    0.00e+00
+TP                              915.000000      915.000000    0.00e+00
+FP                               10.000000       10.000000    0.00e+00
+FN                               53.000000       53.000000    0.00e+00
+TN                              235.000000      235.000000    0.00e+00
+
+блок отказа по формуле организаторов 0.7*F1 + 0.3*TNR: 96.68
+
+наша реализация метрики совпала с эталонной  (максимальное расхождение 0.00e+00)
+[official] → E:\Хакатон\results\official_validation
