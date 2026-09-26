@@ -158,6 +158,8 @@ def main() -> int:
                         help="вес дистилляции, для названия: v1.2 отличается от v1.1 только им")
     parser.add_argument("--distill-focus", type=float, default=None,
                         help="--distill-focus обучения, для названия: v1.3 отличается от v1.2 только им")
+    parser.add_argument("--extra-teacher", default=None,
+                        help="второй учитель дистилляции, для названия (ASCII, например v1.3)")
     parser.add_argument("--repo", default="Pelmen535/FalconTech")
     parser.add_argument("--min-gain", type=float, default=0.3,
                         help="на сколько пунктов mAP@10 двойник обязан обогнать опубликованный")
@@ -171,6 +173,8 @@ def main() -> int:
             parts.append(f"дистилляция ×{args.distill_w:g}")
         if args.distill_focus:
             parts.append(f"фокус на трудных парах ×{1 + args.distill_focus:g}")
+        if args.extra_teacher:
+            parts.append(f"второй учитель {args.extra_teacher}")
         parts.append("с каскадом" if recipe.get("cascade") else "без каскада")
         args.title = ", ".join(parts)
     prev = json.loads(MANIFEST.read_text(encoding="utf-8")) if MANIFEST.is_file() else None

@@ -1209,3 +1209,32 @@ queue29 started 2026-09-24 16:47:03
 [01:06:14] START q29_smoke
 [01:06:20] END   q29_smoke  ok  0 min
 [01:06:20] queue29 finished: все шаги прошли (двойник лучше - v1.3 собран)
+queue30 started 2026-09-25 23:45:39
+[23:45:39] WAIT  for running vreid processes
+[23:45:40] WAIT  done - GPU free
+[23:45:43] прототип остановлен: ученикам нужна видеопамять
+[23:45:43] START q30_d
+[01:28:27] END   q30_d  ok  103 min
+[01:28:27] START q30_val_d
+[01:29:27] END   q30_val_d  ok  1 min
+[01:29:29] START q30_a
+[02:54:58] END   q30_a  ok  85 min
+[02:54:58] START q30_val_a
+[02:55:54] END   q30_val_a  ok  1 min
+[02:55:56] START q30_b
+[04:21:18] END   q30_b  ok  85 min
+[04:21:18] START q30_val_b
+[04:22:14] END   q30_val_b  ok  1 min
+[04:22:16] START q30_c
+[05:47:34] END   q30_c  ok  85 min
+[05:47:34] START q30_val_c
+[05:48:30] END   q30_val_c  ok  1 min
+[05:48:32] пробы q30: прошли D
+[05:48:33] docker готов
+[05:48:33] START q30_compose
+[05:48:41] END   q30_compose  ok  0 min
+[05:48:41] START q30_waitapi
+[05:48:47] END   q30_waitapi  ok  0 min
+[05:48:47] START q30_smoke
+[05:48:55] END   q30_smoke  ok  0 min
+[05:48:55] queue30 finished: все шаги прошли
