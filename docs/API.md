@@ -77,7 +77,7 @@ HNSW, затем тот же точный косинус и то же ре-ра�
                "image_url": "...", "thumbnail_url": "..."}],
   "accepted": true,
   "candidate": {"image_id": "...", "rank": 1, "cosine": 0.8387},
-  "threshold": 0.65,
+  "threshold": 0.67,
   "confidence_scale": "raw_cosine",
   "search_mode": "exact",
   "shortlist_seconds": null,
@@ -106,7 +106,7 @@ Grad-CAM: косинус раскладывается по участкам ка
 
 ```json
 {
-  "cosine": 0.8387, "threshold": 0.65,
+  "cosine": 0.8387, "threshold": 0.67,
   "method": "exact additive decomposition of the cosine over patch tokens",
   "sides": {
     "query":     {"grid": [24, 24], "patch_sum": 0.3926, "constant": 0.4461,

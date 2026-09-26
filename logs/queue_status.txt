@@ -1317,3 +1317,12 @@ queue31 started 2026-09-26 05:51:45
 [15:45:31] START q31_logs
 [15:45:34] END   q31_logs  ok  0 min
 [15:45:34] START q31_publish
+[15:46:49] END   q31_publish  ok  1 min
+[15:46:50] docker готов
+[15:46:50] START q31_compose
+[15:46:57] END   q31_compose  ok  0 min
+[15:46:57] START q31_waitapi
+[15:47:00] END   q31_waitapi  ok  0 min
+[15:47:00] START q31_smoke
+[15:47:06] END   q31_smoke  ok  0 min
+[15:47:06] queue31 finished: все шаги прошли (v1.4 собран)
