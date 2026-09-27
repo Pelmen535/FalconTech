@@ -210,8 +210,20 @@ def client(tmp_path):
     demo_bundle(tmp_path / "demo")
     settings = Settings(core_dir=tmp_path / "core", release_dir=tmp_path / "release",
                         data_dir=tmp_path / "data", device="cpu",
-                        demo_dir=tmp_path / "demo")
+                        demo_dir=tmp_path / "demo", demo_ui=True)
     return TestClient(create_app(settings, TinyCore()))
+
+
+def test_demo_buttons_are_off_by_default(tmp_path):
+    """Без VREID_DEMO_UI интерфейс не показывает демо-кнопки, даже если набор лежит рядом."""
+    demo_bundle(tmp_path / "demo")
+    settings = Settings(core_dir=tmp_path / "core", release_dir=tmp_path / "release",
+                        data_dir=tmp_path / "data", device="cpu", demo_dir=tmp_path / "demo")
+    client = TestClient(create_app(settings, TinyCore()))
+    assert client.get("/v1/demo").json() == {"available": False}
+    assert client.post("/v1/demo/gallery").status_code == 404
+    assert client.get("/v1/demo/query.jpg").status_code == 404
+    assert client.get("/v1/gallery").json()["count"] == 0
 
 
 def test_health_reports_the_storage_backend(client):

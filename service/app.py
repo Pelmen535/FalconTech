@@ -181,7 +181,12 @@ def create_app(settings=None, core=None):
         }
 
     # ------------------------------------------------------------------ демо
+    def require_demo_ui() -> None:
+        if not settings.demo_ui:
+            raise HTTPException(404, 'Демонстрационные кнопки выключены; включаются VREID_DEMO_UI=1.')
+
     def demo_query_path() -> Path:
+        require_demo_ui()
         meta = settings.demo_dir / 'query.json'
         if not meta.is_file():
             raise HTTPException(404, 'Демонстрационный набор не поставлен с этой сборкой.')
@@ -198,6 +203,9 @@ def create_app(settings=None, core=None):
         а публиковать их мы не вправе. Собрать на месте — одна команда, она же в подсказке
         ниже: у проверяющего этот набор есть, он его и выдавал.
         """
+        if not settings.demo_ui:
+            # Выключено — интерфейс молчит: ни кнопок, ни подсказки собрать набор
+            return {'available': False}
         meta = settings.demo_dir / 'query.json'
         archive = settings.demo_dir / 'gallery.zip'
         if not meta.is_file() or not archive.is_file():
@@ -223,6 +231,7 @@ def create_app(settings=None, core=None):
               summary='Загрузить демонстрационную галерею')
     def demo_gallery():
         """Импортирует demo/gallery.zip. Если галерея уже не пуста — не трогает её."""
+        require_demo_ui()
         archive = settings.demo_dir / 'gallery.zip'
         if not archive.is_file():
             raise HTTPException(404, 'Демонстрационного архива нет: он не поставляется с '

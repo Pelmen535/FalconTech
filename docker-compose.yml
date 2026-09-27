@@ -74,6 +74,8 @@ services:
       VREID_DATABASE_URL: postgresql://vreid:${POSTGRES_PASSWORD:-vreid}@db:5432/vreid
       # Пустой ключ — доступ без заголовка. Наружу api не публикуется, публикуется web.
       VREID_API_KEY: ${VREID_API_KEY:-}
+      # 1 — показать кнопки демо-галереи и демонстрационного кадра (для быстрой проверки)
+      VREID_DEMO_UI: ${VREID_DEMO_UI:-0}
     volumes:
       - gallery-files:/var/lib/vreid
     # DataLoader передаёт батчи через /dev/shm; в контейнере его по умолчанию 64 МБ.

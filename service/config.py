@@ -23,6 +23,9 @@ class Settings:
     # Небольшой набор настоящих кадров организаторов, чтобы сервис можно было показать
     # в два клика, не имея под рукой датасета. На качество модели не влияет.
     demo_dir: Path = PROJECT_ROOT / 'demo'
+    # Кнопки «демо-галерея» и «демонстрационный кадр» — подпорка для быстрой проверки, а не
+    # часть продукта: оператор загружает свои кадры. Поэтому по умолчанию выключены.
+    demo_ui: bool = False
     # Пустая строка — хранить галерею в SQLite внутри data_dir. Непустая — строка
     # подключения к PostgreSQL с pgvector: так работает стек из docker compose.
     database_url: str = ''
@@ -37,4 +40,5 @@ class Settings:
                    os.environ.get('VREID_DEVICE', 'cpu'),
                    os.environ.get('VREID_API_KEY', ''),
                    demo_dir=demo,
+                   demo_ui=os.environ.get('VREID_DEMO_UI', '0').strip().lower() in ('1', 'true', 'yes'),
                    database_url=os.environ.get('VREID_DATABASE_URL', ''))
