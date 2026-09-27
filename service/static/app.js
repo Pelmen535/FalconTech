@@ -3,7 +3,7 @@
    порог, ранжирование и отказ приходят с сервера и показываются как есть. */
 
 const $ = id => document.getElementById(id);
-const TABS = ['search', 'gallery', 'scale', 'about'];
+const TABS = ['search', 'gallery', 'about'];
 const PAGE = 24;
 
 let apiKey = '';
@@ -362,11 +362,11 @@ function renderScalability(data) {
   live.replaceChildren();
   const pairs = [
     ['Наблюдений в галерее', data.gallery_count],
-    ['Активный режим', data.active_mode === 'exact'
-      ? 'полный перебор (галерея меньше порога ANN)' : 'доступен ANN'],
+    ['Сейчас используется', data.active_mode === 'exact'
+      ? 'точный перебор (галерея меньше порога индекса)' : 'доступен быстрый поиск'],
     ['Точный поиск', data.exact_search],
-    ['Индекс ANN', data.ann.kind + (data.ann.available ? '' : ' — faiss недоступен')],
-    ['Порог включения ANN', data.ann.min_items_for_ann + ' наблюдений'],
+    ['Индекс быстрого поиска', data.ann.kind + (data.ann.available ? '' : ' — faiss недоступен')],
+    ['Индекс включается с', data.ann.min_items_for_ann + ' наблюдений'],
   ];
   for (const [key, value] of pairs) {
     live.append(element('dt', '', key), element('dd', '', String(value)));
@@ -376,7 +376,7 @@ function renderScalability(data) {
   target.replaceChildren();
   if (!data.benchmark || !data.benchmark.rows || !data.benchmark.rows.length) {
     target.append(element('p', 'muted',
-      'Замер не выполнялся. Запустите scripts/ann_benchmark.py — сервис не показывает чисел, которых нет.'));
+      'Замеров пока нет (scripts/ann_benchmark.py). Сервис не показывает чисел, которых не измерял.'));
     $('scale-source').textContent = '';
     return;
   }
@@ -410,7 +410,8 @@ function renderScalability(data) {
   }
   table.append(head, body);
   target.append(table);
-  $('scale-source').textContent = data.benchmark.vectors + '. Стенд: ' +
+  const vectors = String(data.benchmark.vectors).replace('эмбеддингов релиза', 'векторов модели');
+  $('scale-source').textContent = 'Векторы: ' + vectors + '. Стенд: ' +
     data.benchmark.machine.platform + ', faiss ' + data.benchmark.machine.faiss + '.';
 }
 
@@ -421,12 +422,13 @@ async function renderAbout() {
   const pairs = [
     ['Размерность вектора', model.dimension ?? 'будет известна после первой загрузки модели'],
     ['Порог отказа', model.threshold],
-    ['Шкала уверенности', 'сырой косинус, не вероятность'],
-    ['Ре-ранжирование', model.rerank],
-    ['Формат рамки', model.bbox_format],
+    ['Шкала уверенности', 'косинусное сходство, не вероятность'],
+    ['Уточнение порядка', model.rerank === 'k_reciprocal_single_query'
+      ? 'по взаимным соседям, внутри одного запроса' : model.rerank],
+    ['Формат рамки', model.bbox_format === 'xywh' ? 'x, y, ширина, высота' : model.bbox_format],
     ['Устройство', model.device],
     ['SHA-256 весов', model.model_sha256],
-    ['SHA-256 рецепта', model.recipe_sha256],
+    ['SHA-256 конфигурации', model.recipe_sha256],
   ];
   for (const [key, value] of pairs) {
     target.append(element('dt', '', key), element('dd', '', String(value)));
@@ -460,13 +462,13 @@ $('search-form').addEventListener('submit', event => {
     const info = $('result-info');
     info.replaceChildren(element('strong', '', answer.accepted ? 'Кандидат принят' : 'Отказ от сопоставления'));
     info.append(element('p', '', answer.accepted
-      ? 'Лучший кандидат прошёл замороженный порог релиза. Ниже — весь топ-10.'
-      : 'Ни один кандидат не прошёл порог: система отказывается отвечать. Топ-10 показан для оператора, ' +
-        'но в конкурсный candidates.csv такой запрос не попал бы ни одной строкой.'));
+      ? 'Лучший кандидат прошёл порог уверенности. Ниже — десять ближайших наблюдений.'
+      : 'Ни один кандидат не прошёл порог уверенности: система не выдаёт совпадение. ' +
+        'Десять ближайших наблюдений показаны только для просмотра оператором.'));
     const facts = element('div', 'facts');
     facts.append(element('span', '', 'порог ' + Number(answer.threshold).toFixed(4)));
     facts.append(element('span', '', 'галерея ' + answer.gallery_count));
-    facts.append(element('span', '', 'режим ' + answer.search_mode));
+    facts.append(element('span', '', 'режим ' + (answer.search_mode === 'ann' ? 'быстрый' : 'точный')));
     facts.append(element('span', '', Number(answer.seconds).toFixed(2) + ' с'));
     if (answer.shortlist_seconds !== null && answer.shortlist_seconds !== undefined) {
       facts.append(element('span', '', 'шортлист ' + (answer.shortlist_seconds * 1000).toFixed(1) + ' мс'));
@@ -527,8 +529,10 @@ for (const name of TABS) {
       $(other + '-section').classList.toggle('hidden', name !== other);
     }
     if (name === 'gallery') run(loadGallery);
-    if (name === 'scale') run(async () => renderScalability(await (await api('/v1/index/stats')).json()));
-    if (name === 'about') run(renderAbout);
+    if (name === 'about') run(async () => {
+      await renderAbout();
+      renderScalability(await (await api('/v1/index/stats')).json());
+    });
   });
 }
 

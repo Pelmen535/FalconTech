@@ -35,14 +35,16 @@ DESCRIPTION = """
 * **Галерея** — наблюдения (кадр, bbox, вектор) в постоянном хранилище.
 * **Поиск** — один запрос против всей галереи: топ-10 и решение об отказе.
 * **Объяснение** — точное разложение косинуса пары по участкам обоих кадров.
-* **Масштабируемость** — режим `ann` использует HNSW-шортлист вместо полного перебора.
+* **Большие галереи** — режим `ann`: приближённый отбор кандидатов (HNSW), затем тот же
+  точный косинус.
 
-Уверенность — **сырой косинус**, не вероятность. Отказ означает, что лучший кандидат
-не прошёл замороженный порог релиза; ранжирование при этом всё равно возвращается.
+Уверенность — **косинусное сходство**, не вероятность. Отказ означает, что лучший кандидат
+не прошёл порог уверенности модели; порог зафиксирован в её конфигурации и во время работы не
+меняется. Десять ближайших наблюдений возвращаются и при отказе — для просмотра оператором.
 """
 
 TAGS = [
-    {"name": "Состояние", "description": "Здоровье процесса и параметры загруженного релиза."},
+    {"name": "Состояние", "description": "Здоровье процесса и параметры загруженной модели."},
     {"name": "Галерея", "description": "Наблюдения: добавление, импорт, просмотр, удаление."},
     {"name": "Поиск", "description": "Идентификация и объяснение решения."},
 ]
@@ -153,7 +155,7 @@ def create_app(settings=None, core=None):
                     device=settings.device, storage=getattr(store, 'backend', 'unknown'),
                     busy=gate.locked())
 
-    @app.get('/v1/model', tags=['Состояние'], summary='Параметры загруженного релиза')
+    @app.get('/v1/model', tags=['Состояние'], summary='Параметры загруженной модели')
     def model():
         return {**core.metadata(), 'bbox_format':'xywh', 'confidence_scale':'raw_cosine'}
 
@@ -175,7 +177,7 @@ def create_app(settings=None, core=None):
         return {
             'gallery_count': count,
             'active_mode': 'exact' if count < app.state.index.stats()['min_items_for_ann'] else 'ann_available',
-            'exact_search': 'полный перебор float32; результат совпадает с конкурсным CLI',
+            'exact_search': 'полный перебор float32 по всей галерее',
             'ann': app.state.index.stats(),
             'benchmark': report,
         }
@@ -192,7 +194,9 @@ def create_app(settings=None, core=None):
             raise HTTPException(404, 'Демонстрационный набор не поставлен с этой сборкой.')
         return meta
 
-    @app.get('/v1/demo', tags=['Галерея'], summary='Есть ли демонстрационный набор')
+    # Демо-эндпоинты в спецификации только тогда, когда включены: иначе это шум в Swagger
+    @app.get('/v1/demo', tags=['Галерея'], summary='Есть ли демонстрационный набор',
+             include_in_schema=settings.demo_ui)
     def demo_info():
         """Небольшой демонстрационный набор: 20 наблюдений и один запрос.
 
@@ -219,7 +223,8 @@ def create_app(settings=None, core=None):
                 'gallery_items': 20,
                 'note': '20 кадров из выданного набора; демонстрация работы, не оценка точности'}
 
-    @app.get('/v1/demo/query.jpg', tags=['Галерея'], summary='Демонстрационный кадр-запрос')
+    @app.get('/v1/demo/query.jpg', tags=['Галерея'], summary='Демонстрационный кадр-запрос',
+             include_in_schema=settings.demo_ui)
     def demo_query_image():
         meta = json.loads(demo_query_path().read_text(encoding='utf-8'))
         target = (settings.demo_dir / meta['image']).resolve()
@@ -228,7 +233,7 @@ def create_app(settings=None, core=None):
         return FileResponse(target, media_type='image/jpeg')
 
     @app.post('/v1/demo/gallery', status_code=201, tags=['Галерея'],
-              summary='Загрузить демонстрационную галерею')
+              summary='Загрузить демонстрационную галерею', include_in_schema=settings.demo_ui)
     def demo_gallery():
         """Импортирует demo/gallery.zip. Если галерея уже не пуста — не трогает её."""
         require_demo_ui()
@@ -312,7 +317,7 @@ def create_app(settings=None, core=None):
     def search(image: UploadFile = File(...), bbox: str = Form(...),
                query_id: str | None = Form(None),
                mode: str = Query('exact', pattern='^(exact|ann)$',
-                                 description='exact — полный перебор (как в конкурсном CLI); '
+                                 description='exact — полный перебор галереи; '
                                              'ann — HNSW-шортлист, затем тот же точный косинус')):
         raw = image.file.read(settings.max_image_bytes + 1)
         box = image_box(raw, bbox, settings)
