@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Связанные одной цепью · Безномерная идентификация ТС</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>%F0%9F%9A%97</text></svg>">
-<link rel="stylesheet" href="/static/app.css?v=1.4">
+<link rel="stylesheet" href="/static/app.css?v=1.5">
 </head>
 <body>
 <main>
@@ -14,12 +14,11 @@
   <div>
     <div class="eyebrow">Связанные одной цепью</div>
     <h1>Безномерная идентификация транспортного средства</h1>
-    <p class="muted">Загрузите кадр, выделите автомобиль рамкой и найдите его наблюдения в галерее.
-      Номерной знак не используется: решение опирается только на внешний вид кузова.</p>
+    <p class="muted">Загрузите кадр, выделите автомобиль рамкой и найдите его наблюдения в галерее.</p>
   </div>
   <div class="status-block">
     <div id="health" class="status" role="status">Подключение…</div>
-    <a class="status link" href="/docs" target="_blank" rel="noopener">OpenAPI · Swagger</a>
+    <a class="status link" href="/docs" target="_blank" rel="noopener">Документация API</a>
   </div>
 </header>
 
@@ -41,34 +40,30 @@
 
     <div class="canvas-wrap hidden" id="query-canvas-wrap">
       <canvas id="query-preview" aria-label="Выделите автомобиль рамкой"></canvas>
-      <div class="hint">Потяните мышью по кадру, чтобы выделить автомобиль</div>
+      <div class="hint">Выделите автомобиль мышью</div>
     </div>
 
     <details id="query-box-details">
-      <summary>Координаты рамки, пиксели исходного кадра</summary>
+      <summary>Координаты рамки</summary>
       <div class="fields" id="query-box">
         <label>X<input name="x" type="number" min="0" step="any" required></label>
         <label>Y<input name="y" type="number" min="0" step="any" required></label>
         <label>Ширина<input name="w" type="number" min="0.01" step="any" required></label>
         <label>Высота<input name="h" type="number" min="0.01" step="any" required></label>
       </div>
-      <label>Идентификатор исходного кадра, необязательно
-        <input id="query-id" placeholder="image_id" autocomplete="off"></label>
-      <small>Укажите ID, если этот же кадр уже лежит в галерее: он будет исключён из выдачи.</small>
+      <label>ID кадра, если он уже есть в галерее
+        <input id="query-id" placeholder="необязательно" autocomplete="off"></label>
     </details>
 
     <fieldset class="modes">
       <legend>Режим поиска</legend>
       <label class="radio"><input type="radio" name="mode" value="exact" checked>
-        <span><strong>Точный</strong> — полный перебор галереи</span></label>
+        <span><strong>Точный</strong></span></label>
       <label class="radio"><input type="radio" name="mode" value="ann">
-        <span><strong>Быстрый (ANN)</strong> — для больших галерей: приближённый отбор кандидатов,
-          затем тот же точный косинус</span></label>
+        <span><strong>Быстрый</strong> — для больших галерей</span></label>
     </fieldset>
 
     <button class="primary full" type="submit">Найти автомобиль</button>
-    <p class="summary">В галерее должно быть не меньше 10 наблюдений. Первый запрос после запуска
-      дольше остальных: загружается модель.</p>
   </form>
 
   <div class="panel">
@@ -80,8 +75,7 @@
       </div>
     </div>
     <div id="result-info" class="hidden"></div>
-    <div id="result-empty" class="empty">Загрузите кадр и запустите поиск.<br>
-      Здесь появятся десять кандидатов и решение об отказе.</div>
+    <div id="result-empty" class="empty">Здесь появятся результаты поиска.</div>
     <div id="results" class="grid"></div>
   </div>
 </section>
@@ -95,7 +89,7 @@
         <label>Кадр<input id="add-file" type="file" accept="image/jpeg,image/png,image/webp" required></label>
         <div class="canvas-wrap hidden" id="add-canvas-wrap">
           <canvas id="add-preview" aria-label="Выделите автомобиль рамкой"></canvas>
-          <div class="hint">Потяните мышью по кадру, чтобы выделить автомобиль</div>
+          <div class="hint">Выделите автомобиль мышью</div>
         </div>
         <details>
           <summary>Координаты рамки</summary>
@@ -106,17 +100,16 @@
             <label>Высота<input name="h" type="number" min="0.01" step="any" required></label>
           </div>
         </details>
-        <label>ID наблюдения, необязательно<input id="add-id" placeholder="будет создан автоматически" autocomplete="off"></label>
+        <label>ID наблюдения<input id="add-id" placeholder="необязательно" autocomplete="off"></label>
         <button class="primary full" type="submit">Добавить в галерею</button>
       </form>
 
       <form id="import-form" class="panel spaced">
-        <h3>Импорт галереи из ZIP</h3>
+        <h2>Импорт галереи из ZIP</h2>
         <label>Архив<input id="archive-file" type="file" accept=".zip,application/zip" required></label>
-        <p class="summary">В ZIP: <code>test_gallery.csv</code> со столбцами <code>image_id,x,y,w,h</code>
-          и папка <code>images/</code>. Имя файла совпадает с <code>image_id</code>.</p>
-        <button class="full" type="submit">Импортировать ZIP</button>
-        <small>Векторы считаются на сервере. На CPU большой архив обрабатывается долго.</small>
+        <p class="summary">Внутри: <code>test_gallery.csv</code> (image_id, x, y, w, h) и папка
+          <code>images/</code>.</p>
+        <button class="full" type="submit">Импортировать</button>
       </form>
     </div>
 
@@ -128,8 +121,7 @@
           <button id="refresh-gallery" type="button">Обновить</button>
         </div>
       </div>
-      <p class="summary">Кадры, рамки и векторы хранятся в СУБД и переживают перезапуск сервиса.</p>
-      <div id="gallery-empty" class="empty hidden">Галерея пуста. Добавьте кадр или импортируйте ZIP.</div>
+      <div id="gallery-empty" class="empty hidden">Галерея пуста. Добавьте кадр или импортируйте архив.</div>
       <div id="gallery" class="grid"></div>
       <div class="pagination">
         <button id="prev" type="button">Назад</button>
@@ -147,40 +139,28 @@
       <h2>Модель</h2>
       <div id="about-model" class="kv"></div>
       <h3 class="spaced">Как принимается решение</h3>
-      <p class="muted">Система сравнивает вектор запроса со всеми наблюдениями галереи и выдаёт
-        совпадение, только если уверенность лучшего кандидата не ниже порога. Порог зафиксирован
-        в конфигурации модели и во время работы не меняется. Он выбран с учётом того, что один и
-        тот же автомобиль, снятый разными камерами, похож на себя слабее, чем два кадра одной
-        камеры: слишком строгий порог отказывал бы как раз там, где совпадение есть. Обоснование
-        и цена ошибок в обе стороны — в документации проекта.</p>
-      <h3 class="spaced">Номерной знак</h3>
-      <p class="muted">Номер не используется: на кадрах он закрыт, а проверка с маскированием зоны
-        номера показала, что модель на неё не опирается. Это видно и в «Почему похоже» у любого
-        кандидата — зона номера не подсвечивается.</p>
+      <p class="muted">Совпадение выдаётся, если уверенность лучшего кандидата не ниже порога.
+        Номерной знак не используется — только внешний вид автомобиля.</p>
     </div>
     <div class="panel">
       <h2>Интерфейсы</h2>
       <ul class="links">
-        <li><a href="/docs" target="_blank" rel="noopener">Swagger UI — интерактивная спецификация</a></li>
-        <li><a href="/openapi.json" target="_blank" rel="noopener">openapi.json — машинное описание API</a></li>
-        <li><a href="/health" target="_blank" rel="noopener">/health — состояние процесса</a></li>
-        <li><a href="/v1/index/stats" target="_blank" rel="noopener">/v1/index/stats — индекс и масштабируемость</a></li>
+        <li><a href="/docs" target="_blank" rel="noopener">Документация API (Swagger)</a></li>
+        <li><a href="/openapi.json" target="_blank" rel="noopener">Спецификация OpenAPI</a></li>
+        <li><a href="/health" target="_blank" rel="noopener">Состояние сервиса</a></li>
       </ul>
       <h3 class="spaced">Доступ</h3>
       <div class="auth">
-        <label>Ключ доступа, если задан на сервере
-          <input id="api-key" type="password" autocomplete="off" placeholder="X-API-Key" spellcheck="false"></label>
+        <label>Ключ API
+          <input id="api-key" type="password" autocomplete="off" placeholder="если задан на сервере" spellcheck="false"></label>
         <button id="connect" type="button">Подключиться</button>
       </div>
-      <small>Ключ хранится только в памяти этой вкладки и нужен лишь при привязке к нелокальному адресу.</small>
     </div>
   </div>
 
   <div class="panel spaced">
     <h2>Поиск в больших галереях</h2>
-    <p class="muted">Как меняется поиск, когда галерея вырастает от сотен наблюдений до миллиона.
-      Точный перебор остаётся эталоном. Для больших галерей включается приближённый индекс: он
-      быстро отбирает кандидатов, а окончательный порядок считается тем же точным косинусом.</p>
+    <p class="muted">Скорость и точность поиска на галереях до миллиона наблюдений.</p>
     <div id="index-live" class="kv"></div>
     <h3 class="spaced">Измерения</h3>
     <div id="scale-table"></div>
@@ -195,19 +175,12 @@
     <button class="ghost" value="close" type="submit">Закрыть</button>
   </form>
   <div id="explain-body">
-    <p class="muted">Считается точное разложение косинуса по участкам обоих кадров.
-      Зелёный — участок добавил сходства больше обычного, красный — меньше.</p>
+    <p class="muted">Зелёный — участки, которые совпадают сильнее обычного, красный — слабее.</p>
     <div id="explain-content" class="explain-grid"></div>
   </div>
 </dialog>
 
-<footer>
-  Уверенность — косинусное сходство векторов, а не вероятность. Порядок кандидатов уточняется по
-  взаимным соседям и может не совпадать с порядком косинуса. Отказ означает, что ни один кандидат не
-  прошёл порог, а не что автомобиля нет в городе.
-</footer>
-
 </main>
-<script src="/static/app.js?v=1.4"></script>
+<script src="/static/app.js?v=1.5"></script>
 </body>
 </html>

@@ -44,7 +44,7 @@ DESCRIPTION = """
 """
 
 TAGS = [
-    {"name": "Состояние", "description": "Здоровье процесса и параметры загруженной модели."},
+    {"name": "Состояние", "description": "Состояние сервиса и параметры модели."},
     {"name": "Галерея", "description": "Наблюдения: добавление, импорт, просмотр, удаление."},
     {"name": "Поиск", "description": "Идентификация и объяснение решения."},
 ]
@@ -137,7 +137,9 @@ def create_app(settings=None, core=None):
         """Swagger UI со скачанными заранее файлами: страница работает без интернета."""
         return HTMLResponse(
             '<!doctype html><html lang="ru"><head><meta charset="utf-8">'
-            '<title>ReID API · OpenAPI</title>'
+            '<title>Документация API · Безномерная идентификация ТС</title>'
+            '<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 '
+            'viewBox=%270 0 32 32%27><text y=%2726%27 font-size=%2726%27>%F0%9F%9A%97</text></svg>">'
             '<link rel="stylesheet" href="/static/vendor/swagger-ui.css">'
             '<style>body{margin:0;background:#fff}</style></head><body>'
             '<div id="swagger"></div>'
@@ -147,7 +149,7 @@ def create_app(settings=None, core=None):
             '</body></html>')
 
     # ------------------------------------------------------------------ состояние
-    @app.get('/health', tags=['Состояние'], summary='Здоровье процесса')
+    @app.get('/health', tags=['Состояние'], summary='Состояние сервиса')
     def health():
         meta = core.metadata()
         return dict(status='ok', gallery_count=store.count(), model_loaded=meta.get('loaded', False),
@@ -326,7 +328,7 @@ def create_app(settings=None, core=None):
         with processing():
             ids, vectors = store.snapshot()
             if len(ids) < 10:
-                raise HTTPException(409, 'Для поиска нужны минимум 10 изображений в галерее.')
+                raise HTTPException(409, 'Для поиска в галерее должно быть не меньше 10 наблюдений.')
             embedding = encode(raw, box)
             subset, shortlist_seconds = None, None
             if mode == 'ann':
@@ -335,13 +337,13 @@ def create_app(settings=None, core=None):
                         ids, vectors, embedding, size=max(200, 10 * 10))
                     subset = sorted(int(i) for i in picked)
                 except AnnUnavailable as reason:
-                    notes.append(f'ANN не применён: {reason}. Отдан точный перебор.')
+                    notes.append(f'Выполнен точный поиск: {reason}.')
             if subset is not None and len(subset) >= 10:
                 # Ре-ранжирование внутри шортлиста: сходство считается так же, меняется
                 # только состав кандидатов, дошедших до этого шага.
                 result = core.rank(embedding, vectors[subset], [ids[i] for i in subset],
                                    query_id=query_id)
-                notes.append(f'Шортлист HNSW: {len(subset)} из {len(ids)} записей.')
+                notes.append(f'Быстрый поиск: отобрано {len(subset)} из {len(ids)} наблюдений.')
             else:
                 result = core.rank(embedding, vectors, ids, query_id=query_id)
         return {**result, 'ranking':[item_url(x) for x in result['ranking']],

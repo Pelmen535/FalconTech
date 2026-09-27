@@ -222,8 +222,15 @@ async function health() {
   galleryTotal = state.gallery_count;
   $('gallery-count').textContent = galleryTotal;
   $('health').textContent = (state.busy ? 'Обработка запроса' : 'Сервис доступен') +
-    ' · ' + state.device + ' · ' + galleryTotal + ' наблюдений';
+    ' · ' + galleryTotal + ' ' + plural(galleryTotal, 'наблюдение', 'наблюдения', 'наблюдений');
   return state;
+}
+
+function plural(n, one, few, many) {
+  const a = Math.abs(n) % 100, b = a % 10;
+  if (a > 10 && a < 20) return many;
+  if (b === 1) return one;
+  return b >= 2 && b <= 4 ? few : many;
 }
 
 function pagination() {
@@ -231,12 +238,12 @@ function pagination() {
   $('next').disabled = busy || offset + PAGE >= galleryTotal;
   $('page-info').textContent = galleryTotal
     ? (offset + 1) + '–' + Math.min(offset + PAGE, galleryTotal) + ' из ' + galleryTotal
-    : '0 наблюдений';
+    : '';
 }
 
 // ----------------------------------------------------------------- карточки
 function card(item, target, options = {}) {
-  const box = element('article', 'card' + (item.rank === 1 ? ' top' : ''));
+  const box = element('article', 'card' + (options.accepted && item.rank === 1 ? ' top' : ''));
   const img = element('img');
   img.alt = 'Автомобиль ' + item.image_id;
   img.loading = 'lazy';
@@ -244,7 +251,7 @@ function card(item, target, options = {}) {
 
   const body = element('div', 'card-body');
   if (item.rank !== undefined) {
-    body.append(element('strong', '', '№ ' + item.rank + ' · ' + Number(item.cosine).toFixed(4)));
+    body.append(element('strong', '', '№ ' + item.rank + ' · ' + Number(item.cosine).toFixed(3)));
     const bar = element('div', 'bar');
     const fill = element('i');
     // Косинус в [-1, 1]; показываем положительную часть — отрицательных у похожих не бывает.
@@ -252,7 +259,9 @@ function card(item, target, options = {}) {
     bar.append(fill);
     body.append(bar);
   }
-  body.append(element('div', 'card-id', item.image_id));
+  const id = element('div', 'card-id', item.image_id);
+  id.title = item.image_id;
+  body.append(id);
 
   if (options.explainable) {
     const button = element('button', '', 'Почему похоже');
@@ -306,8 +315,8 @@ async function loadGallery() {
 async function explain(item) {
   if (!lastQuery) throw new Error('Сначала выполните поиск: объяснение считается для его запроса.');
   const dialog = $('explain-dialog');
-  $('explain-title').textContent = 'Почему похоже · ' + item.image_id;
-  $('explain-content').replaceChildren(element('p', 'muted', 'Считаю карты вклада…'));
+  $('explain-title').textContent = 'Почему похоже';
+  $('explain-content').replaceChildren(element('p', 'muted', 'Строим карту сходства…'));
   if (!dialog.open) dialog.showModal();
 
   const body = new FormData();
@@ -318,25 +327,21 @@ async function explain(item) {
 
   const content = $('explain-content');
   content.replaceChildren();
-  const titles = { query: 'Запрос', candidate: 'Кандидат ' + item.image_id };
+  const titles = { query: 'Запрос', candidate: 'Кандидат № ' + item.rank };
   for (const name of ['query', 'candidate']) {
     const side = answer.sides[name];
     const figure = element('figure');
     const img = element('img');
     img.src = 'data:image/png;base64,' + side.heatmap_png_base64;
-    img.alt = 'Карта вклада: ' + titles[name];
+    img.alt = 'Карта сходства: ' + titles[name];
     const caption = element('figcaption');
-    caption.textContent = titles[name] + ' · сетка ' + side.grid.join('×') +
-      ' · вклад патчей ' + side.patch_sum.toFixed(4) +
-      ' + постоянная часть ' + side.constant.toFixed(4);
+    caption.textContent = titles[name];
     figure.append(img, caption);
     content.append(figure);
   }
   const note = element('p', 'summary');
-  note.textContent = 'Косинус пары ' + answer.cosine.toFixed(4) + ' при пороге ' +
-    answer.threshold.toFixed(4) + '. Сумма вкладов и постоянной части восстанавливает косинус ' +
-    'с ошибкой ' + answer.sides.query.reconstruction_error.toExponential(1) +
-    ' — это не приближение, а точное разложение. Счёт занял ' + answer.seconds.toFixed(2) + ' с.';
+  note.textContent = 'Уверенность ' + answer.cosine.toFixed(3) + ' при пороге ' +
+    answer.threshold.toFixed(2) + '.';
   content.append(note);
 }
 
@@ -362,11 +367,9 @@ function renderScalability(data) {
   live.replaceChildren();
   const pairs = [
     ['Наблюдений в галерее', data.gallery_count],
-    ['Сейчас используется', data.active_mode === 'exact'
-      ? 'точный перебор (галерея меньше порога индекса)' : 'доступен быстрый поиск'],
-    ['Точный поиск', data.exact_search],
-    ['Индекс быстрого поиска', data.ann.kind + (data.ann.available ? '' : ' — faiss недоступен')],
-    ['Индекс включается с', data.ann.min_items_for_ann + ' наблюдений'],
+    ['Быстрый поиск', data.ann.available
+      ? 'доступен от ' + data.ann.min_items_for_ann + ' наблюдений' : 'недоступен'],
+    ['Индекс', data.ann.kind],
   ];
   for (const [key, value] of pairs) {
     live.append(element('dt', '', key), element('dd', '', String(value)));
@@ -376,7 +379,7 @@ function renderScalability(data) {
   target.replaceChildren();
   if (!data.benchmark || !data.benchmark.rows || !data.benchmark.rows.length) {
     target.append(element('p', 'muted',
-      'Замеров пока нет (scripts/ann_benchmark.py). Сервис не показывает чисел, которых не измерял.'));
+      'Замеров пока нет.'));
     $('scale-source').textContent = '';
     return;
   }
@@ -410,9 +413,8 @@ function renderScalability(data) {
   }
   table.append(head, body);
   target.append(table);
-  const vectors = String(data.benchmark.vectors).replace('эмбеддингов релиза', 'векторов модели');
-  $('scale-source').textContent = 'Векторы: ' + vectors + '. Стенд: ' +
-    data.benchmark.machine.platform + ', faiss ' + data.benchmark.machine.faiss + '.';
+  $('scale-source').textContent = 'Замер на синтетических векторах, построенных по статистике ' +
+    'векторов модели.';
 }
 
 async function renderAbout() {
@@ -420,15 +422,10 @@ async function renderAbout() {
   const target = $('about-model');
   target.replaceChildren();
   const pairs = [
-    ['Размерность вектора', model.dimension ?? 'будет известна после первой загрузки модели'],
-    ['Порог отказа', model.threshold],
-    ['Шкала уверенности', 'косинусное сходство, не вероятность'],
-    ['Уточнение порядка', model.rerank === 'k_reciprocal_single_query'
-      ? 'по взаимным соседям, внутри одного запроса' : model.rerank],
-    ['Формат рамки', model.bbox_format === 'xywh' ? 'x, y, ширина, высота' : model.bbox_format],
-    ['Устройство', model.device],
-    ['SHA-256 весов', model.model_sha256],
-    ['SHA-256 конфигурации', model.recipe_sha256],
+    ['Порог уверенности', Number(model.threshold).toFixed(2)],
+    ['Размер вектора', model.dimension ?? '—'],
+    ['Вычисления', model.device === 'cuda' ? 'GPU' : 'CPU'],
+    ['Версия модели', String(model.model_sha256).slice(0, 12)],
   ];
   for (const [key, value] of pairs) {
     target.append(element('dt', '', key), element('dd', '', String(value)));
@@ -452,7 +449,7 @@ $('search-form').addEventListener('submit', event => {
     if (queryId) body.append('query_id', queryId);
 
     clearResults();
-    message('Идёт поиск. Дождитесь ответа сервера…');
+    message('Поиск…');
     const answer = await (await api('/v1/search?mode=' + mode, { method: 'POST', body })).json();
     lastResult = answer;
     lastQuery = { file, bbox, id: queryId };
@@ -460,25 +457,24 @@ $('search-form').addEventListener('submit', event => {
     $('result-empty').classList.add('hidden');
     $('export-buttons').classList.remove('hidden');
     const info = $('result-info');
-    info.replaceChildren(element('strong', '', answer.accepted ? 'Кандидат принят' : 'Отказ от сопоставления'));
-    info.append(element('p', '', answer.accepted
-      ? 'Лучший кандидат прошёл порог уверенности. Ниже — десять ближайших наблюдений.'
-      : 'Ни один кандидат не прошёл порог уверенности: система не выдаёт совпадение. ' +
-        'Десять ближайших наблюдений показаны только для просмотра оператором.'));
+    info.replaceChildren(element('strong', '', answer.accepted ? 'Совпадение найдено' : 'Совпадение не найдено'));
     const facts = element('div', 'facts');
-    facts.append(element('span', '', 'порог ' + Number(answer.threshold).toFixed(4)));
+    facts.append(element('span', '', 'порог ' + Number(answer.threshold).toFixed(2)));
     facts.append(element('span', '', 'галерея ' + answer.gallery_count));
     facts.append(element('span', '', 'режим ' + (answer.search_mode === 'ann' ? 'быстрый' : 'точный')));
     facts.append(element('span', '', Number(answer.seconds).toFixed(2) + ' с'));
-    if (answer.shortlist_seconds !== null && answer.shortlist_seconds !== undefined) {
-      facts.append(element('span', '', 'шортлист ' + (answer.shortlist_seconds * 1000).toFixed(1) + ' мс'));
+    // Порядок уточняется по сходству кандидатов между собой, поэтому уверенность в списке
+    // может идти не строго по убыванию. Говорим об этом, только когда так и вышло.
+    const scores = answer.ranking.map(x => Number(x.cosine));
+    if (scores.some((s, i) => i && s > scores[i - 1])) {
+      facts.append(element('span', '', 'порядок учитывает сходство кандидатов между собой'));
     }
     info.append(facts);
     for (const note of answer.notes || []) info.append(element('small', '', note));
     info.className = 'result-status' + (answer.accepted ? '' : ' refused');
 
-    answer.ranking.forEach(item => card(item, $('results'), { explainable: true }));
-    message('Поиск завершён.');
+    answer.ranking.forEach(item => card(item, $('results'), { explainable: true, accepted: answer.accepted }));
+    message('');
     await health();
   });
 });
@@ -501,11 +497,11 @@ $('add-form').addEventListener('submit', event => {
     body.append('image', $('add-file').files[0]);
     body.append('bbox', JSON.stringify(addBox.read()));
     if ($('add-id').value.trim()) body.append('image_id', $('add-id').value.trim());
-    message('Вычисляется вектор наблюдения…');
+    message('Добавление…');
     const added = await (await api('/v1/gallery/items', { method: 'POST', body })).json();
     clearResults();
     await loadGallery(); await health();
-    message('Добавлено наблюдение: ' + added.image_id);
+    message('Наблюдение добавлено.');
   });
 });
 
@@ -514,11 +510,11 @@ $('import-form').addEventListener('submit', event => {
   run(async () => {
     const body = new FormData();
     body.append('archive', $('archive-file').files[0]);
-    message('Импорт галереи. Сервер считает векторы; на CPU это может занять минуты…');
+    message('Импорт галереи…');
     const result = await (await api('/v1/gallery/import', { method: 'POST', body })).json();
     clearResults();
     await loadGallery(); await health();
-    message('Импорт завершён. Добавлено наблюдений: ' + result.added + '.');
+    message('Импортировано: ' + result.added + ' ' + plural(result.added, 'наблюдение', 'наблюдения', 'наблюдений') + '.');
   });
 });
 

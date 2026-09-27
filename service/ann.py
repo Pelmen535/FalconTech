@@ -64,11 +64,10 @@ class ShortlistIndex:
 
     def ensure(self, ids: list[str], vectors: np.ndarray):
         if not self.available():
-            raise AnnUnavailable("faiss не установлен в этом окружении")
+            raise AnnUnavailable("быстрый поиск недоступен в этой сборке")
         if len(ids) < MIN_ITEMS_FOR_ANN:
             raise AnnUnavailable(
-                f"в галерее {len(ids)} записей: ANN включается от {MIN_ITEMS_FOR_ANN}, "
-                f"ниже полный перебор быстрее и точнее")
+                f"быстрый режим включается от {MIN_ITEMS_FOR_ANN} наблюдений")
         import faiss
 
         key = self._key_for(ids)

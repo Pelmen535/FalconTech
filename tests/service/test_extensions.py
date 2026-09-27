@@ -263,7 +263,7 @@ def test_search_falls_back_to_exact_when_the_gallery_is_too_small_for_ann(client
     with open_demo_query(client) as (files, data):
         answer = client.post("/v1/search?mode=ann", data=data, files=files).json()
     assert answer["search_mode"] == "exact"
-    assert any("ANN" in note for note in answer["notes"])
+    assert any("точный поиск" in note for note in answer["notes"])
     assert len(answer["ranking"]) == 10
 
 
