@@ -59,7 +59,7 @@ def create_app(settings=None, core=None):
     store = open_store(settings, core.model_sha256,
                        getattr(core, 'embedding_sha256', core.recipe_sha256),
                        core.dimension)
-    app = FastAPI(title='Связанные одной цепью · ReID API', version='1.1.0',
+    app = FastAPI(title='Связанные одной цепью · ReID API', version='1.4.0',
                   description=DESCRIPTION, openapi_tags=TAGS,
                   docs_url=None, redoc_url=None)
     app.state.core = core
