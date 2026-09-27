@@ -1,7 +1,7 @@
 """Манифест поставки: то, по чему сдачу можно проверить, не веря нам на слово.
 
     python scripts/make_manifest.py --release release --submission submission \
-        --run runs/hack/ft_soup_b336_fit --out reports/MANIFEST.json
+        --run runs/hack/ft_soup_r392dw40f4t2_fit --out reports/MANIFEST.json
 
 Складывает в один файл: хэши весов, рецепта и файлов сдачи; состав разбиения по vehicle_id;
 версии пакетов и команды, которыми всё получено; ключевые измерения со ссылками на отчёты.
@@ -38,7 +38,7 @@ def main():
     ap.add_argument("--release", required=True)
     ap.add_argument("--submission", required=True)
     ap.add_argument("--run", required=True)
-    ap.add_argument("--out", default="handoff/MANIFEST.json")
+    ap.add_argument("--out", default="reports/MANIFEST.json")
     a = ap.parse_args()
 
     rel, sub, run = Path(a.release), Path(a.submission), Path(a.run)
@@ -83,19 +83,34 @@ def main():
             m["отчёты"][name] = str(p)
 
     m["команды"] = {
+        "учитель": "python -m vreid.train --config configs/hackathon.yaml --backbone dinov2_l "
+                   "--img-size 336 --epochs 20 --P 5 --K 4 --freeze-blocks 8 --cam-aware "
+                   "--cross-cam-triplet --out weights/hack_dinov2_l_336_cam",
+        "второй учитель (релиз v1.3)": "python -m vreid.train --config configs/hackathon.yaml --backbone dinov2_b "
+                                       "--img-size 392 --epochs 18 --P 8 --K 4 --cam-aware --cross-cam-triplet "
+                                       "--distill weights/hack_dinov2_l_336_cam/best.pt --distill-w 40 "
+                                       "--distill-focus 4 --val-frac 0 --seed <0|2|3> "
+                                       "--out weights/all18_r392_dw40f4_s<seed>; затем суп трёх сидов "
+                                       "в weights/soup_r392dw40f4_all/best.pt",
         "обучение": "python -m vreid.train --config configs/hackathon.yaml --backbone dinov2_b "
-                    "--img-size 336 --epochs 18 --P 11 --K 4 --freeze-blocks 0 --cam-aware "
-                    "--cross-cam-triplet --distill weights/hack_dinov2_l_336_cam/best.pt "
-                    "--distill-w 20 --val-frac 0 --seed <0|2|3> --out weights/hack_dinov2_b_336_all[_s2|_s3]",
-        "усреднение весов": "python scripts/model_soup.py --out weights/soup_b336_all/best.pt "
-                            "weights/hack_dinov2_b_336_all/best.pt weights/hack_dinov2_b_336_all_s2/best.pt "
-                            "weights/hack_dinov2_b_336_all_s3/best.pt",
-        "сборка релиза": f"python scripts/export_release.py --weights weights/soup_b336_all/best.pt "
-                         f"--val results/hack_ft_soup_b336_val_val.json --kr "
-                         f"--k1 {m['рецепт'].get('k1')} --k2 {m['рецепт'].get('k2')} --out {rel}",
-        "инференс": "docker run --rm --gpus all --shm-size=2g -v <данные>:/data:ro -v <выход>:/out vreid-release",
+                    "--img-size 392 --epochs 18 --P 8 --K 4 --cam-aware --cross-cam-triplet "
+                    "--distill weights/hack_dinov2_l_336_cam/best.pt,weights/soup_r392dw40f4_all/best.pt "
+                    "--distill-w 40 --distill-focus 4 --val-frac 0 --seed <0|2|3> "
+                    "--out weights/all18_r392_dw40f4t2_s<seed>",
+        "усреднение весов": "python scripts/model_soup.py weights/all18_r392_dw40f4t2_s0/best.pt "
+                            "weights/all18_r392_dw40f4t2_s2/best.pt weights/all18_r392_dw40f4t2_s3/best.pt "
+                            "--out weights/soup_r392dw40f4t2_all/best.pt",
+        "порог отказа": "python scripts/choose_threshold.py --stress results/refusal_stress_r392dw40f4t2.json "
+                        "--out results/threshold_choice_r392dw40f4t2.json",
+        "сборка релиза": f"python scripts/export_release.py --weights weights/soup_r392dw40f4t2_all/best.pt "
+                         f"--val results/hack_ft_soup_r392dw40f4t2_fit_val.json --confidence top1 "
+                         f"--threshold {m['рецепт'].get('threshold')} "
+                         f"--threshold-choice results/threshold_choice_r392dw40f4t2.json --kr "
+                         f"--k1 {m['рецепт'].get('k1')} --k2 {m['рецепт'].get('k2')} "
+                         f"--lam {m['рецепт'].get('lam')} --crop-pad 0.05 --out {rel}",
+        "инференс": "docker run --rm --gpus all --shm-size=2g -v <данные>:/data:ro -v <выход>:/out vreid:1.0",
         "независимость запросов": f"python scripts/check_query_independence.py --submission {sub} --data <данные>",
-        "аудит отказа": f"python scripts/refusal_audit.py --run {run} --k1 {m['рецепт'].get('k1')} --k2 {m['рецепт'].get('k2')}",
+        "аудит отказа": f"python scripts/refusal_audit.py --run {run} --recipe {rel}/recipe.json",
         "производительность": "docker run --rm --gpus all --shm-size=2g -v <данные>:/data:ro "
                               "-v <результаты>:/app/results --entrypoint python vreid-dev "
                               "-m vreid.bench_full --data /data --release /app/release --n 600 --workers 8 --fast-decode",

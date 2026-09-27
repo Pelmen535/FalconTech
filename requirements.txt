@@ -1,4 +1,4 @@
-# torch/torchvision ставятся отдельно под свою CUDA (у Николая уже стоят)
+# torch/torchvision ставятся отдельно под свою CUDA: https://pytorch.org/get-started/locally/
 timm>=1.0
 faiss-cpu>=1.8        # на GPU-машине можно faiss-gpu, но flat-индекс и на CPU быстрый
 numpy

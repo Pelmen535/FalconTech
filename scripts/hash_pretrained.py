@@ -51,7 +51,8 @@ def main():
                 if name in out:
                     continue
                 if name.replace(".", "--") in str(p) or name in str(p):
-                    out[name] = {"path": str(p), "bytes": p.stat().st_size, "sha256": sha256(p)}
+                    out[name] = {"path": str(p).replace(str(Path.home()), "~"), "bytes": p.stat().st_size,
+                                  "sha256": sha256(p)}
     if not out:
         print("[hash] кеш DINOv2 не найден. Это не ошибка сдачи: релизный чекпойнт "
               "самодостаточен (pretrained=False). Но для SOURCES.md хэш стоит получить — "

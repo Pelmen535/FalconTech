@@ -65,8 +65,8 @@ def main():
         same_release = all(health[key] == expected[key] for key in ('model_sha256', 'recipe_sha256'))
         exact_top10 = [item['image_id'] for item in ranks] == expected['ranking_ids']
         if same_release:
-            require(ranks[0]['image_id'] == expected['ranking_ids'][0], '19b top-1 differs from the recorded demo')
-            require(answer['accepted'] == expected['accepted'], '19b refusal differs from the recorded demo')
+            require(ranks[0]['image_id'] == expected['ranking_ids'][0], 'Top-1 differs from the recorded reference')
+            require(answer['accepted'] == expected['accepted'], 'Refusal differs from the recorded reference')
         thumbnail = client.get(ranks[0]['thumbnail_url'])
         thumbnail.raise_for_status()
         require(thumbnail.headers.get('content-type', '').startswith('image/'), 'Thumbnail is missing')
@@ -81,7 +81,7 @@ def main():
         args.output.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding='utf-8')
         print(json.dumps(report, ensure_ascii=False, indent=2))
         if not same_release:
-            print('Different model/recipe: only HTTP execution was checked, not equivalence to 19b.')
+            print('Different model/recipe: only HTTP execution was checked, not equivalence to the recorded reference.')
         elif not exact_top10:
             print('Top-1/refusal match; lower candidate order differs from the CPU reference.')
     return 0

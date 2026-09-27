@@ -86,7 +86,8 @@ def main() -> int:
         shared = [key for key in report["runs"][primary] if key in report["runs"][secondary]]
         best_primary = max(shared, key=lambda key: report["runs"][primary][key])
         best_secondary = max(shared, key=lambda key: report["runs"][secondary][key])
-        current = "6/2/0.3"
+        recipe = json.loads((ROOT / "release/recipe.json").read_text(encoding="utf-8"))
+        current = f"{recipe['k1']}/{recipe['k2']}/{float(recipe['lam']):g}"
         report["verdict"] = {
             "best_on_" + primary: [best_primary, report["runs"][primary][best_primary],
                                    report["runs"][secondary].get(best_primary)],

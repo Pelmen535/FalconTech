@@ -65,7 +65,16 @@ docs/falcon_qa_*.md
 docs/errors/
 demo/query.jpg
 results/pseudo_cameras/
-results/official_validation/
+# Из отчёта эталонного scorer публикуются только числа; разметка и CSV остаются локально
+results/official_validation/*
+!results/official_validation/comparison.json
+!results/official_validation/official_report.json
+# Повтор сдачи из кеша: сами CSV — копия сдачи, публикуется только сравнение
+results/cached_replay/*.csv
+# Служебные файлы очередей: признак завершения и управляющие флаги
+logs/*.done
+logs/q*_go_now
+logs/q*_cancel
 1809/
 
 # Разметка организаторов: vehicle_id, camera_id и рамки на их кадрах. Это сам датасет,

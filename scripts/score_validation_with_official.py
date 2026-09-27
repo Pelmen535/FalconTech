@@ -19,8 +19,8 @@
   4. Запускает organizer/evaluate.py и разбирает его JSON.
   5. Сравнивает с нашими числами и печатает разницу по каждой метрике.
 
-    python scripts/score_validation_with_official.py --run runs/hack/ft_soup_b336_fit \\
-        --release release --out results/official_validation
+    python scripts/score_validation_with_official.py --release release \\
+        --out results/official_validation          # двойник — из release/weights.json
 """
 from __future__ import annotations
 

@@ -1,7 +1,17 @@
 {
   "scope": "отложенная валидация двойника релиза; правило жюри и замороженный рецепт",
-  "run": "runs\\hack\\ft_soup_r392dw40f4t2_fit",
-  "release": "E:\\Хакатон\\release",
+  "run": "E:/Хакатон/runs/hack/ft_soup_r392dw40f4t2_fit",
+  "release": "release",
+  "rerank": "3/2/0.2",
+  "input_size": 392,
+  "threshold_choice": {
+    "value": 0.67,
+    "validation_optimum": 0.7,
+    "minimax": 0.55,
+    "belief_in_A": 0.85
+  },
+  "median_bbox_area": 343543,
+  "link_sheets": false,
   "n_query": 1213,
   "n_gallery": 688,
   "jury_map10": 82.7,

@@ -18,7 +18,7 @@
 пропорции, яркость кропа, наличие в галерее кадра той же машины с той же камеры и число
 кросс-камерных положительных. Это и есть ответ на вопрос «что ломает модель».
 
-    python scripts/error_analysis.py --run runs/hack/ft_soup_b336_fit --release release
+    python scripts/error_analysis.py --release release   # двойник — из release/weights.json
     → results/error_analysis.json, docs/ERROR_ANALYSIS.md, docs/errors/*.jpg
 """
 from __future__ import annotations
@@ -147,6 +147,9 @@ def main() -> int:
     parser.add_argument("--examples", type=int, default=6)
     parser.add_argument("--out", type=Path, default=ROOT / "results/error_analysis.json")
     parser.add_argument("--report", type=Path, default=ROOT / "docs/ERROR_ANALYSIS.md")
+    parser.add_argument("--link-sheets", action="store_true",
+                        help="вставить в отчёт ссылки на полосы с кадрами (docs/errors/). По умолчанию "
+                             "нет: это кадры организаторов, в публичный репозиторий они не входят")
     args = parser.parse_args()
 
     recipe = load_recipe(args.release)
@@ -210,9 +213,25 @@ def main() -> int:
         "false_accept_on_wrong_top1": int((accepted & has_match & ~top1_correct).sum()),
     }
 
+    finite = np.isfinite(features["area"])
+    input_size = None
+    try:
+        import torch
+        input_size = int(torch.load(args.release / "model.pt", map_location="cpu",
+                                    weights_only=False, mmap=True)["img_size"])
+    except Exception:
+        pass
     report = {
         "scope": "отложенная валидация двойника релиза; правило жюри и замороженный рецепт",
-        "run": str(args.run), "release": str(args.release),
+        "run": str(args.run).replace(chr(92), "/"), "release": "release",
+        "rerank": (f"{recipe['k1']}/{recipe['k2']}/{float(recipe['lam']):g}"
+                   if recipe.get("kr") else "нет"),
+        "input_size": input_size,
+        "threshold_choice": {k: recipe.get("threshold_choice", {}).get(k)
+                             for k in ("value", "validation_optimum", "minimax", "belief_in_A")},
+        "median_bbox_area": int(np.median(features["area"][finite & jury_has]))
+        if (finite & jury_has).any() else None,
+        "link_sheets": bool(args.link_sheets),
         "n_query": int(len(query["keys"])), "n_gallery": int(len(gallery["keys"])),
         "jury_map10": round(jury["mAP"] * 100, 2), "jury_rank1": round(jury["rank1"] * 100, 2),
         "groups": {name: describe(features, mask, extra) for name, mask in groups.items()},
@@ -223,7 +242,6 @@ def main() -> int:
     }
 
     # Зависимость от размера рамки: маленький кроп — это мало пикселей на кузов.
-    finite = np.isfinite(features["area"])
     edges = np.quantile(features["area"][finite & jury_has], [0, .25, .5, .75, 1])
     for lower, upper in zip(edges[:-1], edges[1:]):
         block = jury_has & (features["area"] >= lower) & (features["area"] <= upper)
@@ -292,15 +310,26 @@ def main() -> int:
     return 0
 
 
+def plural(n: int, one: str, few: str, many: str) -> str:
+    a, b = abs(n) % 100, abs(n) % 10
+    if 10 < a < 20:
+        return many
+    if b == 1:
+        return one
+    return few if 2 <= b <= 4 else many
+
+
 def write_markdown(report: dict, path: Path) -> None:
     total = report["n_query"]
     lines = [
         "# Анализ ошибок", "",
-        "Считано по отложенной валидации двойника релиза (модель не видела эти личности),",
-        "правилом жюри и замороженным рецептом: те же k-reciprocal 6/2 и тот же порог отказа,",
-        f"что уходят в сдачу. Запросов {total}, галерея {report['n_gallery']}, "
-        f"mAP@10 {report['jury_map10']}, rank-1 {report['jury_rank1']}.", "",
-        "Воспроизвести: `python scripts/error_analysis.py`.", "",
+        "Считано по отложенной валидации двойника релиза — той же модели, обученной без",
+        "валидационных машин, — правилом жюри и замороженным рецептом: те же k-reciprocal "
+        f"{report['rerank']} и тот же порог отказа, что уходят в сдачу. Запросов {total}, "
+        f"галерея {report['n_gallery']}, mAP@10 {report['jury_map10']}, rank-1 {report['jury_rank1']}.", "",
+        "Воспроизвести: `python scripts/error_analysis.py` — нужны кеш эмбеддингов двойника и "
+        "кадры организаторов, в репозиторий они не входят; числа этого отчёта — "
+        "`results/error_analysis.json`.", "",
         "## Куда делись запросы", "",
         "| исход | запросов | доля | медиана площади рамки, px | медиана яркости кропа | "
         "медиана кросс-камерных положительных |", "|---|---:|---:|---:|---:|---:|",
@@ -325,10 +354,12 @@ def write_markdown(report: dict, path: Path) -> None:
               f"Порог {refusal['threshold']}. Верных принятий {refusal['true_positive']}, "
               f"ложных принятий {refusal['false_positive']}, ложных отказов "
               f"{refusal['false_negative']}, верных отказов {refusal['true_negative']}.", "",
-              f"Ложные принятия распадаются надвое: {refusal['false_accept_on_no_match']} раз "
-              f"система ответила на запрос без пары и {refusal['false_accept_on_wrong_top1']} раз "
-              "уверенно назвала не ту машину. Вторая половина опаснее: отказ тут не помог бы, "
-              "нужен более сильный признак.", ""]
+              "Ложные принятия бывают двух видов: в "
+              f"{refusal['false_accept_on_no_match']} "
+              f"{plural(refusal['false_accept_on_no_match'], 'случае', 'случаях', 'случаях')} "
+              "система ответила на запрос без пары, в "
+              f"{refusal['false_accept_on_wrong_top1']} — уверенно назвала не ту машину. Второй "
+              "вид опаснее: отказ тут не помог бы, нужен более сильный признак.", ""]
 
     if report["by_bbox_area_quartile"]:
         lines += ["## Размер рамки", "",
@@ -339,14 +370,17 @@ def write_markdown(report: dict, path: Path) -> None:
                          f"{row['rank1']}% | {row['recall_at_10']}% |")
         spread = max(r["rank1"] for r in report["by_bbox_area_quartile"]) - \
             min(r["rank1"] for r in report["by_bbox_area_quartile"])
-        lines += ["", f"Размах rank-1 между квартилями {spread:.1f} п.п., и он не монотонен по "
-                  "площади: на этих данных размер рамки ошибку не объясняет. Кропы здесь и так "
-                  "крупные — медиана около 340 тысяч пикселей при входе модели 336×336, так что "
-                  "разрешения хватает всем квартилям.", ""]
+        size = report.get("input_size")
+        area = report.get("median_bbox_area")
+        tail = (f" Кропы здесь и так крупные — медиана около {round(area / 1000)} тысяч пикселей "
+                f"при входе модели {size}×{size}." if size and area else "")
+        lines += ["", f"Размах rank-1 между квартилями {spread:.1f} п.п.: на этих данных размер "
+                  "рамки ошибку почти не объясняет." + tail, ""]
 
     if report["by_same_camera_duplicate"]:
         lines += ["## Дубликат своей камеры — главный перекос валидации", "",
-                  "| группа | запросов | rank-1 | в топ-10 | медиана косинуса топ-1 | принято |",
+                  "| группа | запросов | топ-1 — та же машина (кадр своей камеры засчитан) | "
+                  "верный в топ-10 по правилу жюри | медиана косинуса топ-1 | принято |",
                   "|---|---:|---:|---:|---:|---:|"]
         for label, row in report["by_same_camera_duplicate"].items():
             lines.append(f"| {label} | {row['queries']} | {row['rank1']}% | "
@@ -354,31 +388,48 @@ def write_markdown(report: dict, path: Path) -> None:
                          f"{row['accept_rate']}% |")
         lines.append("")
         if "только кросс-камерные" not in report["by_same_camera_duplicate"]:
+            row = report["by_same_camera_duplicate"]["с дубликатом своей камеры"]
+            choice = report.get("threshold_choice") or {}
             lines += [
                 "Второй строки в таблице нет, и это само по себе результат: **у всех запросов с "
                 "парой в галерее лежит кадр той же машины с той же камеры**. Так устроен и "
                 "открытый тест — галерея собрана по одному кадру на трек «машина × камера». "
-                "Косинус до такого почти дубликата 0.91, и режим отказа на нашей валидации "
-                "решает слишком лёгкую задачу.", "",
-                "В закрытом тесте гарантирована только кросс-камерная пара (ответ 17), где "
-                "медиана косинуса падает до 0.505. Именно поэтому порог заморожен на 0.55, а не "
-                "на оптимуме валидации 0.60: см. стресс-проверку "
-                "`python scripts/refusal_stress.py` и раздел про порог в README.", ""]
+                f"Медиана уверенности у таких запросов — {row['median_top1_cosine']}, и режим "
+                "отказа на нашей валидации решает более лёгкую задачу, чем, возможно, в закрытом "
+                "тесте.", ""]
+            if choice.get("value") is not None:
+                lines += [
+                    "В закрытом тесте гарантирована только кросс-камерная пара (ответ 17 "
+                    "организаторов), и там уверенность заметно ниже. Поэтому порог "
+                    f"{choice['value']} выбран не по оптимуму валидации "
+                    f"({choice.get('validation_optimum')}), а правилом "
+                    "`scripts/choose_threshold.py`: максимум ожидаемого балла отказа при вере "
+                    f"{choice.get('belief_in_A')} в то, что закрытый тест устроен как валидация. "
+                    "Обоснование — в `release/recipe.json`, поле `threshold_choice`; "
+                    "стресс-проверка — `python scripts/refusal_stress.py`.", ""]
 
-    lines += ["## Характерные случаи", "",
-              "Полосы: слева кроп запроса, дальше первые кандидаты с косинусом; "
-              "галочкой отмечена та же машина.", ""]
+    lines += ["## Характерные случаи", ""]
+    if report.get("link_sheets"):
+        lines += ["Полосы: слева кроп запроса, дальше первые кандидаты с косинусом; "
+                  "знаком «+» отмечена та же машина.", ""]
+    else:
+        lines += ["Полосы с кадрами собираются локально в `docs/errors/` "
+                  "(`python scripts/error_analysis.py --link-sheets`) и не публикуются: это кадры "
+                  "организаторов. Ниже — самые уверенные случаи каждого вида.", ""]
     for block in report["examples"]:
-        lines.append(f"### {block['case']} — {block['count']} запросов")
+        count = block["count"]
+        lines.append(f"### {block['case']} — {count} "
+                     f"{plural(count, 'запрос', 'запроса', 'запросов')}")
         lines.append("")
         for entry in block["shown"]:
             duplicate = (" топ-1 — дубликат своей камеры, жюри его удаляет,"
                          if entry.get("top1_is_same_camera_duplicate") else "")
-            lines.append(f"* `{entry['query_id']}`: косинус топ-1 {entry['top1_cosine']},"
+            lines.append(f"* `{entry['query_id']}`: косинус топ-1 {entry['top1_cosine']:.4f},"
                          f"{duplicate} кросс-камерных положительных "
                          f"{entry['cross_camera_positives']}")
-            lines.append("")
-            lines.append(f"  ![{entry['query_id']}](errors/{Path(entry['sheet']).name})")
+            if report.get("link_sheets"):
+                lines.append("")
+                lines.append(f"  ![{entry['query_id']}](errors/{Path(entry['sheet']).name})")
         lines.append("")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")

@@ -17,7 +17,7 @@
 решением и файлом лежит writer со своими правилами, и проверять надо тот объект, который
 уходит жюри.
 
-    python scripts/refusal_audit.py --run runs/hack/ft_soup_b336_fit --recipe release/recipe.json
+    python scripts/refusal_audit.py --recipe release/recipe.json   # двойник — из release/weights.json
 """
 from __future__ import annotations
 

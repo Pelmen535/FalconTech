@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Сколько стоит порог отказа, если в закрытом тесте не будет одно-камерных дубликатов.
 
-    python scripts/refusal_stress.py --run runs/hack/ft_soup_b336_fit --release release
+    python scripts/refusal_stress.py --release release   # двойник — из release/weights.json
 
 ОТКУДА ВОПРОС. В нашей валидации (и в открытом тесте) галерея собрана как один кадр на трек
 «машина × камера». Поэтому у запроса почти всегда лежит в галерее кадр ТОЙ ЖЕ машины с ТОЙ ЖЕ

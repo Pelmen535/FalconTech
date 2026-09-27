@@ -9,7 +9,7 @@
 говорит о точности — меток здесь нет, только согласованность артефактов между собой.
 
     python scripts/check_cached_replay.py --submission submission --data Данные \\
-        --release release --out results/cached_replay.json
+        --release release --out results/cached_replay
 """
 from __future__ import annotations
 

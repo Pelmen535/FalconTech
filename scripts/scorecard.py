@@ -29,7 +29,7 @@ def load(p: Path):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--release", default="release")
-    ap.add_argument("--submission", default="submission_soup")
+    ap.add_argument("--submission", default="submission")
     ap.add_argument("--results", default="results")
     ap.add_argument("--val", default=None, help="по умолчанию берётся из recipe.source.val")
     a = ap.parse_args()

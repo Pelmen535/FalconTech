@@ -1,5 +1,5 @@
 {
-  "собрано": "2026-09-26T15:45:27",
+  "собрано": "2026-09-27T20:48:34",
   "хэши": {
     "release/model.pt": {
       "sha256": "33300d61d6b90899428858d264761933a496015d706cf2db02a5cc5a11bd10e7",
@@ -10,8 +10,8 @@
       "байт": 5306
     },
     "release/weights.json": {
-      "sha256": "92c43e9731c9dbab5203426fce98c153bda50f23a7af7680a8d0567ed57cfc1c",
-      "байт": 578
+      "sha256": "8f81e4e39acf8c1f79e296f9c75e46abdf28f61ace4ba740c1c170f1421a243e",
+      "байт": 580
     },
     "submission/candidates.csv": {
       "sha256": "ea9c5fdb6b63b630bbd3a7e6206e956b538713325db895698571b498407f8cb7",
@@ -1978,12 +1978,15 @@
     "прогон": "submission\\run_info.json"
   },
   "команды": {
-    "обучение": "python -m vreid.train --config configs/hackathon.yaml --backbone dinov2_b --img-size 336 --epochs 18 --P 11 --K 4 --freeze-blocks 0 --cam-aware --cross-cam-triplet --distill weights/hack_dinov2_l_336_cam/best.pt --distill-w 20 --val-frac 0 --seed <0|2|3> --out weights/hack_dinov2_b_336_all[_s2|_s3]",
-    "усреднение весов": "python scripts/model_soup.py --out weights/soup_b336_all/best.pt weights/hack_dinov2_b_336_all/best.pt weights/hack_dinov2_b_336_all_s2/best.pt weights/hack_dinov2_b_336_all_s3/best.pt",
-    "сборка релиза": "python scripts/export_release.py --weights weights/soup_b336_all/best.pt --val results/hack_ft_soup_b336_val_val.json --kr --k1 3 --k2 2 --out release",
-    "инференс": "docker run --rm --gpus all --shm-size=2g -v <данные>:/data:ro -v <выход>:/out vreid-release",
+    "учитель": "python -m vreid.train --config configs/hackathon.yaml --backbone dinov2_l --img-size 336 --epochs 20 --P 5 --K 4 --freeze-blocks 8 --cam-aware --cross-cam-triplet --out weights/hack_dinov2_l_336_cam",
+    "второй учитель (релиз v1.3)": "python -m vreid.train --config configs/hackathon.yaml --backbone dinov2_b --img-size 392 --epochs 18 --P 8 --K 4 --cam-aware --cross-cam-triplet --distill weights/hack_dinov2_l_336_cam/best.pt --distill-w 40 --distill-focus 4 --val-frac 0 --seed <0|2|3> --out weights/all18_r392_dw40f4_s<seed>; затем суп трёх сидов в weights/soup_r392dw40f4_all/best.pt",
+    "обучение": "python -m vreid.train --config configs/hackathon.yaml --backbone dinov2_b --img-size 392 --epochs 18 --P 8 --K 4 --cam-aware --cross-cam-triplet --distill weights/hack_dinov2_l_336_cam/best.pt,weights/soup_r392dw40f4_all/best.pt --distill-w 40 --distill-focus 4 --val-frac 0 --seed <0|2|3> --out weights/all18_r392_dw40f4t2_s<seed>",
+    "усреднение весов": "python scripts/model_soup.py weights/all18_r392_dw40f4t2_s0/best.pt weights/all18_r392_dw40f4t2_s2/best.pt weights/all18_r392_dw40f4t2_s3/best.pt --out weights/soup_r392dw40f4t2_all/best.pt",
+    "порог отказа": "python scripts/choose_threshold.py --stress results/refusal_stress_r392dw40f4t2.json --out results/threshold_choice_r392dw40f4t2.json",
+    "сборка релиза": "python scripts/export_release.py --weights weights/soup_r392dw40f4t2_all/best.pt --val results/hack_ft_soup_r392dw40f4t2_fit_val.json --confidence top1 --threshold 0.67 --threshold-choice results/threshold_choice_r392dw40f4t2.json --kr --k1 3 --k2 2 --lam 0.2 --crop-pad 0.05 --out release",
+    "инференс": "docker run --rm --gpus all --shm-size=2g -v <данные>:/data:ro -v <выход>:/out vreid:1.0",
     "независимость запросов": "python scripts/check_query_independence.py --submission submission --data <данные>",
-    "аудит отказа": "python scripts/refusal_audit.py --run runs\\hack\\ft_soup_r392dw40f4t2_fit --k1 3 --k2 2",
+    "аудит отказа": "python scripts/refusal_audit.py --run runs\\hack\\ft_soup_r392dw40f4t2_fit --recipe release/recipe.json",
     "производительность": "docker run --rm --gpus all --shm-size=2g -v <данные>:/data:ro -v <результаты>:/app/results --entrypoint python vreid-dev -m vreid.bench_full --data /data --release /app/release --n 600 --workers 8 --fast-decode"
   }
 }
