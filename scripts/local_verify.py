@@ -3,7 +3,7 @@
 Зачем. Глобальный вектор путает одинаковые машины одного цвета; различают их детали —
 наклейка, диск, вмятина. `vreid/local_match.py` умеет считать, сколько патчей совпало у пары
 кропов с согласованным сдвигом по сетке, но в релизе это не включено и никогда не было
-измерено на метрике жюри.
+измерено на метрике оценки.
 
 Почему это законно и бесплатно. Ответ 28 прямо разрешает per-query каскад «cosine shortlist →
 pairwise/local-feature проверка»: решение по запросу принимается по нему одному, другие
@@ -136,7 +136,7 @@ def main() -> int:
         args.pad = float(cfg.get("crop", {}).get("pad", 0.05))
     splits = build_local_validation(cfg["dataset"])
 
-    report = {"protocol": "метрика жюри mAP@10, отбор beta на одном кеше и проверка на другом",
+    report = {"protocol": "метрика оценки mAP@10, отбор beta на одном кеше и проверка на другом",
               "params": {"topk": args.topk, "size": args.size, "pca": args.pca,
                          "min_sim": args.min_sim, "pad": args.pad,
                          "rerank": [args.k1, args.k2, args.lam]},

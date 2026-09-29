@@ -1,1 +1,0 @@
-[wait] http://localhost:8080/health не ответил за 300 с; последняя причина — TimeoutError: timed out

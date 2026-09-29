@@ -134,7 +134,7 @@ def main():
                               else (round(1.0 - float(chosen["accept_rate"]), 4)
                                     if a.rate_threshold else None)),
               "source": {"weights": a.weights, "val": a.val, "protocol": v.get("protocol"),
-                         # ГЛАВНОЕ число — метрика жюри (убраны только пары vid+cam, mAP@10, ответ 11).
+                         # ГЛАВНОЕ число — метрика оценки (убраны только пары vid+cam, mAP@10, ответ 11).
                          # cross_camera в старых JSON — строгий режим, он завышает на 1-3 пункта;
                          # держим оба, чтобы никто не сравнивал разное как одинаковое.
                          "val_mAP_jury": (v.get("jury") or v["cross_camera"])["mAP"],
@@ -174,8 +174,8 @@ def main():
     if a.reranker:
         print(f"[release] reranker.pt {rr_mb:.0f} МБ из {a.reranker}; сумма весов "
               f"{mb + rr_mb:.0f} МБ из 2048. Каскад: шортлист {a.cascade_topk}, "
-              f"alpha={a.cascade_alpha}. Замеряемая жюри латентность считается по model.pt "
-              f"(ответы 31/32), настоящая стоимость запроса выше — см. docs/SELF_REVIEW.md")
+              f"alpha={a.cascade_alpha}. Замеряемая латентность считается по model.pt "
+              f"(ответы 31/32), настоящая стоимость запроса выше — см. README, раздел про каскад")
     print(f"[release] frozen threshold {thr:.4f}; evaluate emitted CSV with scripts/refusal_audit.py")
     print(f"[release] source validation point {chosen['threshold']:.4f}: F1={chosen['f1'] * 100:.1f}%, TNR={chosen['tnr'] * 100:.1f}% (not a measurement of this exported recipe)")
     rr = recipe["refuse_rate"]
@@ -183,7 +183,7 @@ def main():
           + (f"→ на тесте порог возьмётся как квантиль {rr * 100:.1f}%" if rr is not None
              else "(используется абсолютный порог)"))
     j = v.get("jury") or v["cross_camera"]
-    print(f"[release] val mAP@10 по правилу жюри {j['mAP'] * 100:.1f}% "
+    print(f"[release] val mAP@10 по правилу оценки {j['mAP'] * 100:.1f}% "
           f"(строгий cross-cam для сравнения {v['cross_camera']['mAP'] * 100:.1f}%, протокол {v.get('protocol')})")
     if v.get("refusal_mask_cam"):
         print("[release] ВНИМАНИЕ: порог калиброван с маской своей камеры, а на тесте камер нет — "

@@ -65,7 +65,7 @@ def refusal_curve(conf: np.ndarray, top1_correct: np.ndarray, has_match: np.ndar
 
 def choose_threshold(curve: list[dict], min_tnr: float | None = None,
                      w_f1: float = 0.7, w_tnr: float = 0.3) -> dict:
-    """Максимум балла жюри 0.7·F1 + 0.3·TNR (ответ организаторов Q-14/Q-15 от 16.09);
+    """Максимум оценки отказа 0.7·F1 + 0.3·TNR (ответ организаторов Q-14/Q-15 от 16.09);
     при заданном min_tnr — только среди порогов с TNR ≥ min_tnr."""
     cand = [r for r in curve if min_tnr is None or (not np.isnan(r["tnr"]) and r["tnr"] >= min_tnr)]
     if not cand:

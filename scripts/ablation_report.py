@@ -63,7 +63,7 @@ def main():
     if base is None:
         raise SystemExit(f"нет базового прогона для {a.model} в {results}")
 
-    # Метрика жюри — это удаление только пар vid+cam. Ключ "cross_camera" в старых файлах
+    # Метрика оценки — это удаление только пар vid+cam. Ключ "cross_camera" в старых файлах
     # хранит строгий режим, который завышает результат; берём "jury", если он есть.
     key = "jury" if "jury" in base else "standard"
     b = base[key]["mAP"] * 100

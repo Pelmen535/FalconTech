@@ -28,7 +28,7 @@ def _param_count(backbone) -> int:
 
 def bench_backbone(backbone, threads: int = 4, n_iter: int = 50, warmup: int = 10,
                    img_size=(640, 480), batch: int = 16) -> dict:
-    """Латентность batch=1 и пропускная способность при batch=N — то, что меряет жюри.
+    """Латентность batch=1 и пропускная способность при batch=N — то, что меряет методика оценки.
     Считается только препроцессинг + forward, без чтения кадра с диска."""
     import torch
     torch.set_num_threads(threads)

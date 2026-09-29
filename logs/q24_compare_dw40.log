@@ -1,4 +1,0 @@
-[compare] baseline   среднее 73.27  разброс 0.11  (73.33, 73.21)
-[compare] candidate  среднее 75.29  разброс 0.23  (75.17, 75.40)
-[compare] прирост +2.02 при пороге +1.50 → переобучать релиз
-[compare] → results\training_dw40_r392.json

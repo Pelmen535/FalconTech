@@ -38,11 +38,8 @@ jobs:
           python scripts/make_test_fixtures.py
           git diff --exit-code tests/service/fixtures/inputs_csv
 
-      - name: логи в UTF-8
-        run: python scripts/normalize_logs.py
-
   image:
-    name: сборка конкурсного образа
+    name: сборка образа пакетного прогона
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -51,7 +48,7 @@ jobs:
       # Этот шаг заодно проверяет, что скрипт скачивания рабочий и суммы сходятся.
       - name: веса из релиза
         run: python scripts/fetch_weights.py
-      # Образ собирается ровно той командой, которую выполняет жюри. Внутри сборки
+      # Образ собирается ровно той командой, что указана в README. Внутри сборки
       # работают pip check, инвентаризация весов против лимита 2 ГБ и разбор рецепта,
       # поэтому успешная сборка — это уже содержательная проверка, а не формальность.
       - name: docker build

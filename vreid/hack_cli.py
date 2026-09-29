@@ -95,7 +95,7 @@ def _ablate_postprocess(q, g, has_match, sims) -> dict:
     from .rerank import dba, frame_block_mask, k_reciprocal
 
     def metrics_for(sim_matrix):
-        """Метрики жюри по матрице сходств: считаем только по запросам с парой в галерее."""
+        """Метрики оценки по матрице сходств: считаем только по запросам с парой в галерее."""
         return evaluate(sim_matrix[has_match], q["vids"][has_match], q["cams"][has_match],
                         g["vids"], g["cams"], cutoff=10)
 
@@ -134,7 +134,7 @@ def _ablate_postprocess(q, g, has_match, sims) -> dict:
                          metrics_for(-k_reciprocal(refined[:n_query], refined[n_query:],
                                                    k1, k2, KR_LAMBDA, same_mask=block))))
     best = max(rows, key=lambda t: t[1]["mAP"])
-    print("постобработка (метрика жюри):")
+    print("постобработка (метрика оценки):")
     for name, metrics in rows:
         mark = "  ← лучшее" if name == best[0] else ""
         print(f"   {name:<28} mAP={metrics['mAP'] * 100:5.1f}%  "
@@ -182,7 +182,7 @@ def _ablate_local(cfg, backbone, val_split, q, g, has_match, sims, out, post,
     n_tokens = int(grid[0] * grid[1])
     beta, best = tune_beta(sims, order, local_sims, n_tokens, q["vids"], q["cams"],
                            g["vids"], g["cams"], has_match)
-    # base — метрика жюри (cross_camera_only=False), а tune_beta подбирает beta по строгому
+    # base — метрика оценки (cross_camera_only=False), а tune_beta подбирает beta по строгому
     # cross-cam (local_match.py). Числа в печати ниже НЕ сопоставимы напрямую; приводить к
     # одному протоколу — отдельная задача с перезамером beta и прогоном
     # scripts/check_refactor_equivalence.py, а не косметика.
@@ -323,10 +323,10 @@ def cmd_val(cfg, backbone_name, batch_size, workers, device, reuse, post=None):
            "mask_plate": mask_mode,
            "n_query": int(len(has_match)), "n_query_no_match": int((~has_match).sum()),
            "n_gallery": int(index.n)}
-    # Метрика жюри — это удаление только пар «тот же vehicle_id И та же camera_id» (ответы 5 и 38).
+    # Метрика оценки — это удаление только пар «тот же vehicle_id И та же camera_id» (ответы 5 и 38).
     # Строгий cross-camera режим дополнительно выбрасывает ЧУЖИЕ машины с камеры запроса, то есть
     # самые трудные негативы, и завышает mAP на 1-3 пункта. Держим обе строки, но заголовок
-    # «метрика жюри» стоит на правильной.
+    # «метрика оценки» стоит на правильной.
     # cutoff=10 — это mAP@10 организаторов; столько же кандидатов пишется в submission.csv
     # (write_submission вызывается с topk=10).
     res["jury"] = evaluate(sims[has_match], q["vids"][has_match], q["cams"][has_match],
@@ -335,7 +335,7 @@ def cmd_val(cfg, backbone_name, batch_size, workers, device, reuse, post=None):
     # без фолбэка (строки 108, 126), scripts/ablation_report.py и scripts/scorecard.py
     # используют "standard" как запасной ключ.
     # ВНИМАНИЕ: в файлах прежних поколений (см. 1809/handoff/vreid/hack_cli.py:186) ключ
-    # cross_camera считался БЕЗ cross_camera_only и хранил метрику жюри — сравнивать цифры
+    # cross_camera считался БЕЗ cross_camera_only и хранил метрику оценки — сравнивать цифры
     # между поколениями JSON по этому ключу нельзя, только по "jury".
     res["standard"] = res["jury"]                      # алиас, см. комментарий выше
     res["cross_camera_strict"] = evaluate(sims[has_match], q["vids"][has_match],
@@ -343,7 +343,7 @@ def cmd_val(cfg, backbone_name, batch_size, workers, device, reuse, post=None):
                                           cross_camera_only=True, cutoff=10)
     res["cross_camera"] = res["cross_camera_strict"]   # алиас, см. комментарий выше
     print(format_metrics(res["jury"],
-                         f"[{val_split['protocol']}] МЕТРИКА ЖЮРИ (убрано только vid+cam)"))
+                         f"[{val_split['protocol']}] МЕТРИКА ОЦЕНКИ (убрано только vid+cam)"))
     print(format_metrics(res["cross_camera_strict"], "строгий cross-cam (диагностика, завышает)"))
 
     # recall=0.95 — рабочая точка радиуса: истинное кросс-камерное совпадение попадает в радиус
@@ -573,7 +573,7 @@ def cmd_ens(cfg, backbones: list[str], weights: list[float] | None = None):
     векторов (с весами) → те же метрики, постобработка и режим отказа. Ничего не пересчитывает.
 
     ВНИМАНИЕ про отчётную цифру: здесь считается ТОЛЬКО строгий cross-camera
-    (cross_camera_only=True), он завышает mAP на 1-3 п.п. относительно метрики жюри. Ключа
+    (cross_camera_only=True), он завышает mAP на 1-3 п.п. относительно метрики оценки. Ключа
     "jury" в ens-JSON нет, поэтому scripts/export_release.py (строка 106,
     `v.get("jury") or v["cross_camera"]`) подставит эту завышенную цифру как val_mAP_jury —
     для отчётных чисел брать val, а не ens.

@@ -22,7 +22,7 @@ def save_embeddings(emb: np.ndarray, path: str | Path) -> None:
 
     Нулевая или нечисловая строка — это не «плохой признак», а сбой: косинус к ней не
     определён, а строка обязана быть для каждого image_id (ответ 49). Лучше упасть здесь,
-    чем отдать жюри матрицу, по которой ничего нельзя посчитать.
+    чем отдать на оценку матрицу, по которой ничего нельзя посчитать.
     """
     emb = np.ascontiguousarray(emb.astype(np.float32))
     if emb.ndim != 2 or not emb.shape[1]:
@@ -84,7 +84,7 @@ def write_candidates(q_keys, g_keys, sims: np.ndarray, conf: np.ndarray, thresho
 
     sims задаёт ПОРЯДОК кандидатов (после ре-ранжирования это −расстояние k-reciprocal),
     а в столбец confidence пишется conf_sims — косинусное сходство в [-1, 1], которое
-    человек и жюри могут прочитать. Без conf_sims столбец берётся из sims.
+    человек и скрипт оценки могут прочитать. Без conf_sims столбец берётся из sims.
     per_candidate_min_sim отсекает кандидатов по conf_sims (по косинусу, не по расстоянию)."""
     if conf_sims is None:
         conf_sims = sims

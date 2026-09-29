@@ -152,8 +152,8 @@ class FinetunedBackbone(Backbone):
         print(f"[models] {self.name}: {self.m.model_name}, D={self.dim}, input={self.size}, device={self.device}")
         # VREID_COMPILE=1 — прогнать backbone через torch.compile. Первый батч компилируется
         # десятки секунд, дальше forward обычно на 20-50% быстрее. На Windows Triton может быть
-        # недоступен — тогда просто остаёмся на обычном режиме; в Linux-контейнере (а именно его
-        # запускает жюри) работает. Ускорение прямо конвертируется в балл за пропускную способность.
+        # недоступен — тогда просто остаёмся на обычном режиме; в Linux-контейнере (а именно в нём
+        # идёт пакетный прогон) работает. Ускорение прямо повышает пропускную способность.
         import os
         if os.environ.get("VREID_COMPILE", "") not in ("", "0"):
             try:

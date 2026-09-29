@@ -15,7 +15,7 @@
 
 Исходы считаются не по массиву в памяти, а по РЕАЛЬНО записанному candidates.csv: между
 решением и файлом лежит writer со своими правилами, и проверять надо тот объект, который
-уходит жюри.
+уходит в сдачу.
 
     python scripts/refusal_audit.py --recipe release/recipe.json   # двойник — из release/weights.json
 """

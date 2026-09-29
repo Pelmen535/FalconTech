@@ -4,7 +4,7 @@
 
 Что внутри:
   * данные: fit-часть локальной open-set валидации (см. hackathon_data.build_local_validation);
-    val-часть — для ранней остановки по mAP@10 по правилу жюри (см. validate);
+    val-часть — для ранней остановки по mAP@10 по правилу оценки (см. validate);
     --val-frac 0 — финальный режим: все id в обучении, валидации нет, сохраняется последняя эпоха;
   * кропы режутся один раз в кэш с запасом 30% (crops_cache/), дальше — случайный джиттер bbox
     внутри запаса: это дёшево и даёт устойчивость к неточным bbox;
@@ -250,7 +250,7 @@ class PKSampler:
 class CamAwarePKSampler(PKSampler):
     """То же P×K, но K кадров машины берутся с РАЗНЫХ камер по кругу: сначала по одному кадру
     с каждой камеры, потом добор. Тогда «трудный позитив» в батче почти всегда кросс-камерный —
-    ровно то, что считает жюри. Машины с одной камерой ведут себя как в обычном сэмплере."""
+    ровно то, что считает метрика. Машины с одной камерой ведут себя как в обычном сэмплере."""
 
     def __init__(self, per_record_labels: list[int], cams: list[int], P: int, K: int,
                  seed: int = 0):
@@ -471,7 +471,7 @@ def similarity_distill(f_student, teacher_feats, y=None, cams=None, focus: float
 
 def triplet_batch_hard(f, y, margin: float = 0.3, cams=None):
     """Batch-hard triplet. Если переданы cams — самый трудный позитив ищется только среди кадров
-    той же машины с ДРУГОЙ камеры (как в протоколе жюри); если таких в батче нет — среди любых."""
+    той же машины с ДРУГОЙ камеры (как в протоколе оценки); если таких в батче нет — среди любых."""
     import torch
     import torch.nn.functional as F
     f = F.normalize(f)
@@ -600,7 +600,7 @@ def validate(model, query: Split, gallery: Split, has_match, transform, device, 
     query_emb = embed_records(model, query.records, transform, device, batch_size, workers)
     gallery_emb = embed_records(model, gallery.records, transform, device, batch_size, workers)
     sims = query_emb @ gallery_emb.T
-    # Правило жюри: убираем только пары «тот же vehicle_id И та же camera_id», и считаем mAP@10.
+    # Правило оценки: убираем только пары «тот же vehicle_id И та же camera_id», и считаем mAP@10.
     # Раньше здесь стоял строгий cross-camera режим без cutoff — то есть лучшая эпоха выбиралась
     # по метрике, которая завышает результат и не совпадает с оцениваемой.
     return evaluate(sims[has_match], query.vids[has_match], query.cams[has_match],

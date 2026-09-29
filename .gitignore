@@ -93,3 +93,10 @@ submission/
 # хранилища и 1 ГБ трафика в месяц) хватило бы ровно на одно клонирование.
 # Скачать: python scripts/fetch_weights.py
 release/*.pt
+
+# Рабочая история и внутренние документы — только локально
+journal/
+logs/
+00_ГЛАВНОЕ.md
+docs/SELF_REVIEW.md
+docs/DEMO.md
