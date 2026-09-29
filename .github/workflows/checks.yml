@@ -39,7 +39,7 @@ jobs:
           git diff --exit-code tests/service/fixtures/inputs_csv
 
   image:
-    name: сборка образа пакетного прогона
+    name: сборка образов
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,3 +55,7 @@ jobs:
         run: docker build -t vreid:1.0 .
       - name: что реально установлено в образе
         run: docker run --rm --entrypoint python vreid:1.0 /app/scripts/image_report.py
+      # Образ веб-сервиса собирается с аргументами по умолчанию, как у docker compose up --build
+      # на чистой машине: его pip check ловит расхождения версий в requirements-service.txt.
+      - name: docker build (веб-сервис)
+        run: docker build -f Dockerfile.service -t vreid-api:1.1 .

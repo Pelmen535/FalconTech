@@ -1,4 +1,4 @@
-# HTTP-сервис инференса: то же ядро и те же веса, что в конкурсном образе, плюс API.
+# HTTP-сервис инференса: то же ядро и те же веса, что в образе пакетного прогона, плюс API.
 #
 # Почему отдельный Dockerfile, а не вторая стадия основного. Основной образ собирается
 # командой без аргументов (docker build -t vreid:1.0 .) и обязан оставаться ровно тем, что
@@ -29,8 +29,13 @@ ARG PIP_FLAGS=""
 ARG REQUIREMENTS=requirements-infer.txt
 COPY requirements-infer.txt requirements-infer-dev.txt requirements-service.txt ./
 # Тот же закреплённый набор ядра плюс слой сервиса. --no-deps и pip check — по тем же
-# причинам, что в конкурсном образе: набор либо согласован, либо образ не собирается.
+# причинам, что в образе пакетного прогона: набор либо согласован, либо образ не собирается.
+# В релизной базе typing_extensions записан дважды (4.11.0 от conda и 4.12.1 от pip). pip при
+# обновлении снимает только одну запись, вторая перекрывает новую версию, и pip check падает.
+# Поэтому при дубле лишняя запись снимается заранее; в базе без дубля шаг ничего не делает.
 RUN python -m pip install --no-cache-dir --no-deps ${PIP_FLAGS} -r ${REQUIREMENTS} \
+ && n=$(python -c "import importlib.metadata as m; print(sum(d.metadata['Name'].lower().replace('-', '_') == 'typing_extensions' for d in m.distributions()))") \
+ && if [ "$n" -gt 1 ]; then python -m pip uninstall -y ${PIP_FLAGS} typing_extensions; fi \
  && python -m pip install --no-cache-dir --no-deps ${PIP_FLAGS} -r requirements-service.txt \
  && python -m pip check \
  && python -m pip freeze --all > /app/installed-packages.txt
