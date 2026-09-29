@@ -5,7 +5,7 @@
     "model.pt": {
       "sha256": "33300d61d6b90899428858d264761933a496015d706cf2db02a5cc5a11bd10e7",
       "size": 172315879,
-      "what": "DINOv2 ViT-B/14, основная модель: её вектор идёт в embeddings.npy, её путь меряет жюри"
+      "what": "DINOv2 ViT-B/14, основная модель: её вектор идёт в embeddings.npy, по её пути измеряется скорость"
     }
   },
   "twin_run": "runs/hack/ft_soup_r392dw40f4t2_fit",
