@@ -34,7 +34,7 @@ MANIFEST = RELEASE / "weights.json"
 GH = r"C:\Program Files\GitHub CLI\gh.exe"
 # Автор коммитов в публичном репозитории — решение владельца: noreply-почта и без трейлера
 # соавторства (история переписана под это 22.09, возвращать нельзя).
-GIT_IDENTITY = ["-c", "user.name=Связанные одной цепью",
+GIT_IDENTITY = ["-c", "user.name=Скованные одной цепью",
                 "-c", "user.email=Pelmen535@users.noreply.github.com"]
 DESCRIPTIONS = {
     "model.pt": "DINOv2 ViT-B/14, основная модель: её вектор идёт в embeddings.npy, "

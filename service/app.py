@@ -30,7 +30,7 @@ from .uploads import gallery_archive, image_box
 STATIC = Path(__file__).parent / "static"
 
 DESCRIPTION = """
-Сервис безномерной идентификации транспортного средства. Команда «Связанные одной цепью».
+Сервис безномерной идентификации транспортного средства. Команда «Скованные одной цепью».
 
 * **Галерея** — наблюдения (кадр, bbox, вектор) в постоянном хранилище.
 * **Поиск** — один запрос против всей галереи: топ-10 и решение об отказе.
@@ -59,7 +59,7 @@ def create_app(settings=None, core=None):
     store = open_store(settings, core.model_sha256,
                        getattr(core, 'embedding_sha256', core.recipe_sha256),
                        core.dimension)
-    app = FastAPI(title='Связанные одной цепью · ReID API', version='1.4.0',
+    app = FastAPI(title='Скованные одной цепью · ReID API', version='1.4.0',
                   description=DESCRIPTION, openapi_tags=TAGS,
                   docs_url=None, redoc_url=None)
     app.state.core = core
