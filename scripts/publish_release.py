@@ -118,7 +118,7 @@ def notes(tag: str, recipe: dict, twin: tuple, prev: dict | None, files: dict) -
     for name, spec in files.items():
         lines.append(f"| `{name}` | {spec['size'] / 2**20:.0f} МиБ | `{spec['sha256']}` | {spec['what']} |")
     lines += ["", "## Точность", "",
-              "Метрика оценки mAP@10 на отложенной валидации — модель-двойник, не видевшая эти "
+              "mAP@10 по правилу оценки на отложенной валидации — модель-двойник, не видевшая эти "
               "личности, суп трёх сидов, без отбора эпохи по валидации.", "",
               "| | mAP@10 | rank-1 |", "|---|---:|---:|"]
     if prev and prev.get("twin_map10"):
@@ -127,15 +127,13 @@ def notes(tag: str, recipe: dict, twin: tuple, prev: dict | None, files: dict) -
     lines.append(f"| **{tag}** ({pp}) | **{m:.2f}** | **{r1:.2f}** |")
     if bench:
         lines += ["", "## Производительность", "",
-                  "По методике организаторов: латентность — медиана 300 прогонов batch=1 после 50 "
+                  "Методика замера: латентность — медиана 300 прогонов batch=1 после 50 "
                   "прогревов, пропускная — устойчивый прогон не короче 10 секунд.", "",
-                  "| | значение | балл |", "|---|---:|---:|",
-                  f"| латентность batch=1 | {bench['latency_ms_median']:.1f} мс | "
-                  f"{10 * bench['latency_score']:.1f} / 10 |",
-                  f"| лучший FPS (batch {bench.get('best_batch')}) | {bench['best_fps']:.1f} | "
-                  f"{10 * bench['throughput_score']:.1f} / 10 |",
-                  f"| веса | {bench.get('weights_mb', 0):.0f} МБ из 2000 | — |",
-                  f"| два прогона подряд | {'бит в бит' if bench.get('determinism_bitwise') else 'РАСХОДЯТСЯ'} | — |"]
+                  "| | значение |", "|---|---:|",
+                  f"| латентность batch=1 | {bench['latency_ms_median']:.1f} мс |",
+                  f"| лучший FPS (batch {bench.get('best_batch')}) | {bench['best_fps']:.1f} |",
+                  f"| веса | {bench.get('weights_mb', 0):.0f} МБ из 2000 |",
+                  f"| два прогона подряд | {'бит в бит' if bench.get('determinism_bitwise') else 'РАСХОДЯТСЯ'} |"]
     lines += ["", "## Рецепт", "",
               f"порог отказа {recipe['threshold']}, k-reciprocal {recipe.get('k1')}/{recipe.get('k2')}/"
               f"{recipe.get('lam')}, каскад {'включён' if recipe.get('cascade') else 'выключен'}. "
