@@ -1,6 +1,6 @@
 {
   "scope": "отложенная валидация двойника релиза; правило оценки и замороженный рецепт",
-  "run": "E:/Хакатон/runs/hack/ft_soup_r392dw40f4t2_fit",
+  "run": "runs/hack/ft_soup_r392dw40f4t2_fit",
   "release": "release",
   "rerank": "3/2/0.2",
   "input_size": 392,

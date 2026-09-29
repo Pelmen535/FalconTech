@@ -93,7 +93,7 @@ def read_annotations(csv_path: str | Path, images_dir: str | Path, cols: dict | 
         if bbox_format == "xyxy":
             w, h = w - x, h - y
         if not np.isfinite([x, y, w, h]).all() or w <= 0 or h <= 0:
-            # Жёстко — только в конкурсном режиме. На обучении падение из-за одной строки
+            # Жёстко — только в режиме пакетного прогона. На обучении падение из-за одной строки
             # стоит часы прогона, а в сдаче молчаливый кроп всего кадра — это уже другой объект.
             if strict:
                 raise ValueError(f"битый bbox у {image_id}: нужны конечные положительные x, y, w, h")

@@ -10,7 +10,7 @@
       "[val] до обучения: rank1=  0.0%  rank5= 36.4%  rank10= 90.9%  mAP@10= 17.9%  (queries 11/11, gallery 15)",
       "[ep 01] loss=13.360 rank1=  0.0%  rank5= 36.4%  rank10= 90.9%  mAP@10= 16.3%  (queries 11/11, gallery 15) <t>",
       "[ep 02] loss=13.526 rank1=  0.0%  rank5= 36.4%  rank10= 72.7%  mAP@10= 15.1%  (queries 11/11, gallery 15) <t>",
-      "[train] без отбора: сохранена эпоха 2 из 2, mAP на ней 15.1% → E:\\Хакатон\\runs\\equivalence\\train\\best.pt (метрика печаталась, но на выбор не влияла)"
+      "[train] без отбора: сохранена эпоха 2 из 2, mAP на ней 15.1% → runs\\equivalence\\train\\best.pt (метрика печаталась, но на выбор не влияла)"
     ]
   },
   "train_toy_files": {
@@ -26,7 +26,7 @@
       "[train] сэмплер: camera-aware (кадры одной машины — с разных камер)",
       "[ep 01] loss=13.590 <t>",
       "[ep 02] loss=13.465 <t>",
-      "[train] финальная модель: 2 эпох на всех id → E:\\Хакатон\\runs\\equivalence\\train_camaware\\best.pt (валидации не было)"
+      "[train] финальная модель: 2 эпох на всех id → runs\\equivalence\\train_camaware\\best.pt (валидации не было)"
     ]
   },
   "train_camaware_files": {
@@ -175,9 +175,9 @@
       "[submit] ВНИМАНИЕ: порог калиброван с маской своей камеры, а на тесте камер нет — ожидай заниженную долю отказов. Лучше protocol: track в конфиге и заново val.",
       "[submit] top-1 сходство на тесте: медиана 0.992, 10%=0.971, 90%=0.999; порог 0.918 → отказов ожидается 0.0%",
       "[submit] для сравнения на val при этом пороге принималось 42.9% запросов",
-      "[submit] embeddings.npy (54, 40) → E:\\Хакатон\\submission_equivalence\\embeddings.npy",
-      "[submit] submission.csv (54 запросов, top-10) → E:\\Хакатон\\submission_equivalence\\submission.csv",
-      "[submit] candidates.csv: отказов 0/54 → E:\\Хакатон\\submission_equivalence\\candidates.csv"
+      "[submit] embeddings.npy (54, 40) → submission_equivalence\\embeddings.npy",
+      "[submit] submission.csv (54 запросов, top-10) → submission_equivalence\\submission.csv",
+      "[submit] candidates.csv: отказов 0/54 → submission_equivalence\\candidates.csv"
     ]
   },
   "submit_toy_files": {
@@ -213,7 +213,7 @@
       "максимум ожидания при вере p=0.70: порог 0.5200, ожидание 86.50",
       "максимум ожидания при вере p=0.85: порог 0.5500, ожидание 91.41",
       "максимум ожидания при вере p=0.95: порог 0.5500, ожидание 94.73",
-      "[stress] → E:\\Хакатон\\results\\equivalence_stress.json"
+      "[stress] → results\\equivalence_stress.json"
     ]
   },
   "refusal_stress_file": {

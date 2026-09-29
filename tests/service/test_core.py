@@ -23,7 +23,7 @@ PACKAGED_INPUTS = Path(__file__).resolve().parent / "fixtures/inputs_csv"
 INPUTS = Path(os.environ.get("VREID_TEST_INPUTS_DIR") or PACKAGED_INPUTS).expanduser().resolve()
 # Выход боевого CLI, против которого сверяется адаптер сервиса. По умолчанию — актуальная
 # сдача: тогда тест доказывает, что HTTP-путь выдаёт ровно тот же топ-10 и то же решение
-# об отказе, что и конкурсный прогон, а не «похожий».
+# об отказе, что и пакетный прогон, а не «похожий».
 EXAMPLE_OUTPUT = Path(os.environ.get("VREID_EXAMPLE_OUTPUT") or ROOT / "submission").expanduser().resolve()
 RECIPE = dict(threshold=0.55, confidence="top1", dba=0, refuse_rate=None,
               kr=True, k1=6, k2=2, crop_pad=0.05, mask_plate=False,
@@ -241,7 +241,7 @@ def test_representative_cached_queries_match_received_output_on_full_750_gallery
     rankings = {row[0]: row[1:] for row in rows}
     candidates = {row["query_id"]: row for row in _csv(EXAMPLE_OUTPUT / "candidates.csv")}
     # Входные CSV в репозитории синтетические: настоящие - это разметка организаторов, и мы
-    # её не публикуем. Паритет адаптера и конкурсной сдачи проверяется только тогда, когда
+    # её не публикуем. Паритет адаптера и пакетного прогона проверяется только тогда, когда
     # рядом лежит НАСТОЯЩИЙ прогон по тем же входам. Иначе тест обязан пропуститься, а не
     # сравнивать выдачу с чужими идентификаторами и делать вид, что что-то проверил.
     if not set(query_ids) & set(rankings):
@@ -253,7 +253,7 @@ def test_representative_cached_queries_match_received_output_on_full_750_gallery
                     for accepted in (True, False))
     # Когда релиз собран с каскадом, порядок сдачи задают ДВЕ модели, и повторить его можно
     # только с векторами ре-ранкера — их predict.py кладёт рядом со сдачей. Смысл проверки от
-    # этого не меняется: адаптер обязан воспроизводить выдачу конкурсного прогона ровно.
+    # этого не меняется: адаптер обязан воспроизводить выдачу пакетного прогона ровно.
     cascade = bool(adapter.recipe().get("cascade")) if hasattr(adapter, "recipe")         else bool(json.loads((CORE / "release/recipe.json").read_text(encoding="utf-8")).get("cascade"))
     heavy = None
     if cascade:

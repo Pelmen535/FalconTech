@@ -67,7 +67,7 @@ def main() -> int:
     missing = []
     with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         # CSV внутри архива — тот же формат, что у организаторов: сервис разбирает его
-        # тем же кодом, что и конкурсный прогон, и подменять формат ради демо нельзя.
+        # тем же кодом, что и пакетный прогон, и подменять формат ради демо нельзя.
         rows = ["image_id,x,y,w,h"]
         for row in gallery:
             source = images / f"{row['image_id']}.jpg"

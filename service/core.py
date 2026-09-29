@@ -294,10 +294,10 @@ class CoreAdapter:
              heavy_query_vector=None, heavy_gallery_vectors=None) -> dict:
         """Rank against the entire gallery; a refusal still includes ten results.
 
-        Когда рецепт включает каскад, точный порядок конкурсной сдачи получается только с
+        Когда рецепт включает каскад, точный порядок пакетного прогона получается только с
         векторами ре-ранкера: их задают heavy_query_vector и heavy_gallery_vectors. Без них
         возвращается порядок ПЕРВОЙ ступени, и это видно в ответе полем ``stage`` — молча
-        отдавать другой порядок под видом конкурсного нельзя.
+        отдавать другой порядок под видом порядка пакетного прогона нельзя.
         """
         query = np.asarray(query_vector, dtype=np.float32)
         if query.shape != (self.dimension,):
