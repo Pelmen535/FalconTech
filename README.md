@@ -108,8 +108,13 @@ docker run --rm --gpus all --shm-size=2g \
   ```
   Модель и ответы те же, отличается скорость: импорт двадцати кадров и поиск занимают около
   12 секунд вместо долей секунды. Пакетный прогон на CPU — тот же `docker run` без `--gpus all`.
-* **Путь с кириллицей.** buildkit не собирает через `bake`, если путь к проекту не ASCII.
-  Помогает `COMPOSE_DOCKER_CLI_BUILD=0 docker compose build` или каталог с латинским именем.
+* **Путь с кириллицей.** `docker compose build` не собирает образы, если путь к проекту не
+  ASCII. Помогает каталог с латинским именем либо сборка образов напрямую и затем
+  `docker compose up -d` без `--build`:
+  ```bash
+  docker build -f Dockerfile.service -t vreid-api:1.1 .
+  docker build -f web/Dockerfile -t vreid-web:1.1 .
+  ```
 
 ---
 
