@@ -31,6 +31,7 @@ class OctoberAdapter:
             raise ValueError('Selected October manifest has no qualified '+str(device)+' backend')
         self.supports_ann=bool(self.spec['capabilities']['ann'])
         self.supports_explain=bool(self.spec['capabilities']['explain'])
+        self.supports_correspondence=bool(self.spec['capabilities'].get('correspondence',False))
         self.device=device
         self.references_only=self.spec.get('storage_contract')=='raw-pair-le-v2'
         identity=self.spec['identity']
@@ -67,8 +68,18 @@ class OctoberAdapter:
             'storage_vector_dimension':None if self.references_only else 512,
             'export_embedding_kind':self.spec['export_embedding_kind'],
             'supports_ann':self.supports_ann,'supports_explain':self.supports_explain,
+            'supports_correspondence':self.supports_correspondence,
             'raw_feature_cache_required':True,'gallery_style_routing':False,
             'worker_deadline_seconds':self.rpc.timeout,'resource_telemetry_max_age_seconds':self.spec['operations'].get('telemetry_max_age_seconds',.25),'qualification':self.spec['qualification']}
+
+    def correspondences(self,query_path,query_bbox,candidate_path,candidate_bbox):
+        from .correspondence import run_isolated
+        if not self.supports_correspondence:
+            raise ValueError('Experimental correspondence is unavailable')
+        if digest(self.manifest)!=self.manifest_sha256:
+            raise RuntimeError('October manifest changed; restart runtime explicitly')
+        with self._lock:
+            return run_isolated(self.root,self.spec,query_path,query_bbox,candidate_path,candidate_bbox)
 
     def _request(self,message,**kwargs):
         if digest(self.manifest)!=self.manifest_sha256:

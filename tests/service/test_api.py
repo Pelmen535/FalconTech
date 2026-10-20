@@ -318,3 +318,37 @@ def test_gallery_limit_and_pagination_are_enforced(tmp_path):
         assert [item["image_id"] for item in page["items"]] == ["b"]
         assert client.get("/v1/gallery", params={"offset": -1}).status_code == 422
         assert client.get("/v1/gallery", params={"limit": 501}).status_code == 422
+
+
+def test_experimental_correspondence_auth_validation_and_no_ranking(tmp_path):
+    core = FakeCore()
+    core.supports_correspondence = True
+    calls=[]
+    def match(q,qb,g,gb):
+        calls.append((tuple(qb),tuple(gb)))
+        return dict(experimental=True,warning='May be inaccurate',pairs=[],pair_count=0,
+                    status='no_unambiguous_matches',device='cpu')
+    core.correspondences=match
+    with TestClient(create_app(settings_at(tmp_path,api_key='secret'),core)) as client:
+        headers={'X-API-Key':'secret'}
+        assert add(client,headers=headers).status_code==201
+        fields={'bbox':'[1,2,20,10]','gallery_id':'car-0'}
+        def post(data=fields,auth=headers):
+            return client.post('/v1/correspondences',data=data,headers=auth,
+                               files={'image':('q.png',png(2),'image/png')})
+        assert post(auth={}).status_code==401
+        assert post({**fields,'bbox':'[-1,0,10,10]'}).status_code==422
+        assert post({**fields,'gallery_id':'missing'}).status_code==404
+        response=post(); assert response.status_code==200
+        assert response.json()['experimental'] and response.json()['pair_count']==0
+        assert calls==[((1,2,20,10),(1,2,20,10))]
+        assert len(core.encode_calls)==1 and core.rank_calls==[]
+        assert client.get('/health').json()['gallery_count']==1
+        from service.robust import ResourceUnavailableError
+        def failed(*args):raise ResourceUnavailableError('Insufficient RAM')
+        core.correspondences=failed
+        assert post().status_code==503
+        core.correspondences=match
+        assert post().status_code==200
+        core.supports_correspondence=False
+        assert post().status_code==501

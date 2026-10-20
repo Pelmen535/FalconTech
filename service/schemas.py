@@ -38,6 +38,7 @@ class ModelResponse(DocumentedResponse):
     refusal_profile: str | None = None
     supports_ann: bool | None = None
     supports_explain: bool | None = None
+    supports_correspondence: bool | None = None
 
 
 class IndexResponse(DocumentedResponse):
@@ -94,6 +95,28 @@ class SearchResponse(DocumentedResponse):
     notes: list[str]
     model_sha256: str
     recipe_sha256: str
+    seconds: float
+
+
+class CorrespondencePair(DocumentedResponse):
+    query_index: int
+    candidate_index: int
+    cosine: float
+    margin: float
+
+
+class CorrespondenceResponse(DocumentedResponse):
+    gallery_id: str
+    method: str
+    experimental: bool
+    warning: str
+    device: str
+    grid: list[int]
+    pairs: list[CorrespondencePair]
+    pair_count: int
+    status: str
+    image_sizes: list[list[int]]
+    correspondences_png_base64: str
     seconds: float
 
 

@@ -331,7 +331,7 @@ async function compare(item, query = lastQuery, decision = lastResult) {
   if (!query || !decision) throw new Error('Сначала выполните поиск.');
   const dialog = $('explain-dialog');
   $('explain-title').textContent = 'Сравнение кадров';
-  $('explain-legend').textContent = 'Исходные изображения в выбранных рамках. Соответствия деталей между кадрами не вычисляются.';
+  $('explain-legend').textContent = 'Исходные изображения в выбранных рамках. Экспериментальная карта похожих участков доступна отдельной кнопкой; она может ошибаться.';
   const content = $('explain-content');
   content.replaceChildren(element('p', 'muted', 'Загружаем кадры…'));
   if (!dialog.open) dialog.showModal();
@@ -353,12 +353,41 @@ async function compare(item, query = lastQuery, decision = lastResult) {
     '; уверенность ' + Number(decision.confidence ?? decision.ranking[0].cosine).toFixed(3) +
     ', порог ' + Number(decision.threshold).toFixed(3) + '.';
   content.append(note);
+  if (decision.supports_correspondence === true) {
+    const parts = element('button', 'ghost', 'Похожие участки · эксперимент');
+    parts.type = 'button';
+    parts.addEventListener('click', () => run(() => correspondences(item, query, decision)));
+    content.append(parts);
+  }
   if (decision.supports_explain !== false) {
     const diagnostics = element('button', 'ghost', 'Диагностика чувствительности областей');
     diagnostics.type = 'button';
     diagnostics.addEventListener('click', () => run(() => explain(item, query, decision)));
     content.append(diagnostics);
   }
+}
+
+async function correspondences(item, query = lastQuery, decision = lastResult) {
+  if (!query || !decision) throw new Error('Сначала выполните поиск.');
+  $('explain-title').textContent = 'Похожие участки · эксперимент';
+  $('explain-legend').textContent = 'Метод может ошибаться: одинаковые метки обозначают предположительно похожие участки, в том числе фон и разные детали. Это не доказательство идентичности автомобиля и не объяснение отказа.';
+  const content = $('explain-content');
+  content.replaceChildren(element('p', 'muted', 'Вычисляем соответствия на CPU. Это может занять десятки секунд…'));
+  const back = element('button', 'ghost', 'Вернуться к сравнению кадров');
+  back.type = 'button'; back.addEventListener('click', () => run(() => compare(item, query, decision)));
+  content.append(back);
+  const body = new FormData(); body.append('image', query.file);
+  body.append('bbox', JSON.stringify(query.bbox)); body.append('gallery_id', item.image_id);
+  const answer = await (await api('/v1/correspondences', { method: 'POST', body })).json();
+  $('explain-legend').textContent = answer.warning;
+  const figure = element('figure'); figure.style.gridColumn = '1 / -1';
+  const img = element('img'); img.src = 'data:image/png;base64,' + answer.correspondences_png_base64;
+  img.alt = 'Экспериментальные визуальные соответствия: запрос слева, кандидат справа';
+  figure.append(img, element('figcaption', '', 'Запрос слева · Кандидат № ' + item.rank + ' справа. Одинаковые номера связывают предложенную пару участков.'));
+  const note = element('p', 'summary', answer.pair_count
+    ? 'Предложено пар участков: ' + answer.pair_count + '. Косинус patch-признаков не является вероятностью совпадения автомобиля.'
+    : 'Не найдено однозначных пар участков при текущих фильтрах. Это не означает отсутствие автомобиля в галерее.');
+  content.replaceChildren(figure, note, back);
 }
 
 async function explain(item, query = lastQuery, decision = lastResult) {

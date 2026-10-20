@@ -30,7 +30,7 @@ from .uploads import gallery_archive, image_box
 from .observability import REQUEST_ID, event, operation
 from .schemas import (responses, HealthResponse, ModelResponse, IndexResponse,
                       GalleryResponse, GalleryItemResponse, ImportResponse,
-                      DemoResponse, SearchResponse, ExplainResponse)
+                      DemoResponse, SearchResponse, ExplainResponse, CorrespondenceResponse)
 
 STATIC = Path(__file__).parent / "static"
 BBOX_DESCRIPTION = 'Строка JSON [x,y,width,height] в пикселях исходного кадра; ширина и высота положительны.'
@@ -92,7 +92,8 @@ def create_app(settings=None, core=None):
             'Поле cosine показывает сходство; решение об отказе определяется отдельным confidence. '
             'При отказе top-10 сохраняется. Галерейные преобразования фиксированы. '
             'ANN ограничивает пул кандидатов, сохраняя полный галерейный контекст. '
-            'Объяснение показывает вклад областей в сходство пары, отдельно от ранжирования и отказа. '
+            'Диагностика чувствительности показывает эффекты закрытия областей, отдельно от ранжирования и отказа. '
+            'Экспериментальные визуальные соответствия могут связывать разные детали или фон; это не доказательство идентичности. '
             'Фактическая доступность функций указана в /v1/model. Порог заморожен в конфигурации модели.')
     app = FastAPI(title='Скованные одной цепью · ReID API', version=('1.4.0' if settings.backend == 'release' else
                             '2.0.0' if settings.backend == 'october' else 'robust-20261017'),
@@ -459,8 +460,33 @@ def create_app(settings=None, core=None):
                 'search_mode': result.get('search_mode','ann' if subset is not None and len(subset) >= 10 else 'exact'),
                 'shortlist_seconds': None if shortlist_seconds is None else round(shortlist_seconds, 5),
                 'notes': notes,
+                'supports_correspondence':getattr(core,'supports_correspondence',False),
                 'model_sha256':core.model_sha256, 'recipe_sha256':core.recipe_sha256,
                 'seconds':round(time.perf_counter() - started, 4)}
+
+    @app.post('/v1/correspondences', tags=['Поиск'],
+              summary='Экспериментальные визуальные соответствия участков',
+              responses=responses(CorrespondenceResponse, errors=[404,413,422,501,503]))
+    def correspondences(image: UploadFile = File(...), bbox: str = Form(..., description=BBOX_DESCRIPTION),
+                        gallery_id: str = Form(...)):
+        """CPU DINOv3 patch matching. Может ошибаться; не доказывает идентичность
+        и не объясняет confidence/refusal. Не меняет поиск и не сохраняет признаки.
+        """
+        matcher = getattr(core,'correspondences',None)
+        if matcher is None or not getattr(core,'supports_correspondence',False):
+            raise HTTPException(501,'Загруженное ядро не поддерживает экспериментальные соответствия.')
+        raw = image.file.read(settings.max_image_bytes + 1)
+        box = image_box(raw,bbox,settings)
+        started = time.perf_counter()
+        with processing():
+            try:
+                partner_bytes,partner_bbox = store.frame(gallery_id)
+            except KeyError:
+                raise HTTPException(404,'Наблюдение галереи не найдено.')
+            with as_file(raw,'query.img') as query_path, as_file(partner_bytes,'gallery.img') as partner_path:
+                with operation('diagnostic.correspondence'):
+                    result = matcher(query_path,box,partner_path,partner_bbox)
+        return {**result,'gallery_id':gallery_id,'seconds':round(time.perf_counter()-started,4)}
 
     @app.post('/v1/explain', tags=['Поиск'],
               summary='Диагностическая чувствительность сходства пары',

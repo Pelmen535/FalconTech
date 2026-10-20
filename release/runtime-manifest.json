@@ -334,7 +334,8 @@
     "exact": true,
     "ann": true,
     "explain": true,
-    "cpu": true
+    "cpu": true,
+    "correspondence": true
   },
   "qualification": {
     "status": "WINDOWS_CUDA_HOTFIX_VALIDATED_LINUX_GPU_NOT_REQUALIFIED",
@@ -417,8 +418,8 @@
       "SHA256": "067ee7daf2e1c1d5bce42047fb4a315afaacfc4b27b0616e416fc287dd0d133f"
     },
     "service/app.py": {
-      "bytes": 33701,
-      "SHA256": "6497c9ab208b723b612818d352404e2e850c80ea24fd86fd2d886e8b132d5e5a"
+      "bytes": 35824,
+      "SHA256": "c9c115394fde929e8f31bd8a7201977adc428ed5629cba4e0966680e0008155e"
     },
     "service/config.py": {
       "bytes": 2983,
@@ -529,8 +530,8 @@
       "SHA256": "de70dd224f0e84de074aed75af669cb2635cdfcd0a26a18787eb36862b53d2f1"
     },
     "service/october.py": {
-      "bytes": 11255,
-      "SHA256": "f04ca60c48fc018eaae48cced9c7a18a524ee0a102143e2a206aac346d517996"
+      "bytes": 11957,
+      "SHA256": "233b7fb844eb3a5775c51e2e4f766cf9c28a13a13fe6a5269b361d8e46168cbe"
     },
     "service/october_cli.py": {
       "bytes": 5875,
@@ -661,8 +662,8 @@
       "SHA256": "0f87e7f914670b4f40df5326a748e0498beac52d8498517e0c7dee73ae6ef248"
     },
     "service/schemas.py": {
-      "bytes": 4735,
-      "SHA256": "4de71394140cde7148719ae16aa8f25dd2820e7f90dfb34f0a767c058d774561"
+      "bytes": 5260,
+      "SHA256": "90bdf43d9e10456490f44daa438bd81b5f8783411ea50233f341ca88fb9703f5"
     },
     "service/single_local_entry.py": {
       "bytes": 414,
@@ -697,12 +698,12 @@
       "SHA256": "8f2dc440a39f9163cce059b572075887ef1144806b60891055175a134b6c5b41"
     },
     "service/static/app.js": {
-      "bytes": 31206,
-      "SHA256": "d9731df2bcae7d030f2a687dbc332b83e996c7905103d38b43eb2ab8dd466d20"
+      "bytes": 34098,
+      "SHA256": "196d95b542d8547d77de14916a52aaeafd85922f5fed7f08eb82dc81c045e440"
     },
     "service/static/index.html": {
-      "bytes": 9440,
-      "SHA256": "a69cc83c52fa3627d00da0c84e0f9f3019b1dbc4986ed9faec11792f7bee6158"
+      "bytes": 9438,
+      "SHA256": "c562ece18c9b09a3e349b61ec1a7a399208e0ca718cdb51fd74ec4d6fa6e1545"
     },
     "service/static/vendor/swagger-ui-bundle.js": {
       "bytes": 1303939,
@@ -1063,6 +1064,10 @@
     "service/refusal_guard.py": {
       "bytes": 956,
       "SHA256": "d9b63765ae3738dc52bd22e9c5b7a2c7384ee0ce810436e07339147d75e3a48f"
+    },
+    "service/correspondence.py": {
+      "bytes": 8792,
+      "SHA256": "8cef54f9582a071265985fe92b4ba2e3a6cd63694d2bfde0707b2affcbf353af"
     }
   },
   "cpu_environment": {
@@ -1129,5 +1134,22 @@
     "signed": true,
     "additive": false
   },
-  "comparison_view": "original selected bbox crops; independent sensitivity diagnostics only on explicit action; no claimed detail correspondences"
+  "comparison_view": "Original selected bbox crops; optional experimental patch correspondences with inaccuracy warning and separate sensitivity diagnostics.",
+  "correspondence_policy": {
+    "method": "experimental_dinov3_mutual_patch_similarity_v1",
+    "experimental": true,
+    "device": "cpu",
+    "grid": [
+      24,
+      24
+    ],
+    "max_pairs": 8,
+    "cosine_ge": 0.65,
+    "mutual_margin_ge": 0.02,
+    "min_patch_separation": 3,
+    "minimum_headroom_GiB": 3.0,
+    "timeout_seconds": 120,
+    "affects_search": false,
+    "warning": "May match background or different parts; does not prove identity or explain refusal."
+  }
 }

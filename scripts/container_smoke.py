@@ -85,6 +85,30 @@ def main():
                 assert model['confidence_scale'] == 'calibrated_acceptance_score'
                 with urllib.request.urlopen(base + '/docs', timeout=5) as response:
                     assert response.status == 200
+                assert model['supports_correspondence'] is True
+                assert '/v1/correspondences' in schema['paths']
+                def post_image(route, fields):
+                    boundary = 'falcon-smoke-boundary'
+                    body = bytearray()
+                    for key,value in fields.items():
+                        body.extend((f'--{boundary}\r\nContent-Disposition: form-data; name="{key}"\r\n\r\n{value}\r\n').encode())
+                    body.extend((f'--{boundary}\r\nContent-Disposition: form-data; name="image"; filename="query.jpg"\r\nContent-Type: image/jpeg\r\n\r\n').encode())
+                    body.extend((images / 'q00.jpg').read_bytes()); body.extend(f'\r\n--{boundary}--\r\n'.encode())
+                    request = urllib.request.Request(base+route, data=bytes(body), headers={
+                        'Content-Type': 'multipart/form-data; boundary='+boundary})
+                    with urllib.request.urlopen(request, timeout=180) as response:
+                        return json.load(response)
+                post_image('/v1/gallery/items', {'image_id':'smoke-partner', 'bbox':'[0,0,256,192]'})
+                parts = post_image('/v1/correspondences', {'gallery_id':'smoke-partner','bbox':'[0,0,256,192]'})
+                assert parts['experimental'] is True and parts['device']=='cpu'
+                assert parts['warning'] and 0 < parts['pair_count'] <= 8
+                import base64
+                from io import BytesIO
+                with Image.open(BytesIO(base64.b64decode(parts['correspondences_png_base64']))) as picture:
+                    picture.load(); assert picture.width==1200 and picture.height<=520
+                with urllib.request.urlopen(base+'/health', timeout=5) as response:
+                    assert json.load(response)['gallery_count']==1
+
             finally:
                 server.terminate()
                 try:
