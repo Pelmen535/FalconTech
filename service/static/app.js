@@ -329,7 +329,7 @@ async function explain(item) {
   const content = $('explain-content');
   content.replaceChildren();
   $('explain-legend').textContent = answer.method === 'independent_occlusion_actual_october_raw_similarity'
-    ? 'Каждую область закрываем серым независимо. Зелёный: сходство снизилось; красный: выросло. Сетка 4 × 4. Карта показывает чувствительность сходства пары, а не вероятность совпадения.'
+    ? 'Каждую область закрываем серым независимо. Зелёный: сходство снизилось; красный: выросло. Сетка ' + answer.sides.query.grid.join(' × ') + '. Карта показывает чувствительность сходства пары, а не вероятность совпадения.'
     : 'Зелёный — вклад выше среднего по областям, красный — ниже среднего. Карта показывает сходство пары.';
   const titles = { query: 'Запрос', candidate: 'Кандидат № ' + item.rank };
   for (const name of ['query', 'candidate']) {

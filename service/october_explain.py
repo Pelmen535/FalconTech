@@ -13,7 +13,7 @@ def explain_pair(runtime,message):
     if message['gallery_signature']!=runtime.gallery_signature:raise ValueError('Gallery must be registered before explanation')
     ids=math.gallery['keys'].tolist()
     if message['gallery_id'] not in ids:raise ValueError('Explanation observation not registered')
-    index=ids.index(message['gallery_id']);grid=4
+    index=ids.index(message['gallery_id']);grid=8 if runtime.device=='cuda' else 4
     records=[{'key':'__explain_query__','path':message['query_path'],'bbox':message['query_bbox']},
              {'key':message['gallery_id'],'path':message['candidate_path'],'bbox':message['candidate_bbox']}]
     frame_keys={str(k).split('#')[0] for k in ids}

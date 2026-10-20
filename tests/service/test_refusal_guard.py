@@ -1,4 +1,5 @@
 """Safety and representation regressions; quality is measured on saved captures."""
+import pytest
 import numpy as np
 from PIL import Image
 from service.refusal_guard import contradictory_rescue
@@ -26,10 +27,11 @@ def test_final_guard_preserves_earlier_accepts_and_requires_all_evidence():
             {k:v[i:i+1] for k,v in current.items()},score[i:i+1])
         assert single[0]==actual[i]
 
-def test_occlusion_masks_one_region_without_accumulating_or_changing_source():
+@pytest.mark.parametrize('grid',[4,8])
+def test_occlusion_masks_one_region_without_accumulating_or_changing_source(grid):
     pixels=np.full((13,19,3),230,dtype=np.uint8);source=Image.fromarray(pixels)
-    masks=list(occlusion_regions(source,4));changed=np.zeros((13,19),dtype=int)
-    assert len(masks)==16
+    masks=list(occlusion_regions(source,grid));changed=np.zeros((13,19),dtype=int)
+    assert len(masks)==grid*grid
     for masked in masks:
         array=np.asarray(masked)
         assert set(np.unique(array))=={127,230}

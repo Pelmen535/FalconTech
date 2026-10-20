@@ -545,8 +545,8 @@
       "SHA256": "d04c53f2cc223935411c1b2ecb02cd49e61f4d57f6e522c0fd365c0fb25d32b4"
     },
     "service/october_explain.py": {
-      "bytes": 5239,
-      "SHA256": "286cf6dc2598b605d0477bf24db2ccf156c9c58089db70135f40913c0e73bb0e"
+      "bytes": 5272,
+      "SHA256": "5275756dc339aec383c80696533cdab9fc45bc3c34d359eb937f6ca6b174f4c8"
     },
     "service/october_features.py": {
       "bytes": 9134,
@@ -697,8 +697,8 @@
       "SHA256": "8f2dc440a39f9163cce059b572075887ef1144806b60891055175a134b6c5b41"
     },
     "service/static/app.js": {
-      "bytes": 27518,
-      "SHA256": "0456b439ed0257adf6960a7e24a8cf0809fb5cc3018b9f3af415cce2f3e2187c"
+      "bytes": 27556,
+      "SHA256": "2d75686f0b1dc2fc13aefe2198b84ccc4d242d0b679d4d67286b945ebe936476"
     },
     "service/static/index.html": {
       "bytes": 9440,
@@ -1114,5 +1114,19 @@
     "source_absent_ge": 0.8,
     "road_probability_lt": 0.8,
     "raw_pair_cosine_lt": 0.45
+  },
+  "explanation_policy": {
+    "method": "independent_occlusion",
+    "cuda_grid": [
+      8,
+      8
+    ],
+    "cpu_grid": [
+      4,
+      4
+    ],
+    "baseline": "RGB127",
+    "signed": true,
+    "additive": false
   }
 }
