@@ -263,10 +263,10 @@ function card(item, target, options = {}) {
   id.title = item.image_id;
   body.append(id);
 
-  if (options.explainable) {
-    const button = element('button', '', 'Почему похоже');
+  if (options.comparable) {
+    const button = element('button', '', 'Сравнить кадры');
     button.type = 'button';
-    button.addEventListener('click', () => run(() => explain(item)));
+    button.addEventListener('click', () => run(() => compare(item)));
     body.append(button);
   }
   if (options.deletable) {
@@ -312,24 +312,73 @@ async function loadGallery() {
 }
 
 // ----------------------------------------------------------------- объяснение
-async function explain(item) {
-  if (!lastQuery) throw new Error('Сначала выполните поиск: объяснение считается для его запроса.');
-  const decision = lastResult;
+async function croppedQueryImage(query) {
+  const url = URL.createObjectURL(query.file);
+  try {
+    const source = new Image(); source.src = url; await source.decode();
+    const [x, y, width, height] = query.bbox;
+    const scale = Math.min(1, 960 / Math.max(width, height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round(width * scale));
+    canvas.height = Math.max(1, Math.round(height * scale));
+    canvas.getContext('2d').drawImage(source, x, y, width, height, 0, 0, canvas.width, canvas.height);
+    const image = new Image(); image.src = canvas.toDataURL('image/png'); await image.decode();
+    return image;
+  } finally { URL.revokeObjectURL(url); }
+}
+
+async function compare(item, query = lastQuery, decision = lastResult) {
+  if (!query || !decision) throw new Error('Сначала выполните поиск.');
   const dialog = $('explain-dialog');
-  $('explain-title').textContent = 'Почему похоже';
+  $('explain-title').textContent = 'Сравнение кадров';
+  $('explain-legend').textContent = 'Исходные изображения в выбранных рамках. Соответствия деталей между кадрами не вычисляются.';
+  const content = $('explain-content');
+  content.replaceChildren(element('p', 'muted', 'Загружаем кадры…'));
+  if (!dialog.open) dialog.showModal();
+  const queryImage = await croppedQueryImage(query);
+  queryImage.alt = 'Запрос: исходный кроп без наложения карты';
+  const candidateImage = new Image(); candidateImage.alt = 'Кандидат: исходный кроп без наложения карты';
+  const figures = [];
+  for (const [image, title] of [[queryImage, 'Запрос'], [candidateImage, 'Кандидат № ' + item.rank]]) {
+    const figure = element('figure');
+    figure.append(image, element('figcaption', '', title)); figures.push(figure);
+  }
+  content.replaceChildren(...figures);
+  await attachImage(candidateImage, item.thumbnail_url || item.image_url + '?crop=true');
+  if (!candidateImage.src) throw new Error('Не удалось загрузить кадр кандидата.');
+  await candidateImage.decode();
+  const note = element('p', 'summary');
+  note.textContent = 'Сходство выбранной пары: ' + Number(item.cosine).toFixed(3) +
+    '. Решение поиска для кандидата № 1: ' + (decision.accepted ? 'совпадение принято' : 'совпадение отклонено') +
+    '; уверенность ' + Number(decision.confidence ?? decision.ranking[0].cosine).toFixed(3) +
+    ', порог ' + Number(decision.threshold).toFixed(3) + '.';
+  content.append(note);
+  if (decision.supports_explain !== false) {
+    const diagnostics = element('button', 'ghost', 'Диагностика чувствительности областей');
+    diagnostics.type = 'button';
+    diagnostics.addEventListener('click', () => run(() => explain(item, query, decision)));
+    content.append(diagnostics);
+  }
+}
+
+async function explain(item, query = lastQuery, decision = lastResult) {
+  if (!query) throw new Error('Сначала выполните поиск: объяснение считается для его запроса.');
+  const dialog = $('explain-dialog');
+  $('explain-title').textContent = 'Диагностика чувствительности';
+  $('explain-legend').textContent = 'Области кадров оцениваются независимо. Это не карта соответствий деталей.';
   $('explain-content').replaceChildren(element('p', 'muted', 'Строим карту сходства…'));
   if (!dialog.open) dialog.showModal();
 
   const body = new FormData();
-  body.append('image', lastQuery.file);
-  body.append('bbox', JSON.stringify(lastQuery.bbox));
+  body.append('image', query.file);
+  body.append('bbox', JSON.stringify(query.bbox));
   body.append('gallery_id', item.image_id);
   const answer = await (await api('/v1/explain', { method: 'POST', body })).json();
 
   const content = $('explain-content');
   content.replaceChildren();
   $('explain-legend').textContent = answer.method === 'independent_occlusion_actual_october_raw_similarity'
-    ? 'Каждую область закрываем серым независимо. Зелёный: сходство снизилось; красный: выросло. Сетка ' + answer.sides.query.grid.join(' × ') + '. Карта показывает чувствительность сходства пары, а не вероятность совпадения.'
+    ? 'Каждую область закрываем серым независимо. Зелёный: сходство снизилось; красный: выросло. Сетка ' + answer.sides.query.grid.join(' × ') + '. Области двух кадров оцениваются независимо; одинаковый цвет не означает соответствие деталей. Это не объяснение всей цепочки решения.'
     : 'Зелёный — вклад выше среднего по областям, красный — ниже среднего. Карта показывает сходство пары.';
   const titles = { query: 'Запрос', candidate: 'Кандидат № ' + item.rank };
   for (const name of ['query', 'candidate']) {
@@ -345,9 +394,12 @@ async function explain(item) {
   }
   const note = element('p', 'summary');
   note.textContent = answer.threshold_scale === 'calibrated_acceptance_score'
-    ? 'Сходство пары: ' + answer.cosine.toFixed(3) + '. Решение поиска: ' + (decision.accepted ? 'совпадение принято' : 'совпадение отклонено') + '; уверенность ' + decision.confidence.toFixed(3) + ', порог ' + decision.threshold.toFixed(3) + '. Карта не объясняет решение об отказе.'
+    ? 'Сходство пары: ' + answer.cosine.toFixed(3) + '. Решение поиска для кандидата № 1: ' + (decision.accepted ? 'совпадение принято' : 'совпадение отклонено') + '; уверенность ' + decision.confidence.toFixed(3) + ', порог ' + decision.threshold.toFixed(3) + '. Карта не объясняет решение об отказе.'
     : 'Сходство ' + answer.cosine.toFixed(3) + ' при пороге ' + answer.threshold.toFixed(2) + '.';
   content.append(note);
+  const back = element('button', 'ghost', 'Вернуться к сравнению кадров');
+  back.type = 'button'; back.addEventListener('click', () => run(() => compare(item, query, decision)));
+  content.append(back);
 }
 
 // ----------------------------------------------------------------- выгрузка
@@ -480,7 +532,7 @@ $('search-form').addEventListener('submit', event => {
     for (const note of answer.notes || []) info.append(element('small', '', note));
     info.className = 'result-status' + (answer.accepted ? '' : ' refused');
 
-      answer.ranking.forEach(item => card(item, $('results'), { explainable: answer.supports_explain !== false, accepted: answer.accepted }));
+      answer.ranking.forEach(item => card(item, $('results'), { comparable: true, accepted: answer.accepted }));
     message('');
     await health();
   });

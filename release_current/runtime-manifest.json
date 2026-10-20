@@ -417,8 +417,8 @@
       "SHA256": "067ee7daf2e1c1d5bce42047fb4a315afaacfc4b27b0616e416fc287dd0d133f"
     },
     "service/app.py": {
-      "bytes": 33682,
-      "SHA256": "1cb5c808fb3ade8c72bc5472f1b292b71a9e989bb55ee9b6cd14941d9c72b037"
+      "bytes": 33701,
+      "SHA256": "6497c9ab208b723b612818d352404e2e850c80ea24fd86fd2d886e8b132d5e5a"
     },
     "service/config.py": {
       "bytes": 2983,
@@ -697,12 +697,12 @@
       "SHA256": "8f2dc440a39f9163cce059b572075887ef1144806b60891055175a134b6c5b41"
     },
     "service/static/app.js": {
-      "bytes": 27556,
-      "SHA256": "2d75686f0b1dc2fc13aefe2198b84ccc4d242d0b679d4d67286b945ebe936476"
+      "bytes": 31206,
+      "SHA256": "d9731df2bcae7d030f2a687dbc332b83e996c7905103d38b43eb2ab8dd466d20"
     },
     "service/static/index.html": {
       "bytes": 9440,
-      "SHA256": "e3a2d4d7a749ba156f26e0ff00388387e56c230dd4f9bd1997458798c5e1ea16"
+      "SHA256": "a69cc83c52fa3627d00da0c84e0f9f3019b1dbc4986ed9faec11792f7bee6158"
     },
     "service/static/vendor/swagger-ui-bundle.js": {
       "bytes": 1303939,
@@ -1128,5 +1128,6 @@
     "baseline": "RGB127",
     "signed": true,
     "additive": false
-  }
+  },
+  "comparison_view": "original selected bbox crops; independent sensitivity diagnostics only on explicit action; no claimed detail correspondences"
 }

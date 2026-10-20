@@ -463,15 +463,15 @@ def create_app(settings=None, core=None):
                 'seconds':round(time.perf_counter() - started, 4)}
 
     @app.post('/v1/explain', tags=['Поиск'],
-              summary='Чем именно похожи запрос и кандидат',
+              summary='Диагностическая чувствительность сходства пары',
               responses=responses(ExplainResponse, errors=[404,413,422,501,503]))
     def explain(image: UploadFile = File(...), bbox: str = Form(..., description=BBOX_DESCRIPTION),
                 gallery_id: str = Form(...), regions: int = Query(3, ge=0, le=16)):
         """Объяснение сходства пары через рабочую модель.
 
-        Возвращает PNG для обеих сторон, метод и измеренную ошибку реконструкции.
-        October использует последовательное восстановление областей при фиксированной
-        галерее. Карта относится к сходству, отдельно от ранжирования и отказа.
+        October возвращает независимые эффекты закрытия областей при фиксированной
+        галерее; они неаддитивны и не являются соответствиями деталей двух кадров.
+        Карта относится только к сходству, отдельно от ранжирования и отказа.
         """
         explainer = getattr(core, 'explain', None)
         if explainer is None:
