@@ -83,6 +83,7 @@ class RankedItemResponse(DocumentedResponse):
 
 
 class SearchResponse(DocumentedResponse):
+    supports_correspondence: bool | None = None
     accepted: bool
     confidence: float
     threshold: float

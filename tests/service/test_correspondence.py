@@ -36,7 +36,7 @@ def test_renderer_bounds_extreme_aspect_ratios_and_empty_matches():
 def test_resource_rejection_and_timeout_are_retryable_and_child_has_no_cuda(tmp_path,monkeypatch):
     import service.correspondence as module
     policy = {'minimum_headroom_GiB':3,'timeout_seconds':120}
-    spec = {'correspondence_policy':policy,'cpu_environment':{'checkpoint':'weight'},
+    spec = {'operations':{'start_C_disk_free_GiB':5},'correspondence_policy':policy,'cpu_environment':{'checkpoint':'weight'},
             'files':{'weight':{'bytes':1,'SHA256':'a'*64}}}
     monkeypatch.setattr(module,'memory_headroom',lambda:2)
     with pytest.raises(ResourceUnavailableError):
@@ -52,3 +52,13 @@ def test_resource_rejection_and_timeout_are_retryable_and_child_has_no_cuda(tmp_
     monkeypatch.setattr(module.subprocess,'run',lambda *a,**k:subprocess.CompletedProcess(a,1,stderr=b'error'))
     with pytest.raises(ResourceUnavailableError):
         run_isolated(tmp_path,spec,'q',[0,0,1,1],'g',None)
+
+
+def test_map_honors_existing_write_disk_reserve(tmp_path,monkeypatch):
+    import service.disk_reserve as disk
+    def reject(self):
+        raise disk.DiskReserveError({'reasons':['temporary filesystem below reserve']})
+    monkeypatch.setattr(disk.WriteDiskReserve,'require',reject)
+    with pytest.raises(ResourceUnavailableError,match='below reserve'):
+        run_isolated(tmp_path,{'correspondence_policy':{},
+            'operations':{'start_C_disk_free_GiB':5}},'q',None,'g',None)

@@ -67,6 +67,12 @@ def run_isolated(root, spec, query_path, query_bbox, candidate_path, candidate_b
     """One bounded CPU process per explicit request; no resident extra model."""
     from .robust import ResourceUnavailableError
     policy = spec['correspondence_policy']
+    from .disk_reserve import WriteDiskReserve, DiskReserveError
+    try:
+        WriteDiskReserve({'temporary':tempfile.gettempdir()},
+                         spec['operations']['start_C_disk_free_GiB']).require()
+    except DiskReserveError as exc:
+        raise ResourceUnavailableError(str(exc)) from exc
     if memory_headroom() < policy['minimum_headroom_GiB']:
         raise ResourceUnavailableError('Для экспериментальной карты недостаточно свободной RAM/commit. Повторите позже.')
     with tempfile.TemporaryDirectory(prefix='falcon-parts-') as temporary:
