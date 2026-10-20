@@ -5,7 +5,7 @@
   "baseline_manifest_SHA256": "a4294b93acd9ddce36c06b03c045aca9667946e879d5ac92a6e61b225d65d220",
   "identity": {
     "model_sha256": "c19438348fa21d9b5aa36e6d7574c455655ec87c74132ce9fc9fb7d264b47a10",
-    "recipe_sha256": "40a490c0d056f5403891652e19ca844ba82b24c02e237fb0de0ab3aba0579be2",
+    "recipe_sha256": "46adf9106be974199c2402dd57bb2227c32257330852c1b6e673eae6e0c9f756",
     "embedding_sha256": "46787c87d64f449ce77cea9a13b763cc1ebfe9c2d26ac277bf238ed2acaaf1eb"
   },
   "dimension": 512,
@@ -1061,8 +1061,8 @@
       "SHA256": "5205b9d7b3905af9747fc5daccc3a51a292c72eb3950676861498e95d2eab31f"
     },
     "service/refusal_guard.py": {
-      "bytes": 888,
-      "SHA256": "65f1ff36dea0824a132f2b8acb3934b329e2ce482ac95b93aac7eb11a062c9fc"
+      "bytes": 956,
+      "SHA256": "d9b63765ae3738dc52bd22e9c5b7a2c7384ee0ce810436e07339147d75e3a48f"
     }
   },
   "cpu_environment": {
@@ -1109,10 +1109,10 @@
     "cpu": "a31c07ce4b84edc4a15cda1a11d0fd0fb0587dedaa1c026717968811aa55f1d7"
   },
   "decision_policy": {
-    "name": "contradictory-road-rescue-v1",
-    "scope": "Final road rescue only",
+    "name": "source-contradictory-road-rescue-v2",
+    "scope": "Final road rescue only; existing source/day query route",
     "source_absent_ge": 0.8,
-    "road_probability_lt": 0.8,
+    "road_probability_lt": 0.9,
     "raw_pair_cosine_lt": 0.45
   },
   "explanation_policy": {

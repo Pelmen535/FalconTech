@@ -1,8 +1,8 @@
 {
   "rule": {
-    "scope": "Final road rescue only",
+    "scope": "Final road rescue only, source/day query route",
     "source_absent_ge": 0.8,
-    "road_probability_lt": 0.8,
+    "road_probability_lt": 0.9,
     "raw_pair_cosine_lt": 0.45
   },
   "confirmation": [
@@ -34,7 +34,7 @@
       },
       "removed_false_accepts": 0,
       "lost_correct_accepts": 0,
-      "seconds": 8.66476109996438
+      "seconds": 8.740006499981973
     },
     {
       "context": "contest-full/removed",
@@ -54,17 +54,17 @@
       },
       "new": {
         "TP": 414,
-        "FP": 102,
+        "FP": 99,
         "FN": 45,
-        "TN": 687,
+        "TN": 690,
         "Recall": 90.19607843137256,
-        "TNR": 91.11405835543766,
-        "Precision": 80.23255813953489,
-        "F1": 84.92307692307692
+        "TNR": 91.51193633952255,
+        "Precision": 80.70175438596492,
+        "F1": 85.18518518518519
       },
-      "removed_false_accepts": 11,
+      "removed_false_accepts": 14,
       "lost_correct_accepts": 1,
-      "seconds": 6.882534700038377
+      "seconds": 6.860673000046518
     },
     {
       "context": "VRIC661-full/full",
@@ -94,7 +94,7 @@
       },
       "removed_false_accepts": 0,
       "lost_correct_accepts": 4,
-      "seconds": 5.8804665000061505
+      "seconds": 5.229228700045496
     },
     {
       "context": "VRIC661-full/removed",
@@ -113,19 +113,25 @@
         "F1": 35.388739946380696
       },
       "new": {
-        "TP": 63,
-        "FP": 71,
-        "FN": 166,
-        "TN": 373,
-        "Recall": 27.510917030567686,
-        "TNR": 86.3425925925926,
-        "Precision": 47.014925373134325,
-        "F1": 34.710743801652896
+        "TP": 62,
+        "FP": 70,
+        "FN": 167,
+        "TN": 374,
+        "Recall": 27.074235807860262,
+        "TNR": 86.57407407407408,
+        "Precision": 46.96969696969697,
+        "F1": 34.34903047091413
       },
-      "removed_false_accepts": 7,
-      "lost_correct_accepts": 3,
-      "seconds": 4.008214000030421
+      "removed_false_accepts": 8,
+      "lost_correct_accepts": 4,
+      "seconds": 3.9185154999722727
     }
   ],
-  "scope": "Historical Windows saved encoder captures; no new Linux GPU qualification; correlated episodes"
+  "scope": "Historical already-exposed Windows saved encoder captures; no new Linux GPU qualification; correlated episodes; not independent holdout",
+  "bbox_test": {
+    "variants": "base, size +/-5%, center shift +/-2.5% width/height",
+    "carsharing_declined": 7,
+    "Kamaz_accepted": 7,
+    "total_each": 7
+  }
 }

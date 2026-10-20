@@ -9,13 +9,15 @@ from io import BytesIO
 
 def test_final_guard_preserves_earlier_accepts_and_requires_all_evidence():
     # Same weak pair with separately stronger evidence must remain eligible.
-    result={'legacy_absent_probability':np.array([.85,.85,.79,.85,.85,.85]),
+    result={'query_night':np.zeros(6,dtype=bool),'legacy_absent_probability':np.array([.85,.85,.79,.85,.85,.85]),
             'top':np.zeros(6,dtype=int),'raw':np.array([[.43],[.43],[.43],[.43],[.46],[.43]])}
     previous={'accepted':np.array([False,True,False,False,False,False])}
     current={'accepted':np.array([True,True,True,True,True,False])}
-    score=np.array([.75,.75,.75,.81,.75,.75])
+    score=np.array([.87,.75,.75,.91,.75,.75])
     actual=contradictory_rescue(result,previous,current,score)
     np.testing.assert_array_equal(actual,[True,False,False,False,False,False])
+    night_result={**result,'query_night':np.ones(6,dtype=bool)}
+    assert not contradictory_rescue(night_result,previous,current,score).any()
     permutation=np.array([5,2,0,4,3,1])
     reordered=contradictory_rescue({k:v[permutation] for k,v in result.items()},
         {k:v[permutation] for k,v in previous.items()},
