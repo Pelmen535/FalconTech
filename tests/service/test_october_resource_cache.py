@@ -5,7 +5,7 @@ import service.october_resources as module
 
 
 def gate(monkeypatch):
-    clock=[0.];measurements=[];value={'RAM_free_GiB':10.,'C_free_GiB':10.,'commit_free_GiB':10.,'GPU_free_GiB':10.,'CPU_percent':10.}
+    clock=[0.];measurements=[];value={'RAM_free_GiB':10.,'C_free_GiB':10.,'commit_free_GiB':10.,'memory_headroom_GiB':10.,'GPU_free_GiB':10.,'CPU_percent':10.}
     obj=ResourceGate.__new__(ResourceGate);obj.max_age=.25;obj._last_snapshot=None;obj._last_measured=-float('inf');obj.device='cuda'
     obj.limits={'start_C_disk_free_GiB':5,'start_RAM_free_GiB':4.35,'start_commit_free_GiB':7,'start_GPU_free_GiB':7}
     obj.provider=SimpleNamespace(start_reasons=lambda v,k:[])

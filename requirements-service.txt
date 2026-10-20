@@ -21,3 +21,6 @@ psycopg==3.2.12
 psycopg-binary==3.2.12
 # Приближённый поиск для больших галерей (ТЗ §10).
 faiss-cpu==1.9.0.post1
+
+# Worker lifecycle and resource telemetry; same pin as qualified Linux runtime.
+psutil==7.2.2
