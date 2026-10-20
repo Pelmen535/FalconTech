@@ -46,31 +46,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: место для CUDA-образа
+        run: |
+          df -h /
+          for directory in /usr/local/lib/android /opt/ghc /usr/share/dotnet /usr/local/share/boost /opt/hostedtoolcache/CodeQL; do
+            if [ -d "$directory" ] && [ ! -L "$directory" ]; then
+              sudo rm -rf -- "$directory"
+            fi
+          done
+          docker image prune --all --force
+          df -h /
       # Веса не лежат в репозитории: они отдаются как файлы GitHub Release, потому что
       # бесплатной квоты Git LFS (1 ГБ трафика в месяц) хватило бы на одно клонирование.
       # Этот шаг заодно проверяет, что скрипт скачивания рабочий и суммы сходятся.
       - name: веса из релиза
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
-          python - <<'PY'
-          import json, os, shutil, subprocess, tempfile
-          from pathlib import Path
-          from scripts.fetch_weights import records
-          rows = records(Path.cwd())
-          with tempfile.TemporaryDirectory() as directory:
-              subprocess.run([
-                  'gh', 'release', 'download', 'v2.0',
-                  '--repo', os.environ['GITHUB_REPOSITORY'],
-                  '--dir', directory,
-              ], check=True)
-              for row in rows:
-                  target = Path(row['path'])
-                  target.parent.mkdir(parents=True, exist_ok=True)
-                  if target.exists():
-                      raise RuntimeError('Unexpected existing weight: ' + str(target))
-                  shutil.move(Path(directory) / target.name, target)
-          PY
+          python scripts/fetch_weights.py
           python scripts/fetch_weights.py --verify-only
       # Образ собирается ровно той командой, что указана в README. Внутри сборки
       # работают pip check, инвентаризация весов против лимита 2 ГБ и разбор рецепта,
@@ -79,6 +70,8 @@ jobs:
         run: docker build -t falcontech:2.0 .
       - name: что реально установлено в образе
         run: docker run --rm --entrypoint python falcontech:2.0 /app/scripts/image_report.py
+      - name: офлайн CLI и HTTP без GPU
+        run: docker run --rm --network none --entrypoint python falcontech:2.0 /app/scripts/container_smoke.py
       # Образ веб-сервиса собирается с аргументами по умолчанию, как у docker compose up --build
       # на чистой машине: его pip check ловит расхождения версий в requirements-service.txt.
       - name: docker build (веб-сервис)

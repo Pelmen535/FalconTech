@@ -1,36 +1,31 @@
-# -*- coding: utf-8 -*-
-"""Что реально стоит внутри собранного образа. Запускать ВНУТРИ контейнера:
-
-    docker run --rm --entrypoint python vreid-release /app/scripts/image_report.py
-
-Нужен потому, что pip дважды отчитался об установке typing-extensions 4.12.1, скачав 4.16.0.
-Верить логу сборки нельзя — надо спросить у самого образа. Заодно это и есть артефакт
-для ответа 39: точные версии того, что поедет на стенд.
-"""
-from __future__ import annotations
-
+"""Print installed packages and verify the v2.0 runtime inside its container."""
+from pathlib import Path
+import importlib.metadata
 import json
 import sys
-from pathlib import Path
 
-print("[image] python", sys.version.split()[0])
-for name in ("torch", "torchvision", "timm", "numpy", "PIL", "typing_extensions",
-             "huggingface_hub", "safetensors", "yaml", "tqdm"):
-    try:
-        m = __import__(name)
-        print(f"[image] {name:<18} {getattr(m, '__version__', '?')}")
-    except Exception as e:
-        print(f"[image] {name:<18} НЕ ИМПОРТИРУЕТСЯ: {type(e).__name__}: {e}")
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 
-lock = Path("/app/installed-packages.txt")
-print(f"\n[image] pip freeze --all ({'есть' if lock.exists() else 'НЕТ ФАЙЛА'}):")
-if lock.exists():
-    print(lock.read_text(encoding="utf-8").strip())
 
-try:
-    sys.path.insert(0, "/app")
-    from vreid.artifacts import weight_inventory
-    inv = weight_inventory("/app/release")
-    print(f"\n[image] веса: {json.dumps(inv, ensure_ascii=False)}")
-except Exception as e:
-    print(f"\n[image] инвентарь весов не собрался: {type(e).__name__}: {e}")
+def main():
+    from service.october_manifest import digest, load_manifest
+    path = ROOT / 'release_current/runtime-manifest.json'
+    spec = load_manifest(path, ROOT)
+    report = {
+        'status': 'PASS_ARTIFACTS_AND_ENVIRONMENT',
+        'python': sys.version.split()[0],
+        'runtime_manifest_SHA256': digest(path),
+        'model_identity': spec['identity'],
+        'weight_files': len(spec['weight_files']),
+        'weights_bytes': spec['weights_bytes'],
+        'packages': {name: importlib.metadata.version(name)
+                     for name in sorted(spec['expected_versions'])},
+        'scope': 'Dependency and artifact verification; no inference or speed measurement',
+    }
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())
