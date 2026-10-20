@@ -1,129 +1,63 @@
-# Происхождение внешних весов и данных
+# Внешние источники и происхождение v2.0
 
-Для всех внешних весов и данных ниже указаны однозначный URL, автор и версия или тег;
-приватных и недоступных источников нет. Версии пакетов закреплены точно, подвижных тегов нет.
+Этот список относится к October A / `vric-road-verifier-v1/current-query-v1`.
+Историю DINOv2 v1.4 можно посмотреть в [теге v1.4](https://github.com/Pelmen535/FalconTech/tree/v1.4).
 
-## 1. Предобученные веса, от которых шло дообучение
+## Модели и данные
 
-| | |
-|---|---|
-| Модель | DINOv2 ViT-B/14 (distilled), вход 518, патч 14 |
-| Идентификатор в timm | `vit_base_patch14_dinov2.lvd142m` |
-| Источник весов | Hugging Face Hub, репозиторий `timm/vit_base_patch14_dinov2.lvd142m` |
-| URL | https://huggingface.co/timm/vit_base_patch14_dinov2.lvd142m |
-| Автор модели | Meta AI Research (FAIR) |
-| Публикация | Oquab et al., «DINOv2: Learning Robust Visual Features without Supervision», arXiv:2304.07193 |
-| Обучающий набор | LVD-142M (курированный набор Meta, без разметки) |
-| Лицензия | Apache 2.0 (DINOv2 переведён с CC BY-NC на Apache 2.0 в августе 2023) |
-| Как получено | `timm.create_model(..., pretrained=True)` при первом обучении; в релизе `pretrained=False` |
-
-Вторая модель — та же линейка, `vit_large_patch14_dinov2.lvd142m`,
-https://huggingface.co/timm/vit_large_patch14_dinov2.lvd142m, тот же автор и лицензия.
-Она нужна только на обучении — как учитель дистилляции (вход 336, первые 8 блоков
-заморожены); на инференсе не используется и в релиз не входит. Второй учитель v1.4 — наш же
-релиз v1.3, дообученный из тех же весов `vit_base_patch14_dinov2.lvd142m`; новых внешних весов
-он не добавляет.
-
-Каскад с ре-ранкером ViT-L (`vreid/cascade.py`) реализован, но с v1.1 выключен
-(`"cascade": false` в `release/recipe.json`); его веса `reranker.pt` есть только в GitHub-релизе
-v1.0. Если каскад включить, файл войдёт в общий лимит 2 ГБ на сумму весов всех моделей.
-
-**Важно для проверки лимита 2 ГБ.** В релизном образе один файл весов:
-
-| файл | что это | размер |
-|---|---|---:|
-| `release/model.pt` | DINOv2 ViT-B/14, вход 392, fp16; её вектор идёт в `embeddings.npy`, её путь замеряется | 172 МБ (164 МиБ) |
-| | **сумма против лимита 2 000 000 000 байт** | **172 МБ** |
-
-Сумма проверяется не на словах: `vreid.artifacts.weight_inventory` считает её при сборке
-образа и падает при превышении, а `scripts/export_release.py` проверяет то же самое ещё на
-экспорте — чтобы узнать о превышении до сборки, а не после.
-
-Файл самодостаточен: архитектура собирается timm с `pretrained=False`, из сети в
-рантайме ничего не тянется (`HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1`). Промежуточные
-чекпойнты и веса учителей в образ не попадают.
-
-## 2. Библиотеки и образы
-
-Все версии закреплены точно, ни одной ссылки на подвижный тег. Полный список
-пакетов, фактически установленных в образ, снимается изнутри собранного образа:
-`docker run --rm --entrypoint python vreid:1.0 /app/scripts/image_report.py`.
-
-### 2.1 Модель и инференс — `requirements-infer.txt`
-
-| пакет | версия | автор | URL | лицензия |
-|---|---|---|---|---|
-| timm | 1.0.20 | Ross Wightman и участники | https://github.com/huggingface/pytorch-image-models | Apache 2.0 |
-| torch, torchvision | 2.3.1 / 0.18.1 (из базового образа) | Meta AI / PyTorch | https://github.com/pytorch/pytorch | BSD-3-Clause |
-| numpy | 1.26.4 | сообщество NumPy | https://github.com/numpy/numpy | BSD-3-Clause |
-| pillow | 10.4.0 | Jeffrey A. Clark и участники | https://github.com/python-pillow/Pillow | MIT-CMU |
-| huggingface-hub | 1.32.0 | Hugging Face | https://github.com/huggingface/huggingface_hub | Apache 2.0 |
-| safetensors | 0.8.0 | Hugging Face | https://github.com/huggingface/safetensors | Apache 2.0 |
-
-### 2.2 Сервис — `requirements-service.txt`
-
-| пакет | версия | автор | URL | лицензия |
-|---|---|---|---|---|
-| fastapi | 0.115.12 | Sebastián Ramírez | https://github.com/fastapi/fastapi | MIT |
-| starlette | 0.46.2 | Encode | https://github.com/encode/starlette | BSD-3-Clause |
-| uvicorn | 0.34.2 | Encode | https://github.com/encode/uvicorn | BSD-3-Clause |
-| pydantic | 2.13.5 | Samuel Colvin и участники | https://github.com/pydantic/pydantic | MIT |
-| python-multipart | 0.0.20 | Andrew Dunham и участники | https://github.com/Kludex/python-multipart | Apache 2.0 |
-| psycopg | 3.2.12 | Daniele Varrazzo и участники | https://github.com/psycopg/psycopg | LGPL-3.0 |
-| faiss-cpu | 1.9.0.post1 | Meta AI Research | https://github.com/facebookresearch/faiss | MIT |
-
-### 2.3 Клиентский слой
-
-| компонент | версия | URL | лицензия |
-|---|---|---|---|
-| nginx (базовый образ) | 1.27.4-alpine | https://hub.docker.com/_/nginx | BSD-2-Clause |
-| Swagger UI (файлы в `service/static/vendor/`) | 5.17.14 | https://github.com/swagger-api/swagger-ui | Apache 2.0 |
-
-Swagger UI скачан на этапе подготовки и лежит в репозитории: страница спецификации обязана
-открываться без интернета. Контрольные суммы файлов:
-
-```
-92b9842ad2dc4d85fd74bbd3d4ca85147777bba34751d0e6a45d52493c8d6219  swagger-ui-bundle.js
-7eb73e8c93bb2add112824cb5a19a25dd65f489227b7b5b273a07cbee5824fb1  swagger-ui.css
-```
-
-### 2.4 Базовые образы
-
-| образ | дайджест или тег | назначение |
+| Источник и версия | Официальная страница / получение | Как использован |
 |---|---|---|
-| `pytorch/pytorch` | `sha256:fc47f8018254e6df30f48c48f2db1c758d44de21a8c553de1a1c451a65baa70a` (тег `2.3.1-cuda12.1-cudnn8-runtime`) | релизный: пакетный прогон и сервис на целевом стенде |
-| `pytorch/pytorch` | `2.11.0-cuda12.8-cudnn9-runtime` | только локальная сборка на карте sm_120, в сдачу не идёт |
-| `pgvector/pgvector` | `pg16` | СУБД галереи |
-| `nginx` | `1.27.4-alpine` | тонкий клиент |
+| DINOv3 ViT-L/16 LVD-1689M — Meta; model family 2025; runtime timm 1.0.29 | [Источник](https://github.com/facebookresearch/dinov3) · [Получение](https://huggingface.co/facebook/dinov3-vitl16-pretrain-lvd1689m) | pretrained foundation → own full fine-tuning → interpolation25 → immutable CPU/TRT artifacts |
+| FastReID R50-IBN/GeM — JDAI-CV; v0.1.1; commit c9bc3ceb2f7a6438b62fb515ea3df6d1e999e95d | [Источник](https://github.com/JDAI-CV/fast-reid/tree/c9bc3ceb2f7a6438b62fb515ea3df6d1e999e95d) · [Получение](https://github.com/JDAI-CV/fast-reid/releases/download/v0.1.1/veriwild_bot_R50-ibn.pth) | pretrained CNN, own final-layer/residual fine-tuning; upstream SHA f591e4f7f31ce0be2f4079171cfc03fcbecab5ea5b40f9148c753b9c6f061e8e |
+| VERI-Wild — Lou et al.; original 2019 dataset, author TRAIN split | [Источник](https://github.com/PKU-IMRE/VERI-Wild) · [Получение](https://github.com/PKU-IMRE/VERI-Wild) | foundation ReID training, source transformations/heads, historical CAL/VAL; CNN author pretraining |
+| NiVe1303 — Ruozheng LI; Mendeley v1; DOI 10.17632/42wv2svztx.1 | [Источник](https://data.mendeley.com/datasets/42wv2svztx/1) · [Получение](https://doi.org/10.17632/42wv2svztx.1) | night backbone fine-tuning, transforms/routing/confidence; 500 FIT IDs, 12319 FIT images |
+| DN-348 — Li et al.; CVPR2024 DN-ReID dataset | [Источник](https://github.com/chenjingong/DN-ReID) · [Получение](https://drive.google.com/uc?export=download&id=1I7khNI6upkvZqJmhygQ2CQUlHzLGFEFO) | CNN fine-tuning: 1800 images; additional development/CAL/VAL |
+| CFV / Car Full View — Electronics 2023 12(24),4947; public train/test archives | [Источник](https://www.mdpi.com/2079-9292/12/24/4947) · [Получение](https://huggingface.co/datasets/fort-cyber/CFV-Dataset) | historical transfer diagnostics; reused as downstream head development/training; NOT a fresh final holdout |
+| VRAI — Wang et al.; ICCV2019; author train/dev | [Источник](https://github.com/JiaoBL1234/VRAI-Dataset) · [Получение](https://drive.google.com/drive/folders/1S8BCBDHxXJeqyv8v6LFWS5EZHvVdrHeN) | expanded head FIT/CAL and historical downstream development |
+| RGBNT100 — 100-vehicle multispectral dataset; RGB only | [Источник](https://github.com/lsh-ahu/ICPL-ReID) · [Получение](https://github.com/lsh-ahu/ICPL-ReID#datasets) | expanded head and downstream development; aliases with WMVeID excluded where known |
+| Vehicle-Rear — de Oliveira et al.; 2019 author dataset | [Источник](https://github.com/icarofua/vehicle-rear) · [Получение](https://github.com/icarofua/vehicle-rear) | historical transfer and later exposed downstream-head development |
+| WMVeID863 — author public RGB/NIR/TIR dataset; visible modality only | [Источник](https://github.com/lsh-ahu/ICPL-ReID) · [Получение](https://drive.google.com/uc?export=download&id=186Ep0YgHY0a8BQ1Z59HP1D2-kZazbH02) | 398 filtered author TRAIN IDs for road refusal; known RGBNT aliases/train-test aliases excluded |
+| VRIC — Kanaci, Zhu, Gong; GCPR2018; author TRAIN/TEST | [Источник](https://qmul-vric.github.io/index.html) · [Получение](https://qmul-vric.github.io/index.html) | 600 author TRAIN IDs / 7826 raw/blackout FIT images for road head; 661-query diagnostic separate |
 
-Дайджест релизной базы зафиксирован `scripts/pin_base_image.py`: тег владелец репозитория
-вправе перезалить, дайджест — нет.
+Организаторский набор предоставлен участникам через личный кабинет; собственного публичного URL на его изображения нет. Данные, разметка, ТЗ, FAQ и эталонный scorer организаторов в открытый репозиторий не включены. Численные результаты и инструкции воспроизведения доступны без распространения чужих материалов.
 
-### 2.5 Материалы организаторов
+**История использования данных.** Две эпохи последующего дообучения DINOv3 использовали 8 000 VERI-Wild и 12 319 NiVe FIT-снимков; CNN — дополнительно 1 800 DN-348. До этого DINOv3 проходил предобучение на VERI-Wild и обучение на организаторском TRAIN. Последняя голова отказа обучалась на 63 445 строках эпизодов, 9 415 консервативных группах ID: организаторские данные, VERI-Wild, NiVe, DN-348, CFV, VRAI, RGBNT100, Vehicle-Rear, WMVeID и VRIC. Это количество строк, а не независимых машин. Для WMVeID добавлены 398 отфильтрованных author-TRAIN ID; для VRIC — 600 author-TRAIN ID. Известные точные дубликаты и некоторые межнаборные aliases исключались; отсутствие всех физических/перекодированных совпадений и пересечений с foundation-pretraining не доказано.
 
-Получены от организаторов 21.09.2026 и хранятся у команды без изменений. В репозиторий не
-выложены — это их материалы; хэши ниже позволяют сверить, что мы работали с тем же файлом, который
-выдан участникам. На них опирается всё, что мы утверждаем про метрику.
+Исторические CAL/VAL/transfer-наборы неоднократно использовались для разработки, а часть позднее вошла в обучение головы отказа. Поэтому опубликованные сравнения — **локальные результаты разработки**, не независимый финальный holdout и не оценка закрытого теста организаторов. Нового обучения при подготовке v2.0 не было.
 
-| файл | размер | SHA-256 |
-|---|---:|---|
-| `organizer/evaluate.py` | 17 160 Б | `655c71db8c2e4d2cd7680c40c768afacfdffff360401111c1a46df921551ffa3` |
-| `organizer/example_submission.zip` | 2 097 Б | `cccda5bf0c801be8fd5748646dac345f180f6d11988ecbf4ec17ac9c311e4f46` |
+## Версии и точные файлы весов
 
-`evaluate.py` запускается на нашей валидации скриптом
-`scripts/score_validation_with_official.py`; отчёт и сравнение с нашими числами —
-— `results/official_validation/official_report.json` и `comparison.json` (только числа;
-остальное содержимое каталога локальное — в нём разметка организаторов).
+- Архитектура DINOv3: `vit_large_patch16_dinov3.lvd1689m`, 384×384, 2 048D CLS + mean patch; финальный исходный checkpoint `interpolation25.pt`, SHA-256 `9e9940418ed3b8b945d61befd26fff2fd571305467e29a2fc1d44b5575c37748`.
+- FP32 CPU-представление содержит те же 323 тензора после обратимого byte-shuffle и сжатия, без квантования: SHA-256 `76c07501e972cc0bc19e2115fd02dd2438e64e40ff143818de32b670ec869335`.
+- CNN: ResNet50-IBN/GeM + residual head, собственный `specialist-cnn.pt`, SHA-256 `ef3cf8824ee6ccafa7e2ec886957dd4951073df32500f0d5e4d2001e19a96907`.
+- Исходная CNN: FastReID `v0.1.1/veriwild_bot_R50-ibn.pth`, SHA-256 `f591e4f7f31ce0be2f4079171cfc03fcbecab5ea5b40f9148c753b9c6f061e8e`.
+- Все **16 используемых файлов**, их URL, размеры и SHA-256: [release/weights.json](release/weights.json). Сумма **1 838 245 659 байт** при лимите 2 000 000 000 байт. В комплект включены оба TensorRT engine, оба CPU-экстрактора и все transforms/классификаторы; скрытых сетевых загрузок при инференсе нет.
+- Отпечатки исполняемых исходников, model/recipe/embedding identity, выбранные параметры и TensorRT/SM: [release_current/runtime-manifest.json](release_current/runtime-manifest.json). [Релиз и файлы весов](https://github.com/Pelmen535/FalconTech/releases/tag/v2.0).
 
-## 3. Данные
+При восстановлении инференса исходные pretrained-файлы из внешних репозиториев не загружаются: используются опубликованные финальные файлы с SHA-256. Точный upstream revision исходных Meta/timm pretrained-весов в старых материалах не установлен; он не подменяется сегодняшней версией. Это ограничение истории обучения, а не ссылка на плавающий `latest` для запуска сервиса.
 
-Использованы только данные организаторов: `train.csv`, `test_query.csv`, `test_gallery.csv`
-и `images/`. Внешние re-ID датасеты (VeRi-776, VehicleID, CityFlow, CARLA) **не использовались**
-ни для обучения, ни для калибровки. В репозитории остались конфиги `configs/carla.yaml` и
-`configs/veri776.yaml` и скрипт `scripts/prepare_carla.py` — это нерабочие черновики раннего
-этапа, ни один вес из них не участвовал; проверяется по `log.json` каждого чекпойнта, где
-записан фактический конфиг обучения.
+## Зависимости
 
-## 4. Чего здесь нет
+Среда Linux задаётся неизменяемым [PyTorch base image](https://hub.docker.com/r/pytorch/pytorch) `pytorch/pytorch@sha256:eee11b3b3872a8c838e35ef48f08b2d5def2080902c7f666831310ca1a0ef2be` и точными [основными зависимостями](requirements-robust-linux.txt), [lock-файлом](requirements-robust-linux.lock.txt). FAISS ставится в отдельное окружение поверх базового: `faiss-cpu==1.15.0`.
 
-Юридического заключения. Приведены заявленные авторами лицензии и ссылки.
+| Компонент | Зафиксированная версия | Источник |
+|---|---|---|
+| PyTorch | 2.11.0+cu128 | [pytorch/pytorch](https://github.com/pytorch/pytorch) |
+| timm | 1.0.29 | [huggingface/pytorch-image-models](https://github.com/huggingface/pytorch-image-models) |
+| NumPy | 2.5.3 | [numpy/numpy](https://github.com/numpy/numpy) |
+| Pillow | 11.3.0 | [python-pillow/Pillow](https://github.com/python-pillow/Pillow) |
+| scikit-learn / joblib / SciPy | 1.9.1 / 1.5.3 / 1.18.1 | [scikit-learn](https://github.com/scikit-learn/scikit-learn), [joblib](https://github.com/joblib/joblib), [SciPy](https://github.com/scipy/scipy) |
+| TensorRT CUDA12 | 10.9.0.34 | [NVIDIA/TensorRT](https://github.com/NVIDIA/TensorRT) |
+| FAISS CPU | 1.15.0 | [facebookresearch/faiss](https://github.com/facebookresearch/faiss) |
+| FastAPI / Starlette / Uvicorn | 0.115.12 / 0.46.2 / 0.34.2 | [FastAPI](https://github.com/fastapi/fastapi), [Starlette](https://github.com/encode/starlette), [Uvicorn](https://github.com/encode/uvicorn) |
+| psycopg / psycopg-binary | 3.2.12 / 3.2.12 | [psycopg](https://github.com/psycopg/psycopg) |
+| PostgreSQL + pgvector | образ SHA ccc6e83d6e35e931dc7c5def2022729d5a6c370318d099181995567ff1fb4d6b | [pgvector/pgvector](https://github.com/pgvector/pgvector) |
+| nginx | образ SHA 4ff102c5d78d254a6f0da062b3cf39eaf07f01eec0927fd21e219d0af8bc0591 | [nginx](https://nginx.org/) |
+
+Остальные транзитивные пакеты фиксируются базовым образом и lock-файлом; Dockerfile выполняет `pip check`, runtime проверяет ключевые версии до запуска. Установленные версии и фактическая проверочная среда сохраняются в отчёте A5000.
+
+## Условия внешних материалов
+
+Собственный код сохраняет [Apache-2.0](LICENSE); это не меняет условия внешних весов и данных. Для DINOv3 действует [отдельная DINOv3 License](third_party/DINOv3_LICENSE.md), её полный текст включён, использование Meta DINOv3 явно указано. Для кода FastReID включена [исходная Apache-2.0 license](third_party/FastReID_LICENSE). У VERI-Wild и VRAI есть исследовательские/некоммерческие условия доступа; VRIC сохраняет права владельцев исходных UA-DETRAC-изображений. Условия репозитория с кодом не означают автоматически ту же лицензию на датасет. Исходные сторонние изображения не распространяются. Полная юридическая совместимость коммерческого применения и передачи производных весов здесь не сертифицируется; см. условия авторов по ссылкам выше.
+
+[Машиночитаемый реестр](third_party/model-dataset-registry.json) перечисляет роль каждого источника и известные условия. AICITY2021 Track2 DMT рассматривался как внешняя идея; его веса в выбранном runtime отсутствуют.

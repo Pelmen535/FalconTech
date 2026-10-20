@@ -1,0 +1,90 @@
+{
+  "status": "LOCAL_WINDOWS_GPU_CLI_VERIFIED",
+  "selection": "old protected DINO plus CNN256, rank fusion0.5, resident immutable postprocessing constants",
+  "source_metrics": {
+    "mAP": 75.77182539682539,
+    "rank1": 80.0,
+    "Q": 77.75051797684338
+  },
+  "source_subtotal75": 61.87237322625577,
+  "organizer_metrics": {
+    "mAP": 86.4346042655321,
+    "rank1": 82.68041237113401,
+    "Q": 96.74443472343735
+  },
+  "organizer_subtotal75": 68.57001539183318,
+  "inference_weights": [
+    {
+      "path": "E:\\Хакатон\\var\\backbone-night-finetune-20261009\\export\\model.engine",
+      "bytes": 614143484,
+      "SHA256": "68b18e2ff7cc9e23cbe2dd8143fd49eec5fe0ac1c2b1e9fc46dc2994eec0e786"
+    },
+    {
+      "path": "E:\\Хакатон\\var\\quality-margin-20261007\\extra_views-transform.npz",
+      "bytes": 8405504,
+      "SHA256": "4290e89bef055fad59591089ea5947dfabed970ad0c1bc40a4f429a913ce0715"
+    },
+    {
+      "path": "E:\\Хакатон\\var\\quality-margin-20261007\\extra-refusal-multinomial_hgb20.joblib",
+      "bytes": 459328,
+      "SHA256": "06c01754a90940d6eae2c9de10270d6943febb60352a54366fccce90bdc36629"
+    },
+    {
+      "path": "E:\\Хакатон\\var\\competitive-margin-20261007\\pca512-transform.npz",
+      "bytes": 8405504,
+      "SHA256": "7c9ec4df4bcc3e8cd63dcceb2a6238e147cdc4448dabeab0b51d94f8ac676c36"
+    },
+    {
+      "path": "E:\\Хакатон\\var\\nive-night-transfer-20261009\\night_soft-transform.npz",
+      "bytes": 8405504,
+      "SHA256": "50f229b62334a74a6b7ec4a2cd81af6a2e3fd20d53bc1a91cd5578b1e07f8c88"
+    },
+    {
+      "path": "E:\\Хакатон\\var\\nive-night-transfer-20261009\\domain.joblib",
+      "bytes": 15693,
+      "SHA256": "7fac64ced4f8139b8d192c6ec5d8f8b04202e7d21a98e2937ddb012049f378a3"
+    },
+    {
+      "path": "E:\\Хакатон\\var\\nive-night-transfer-20261009\\night-head.joblib",
+      "bytes": 320304,
+      "SHA256": "365e44bc634b4985f8356dfed6929f4a2516fb3a2d26a20ddfc20d9da49b7a6a"
+    },
+    {
+      "path": "E:\\Хакатон\\var\\cnn-trt-20261010\\export\\model.engine",
+      "bytes": 51626764,
+      "SHA256": "08a3c0cd7195fef3d9ddb3c221b88d7244949c4c7c332bb1dbacee4cf1cf32ab"
+    },
+    {
+      "path": "E:\\Хакатон\\var\\three-directions-20261009\\specialist-cnn.pt",
+      "bytes": 97004277,
+      "SHA256": "ef3cf8824ee6ccafa7e2ec886957dd4951073df32500f0d5e4d2001e19a96907"
+    }
+  ],
+  "inference_weight_bytes": 788786362,
+  "weights_below_2GB": true,
+  "runtime_files": {
+    "var\\cached-feature-post-20261010\\predict_cached.py": "f9203cb26e8004d93d5db39e9eb1031caad961bd450b6cdf47b8b9d3d90f2c02",
+    "var\\cached-feature-post-20261010\\context.py": "448f02b0943081179e670cc2fd93371a94bdb40cb3220dddf097ea899f5e5ee2",
+    "var\\cached-feature-post-20261010\\cached_post.py": "d73c902554f9f345a7893fa59dc49bacdb1239ee4c2856be06c0a1e8fab4c446",
+    "var\\cnn-trt-20261010\\joint_runtime.py": "042b736ed81b39624566d9e75e899da08d4e367c28e9c8efbce5d75eed4d4c43",
+    "var\\cnn-trt-20261010\\joint_worker.py": "107de2dcc77c734eb9fb078c2ee9383736f97daa481603209403cf0347302f89",
+    "var\\three-directions-20261009\\fusion-selection.json": "fb2e1199b7fba7ec08d261612f546b0ac0dc0604ddf89aee284d1369f44e1ed5"
+  },
+  "quality_evidence": "E:\\Хакатон\\var\\cnn-trt-20261010\\transfer-results.json",
+  "cache_proofs": [
+    "E:\\Хакатон\\var\\cached-feature-post-20261010\\cache-proof.json",
+    "E:\\Хакатон\\var\\cached-feature-post-20261010\\contest-cache-proof.json"
+  ],
+  "speed_evidence": "E:\\Хакатон\\var\\cached-feature-post-20261010\\final-speed-decision.json",
+  "CLI_evidence": "E:\\Хакатон\\var\\cached-feature-post-20261010\\cli-proof.json",
+  "CI_evidence": "E:\\Хакатон\\var\\cnn-trt-20261010\\paired-point-score-CI.json",
+  "default_batch": 16,
+  "CLI": "python -X utf8 -B var/cached-feature-post-20261010/predict_cached.py --query QUERY.csv --gallery GALLERY.csv --images IMAGES --out NEW_OUTPUT --batch-size 16",
+  "dependencies": "Existing project var modules, Python314 supervisor, NiVe Python312 worker, C temp TensorRT DLL/normalizer dependencies; not standalone Linux delivery",
+  "Linux_A5000_verified": false,
+  "control_mask_verified": false,
+  "root_release_updated": false,
+  "TEST_reused": true,
+  "legacy_CAL_exposure": true,
+  "no_new_experiments_after_this_task": true
+}

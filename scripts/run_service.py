@@ -10,6 +10,8 @@
 from __future__ import annotations
 
 import argparse
+import logging
+from dataclasses import replace
 import os
 from pathlib import Path
 import sys
@@ -32,6 +34,10 @@ def main() -> int:
     parser.add_argument('--data-dir', type=Path, default=defaults.data_dir,
                         help='постоянное хранилище галереи')
     parser.add_argument('--device', default=defaults.device, help='cpu или cuda')
+    parser.add_argument('--backend', choices=['release', 'robust', 'october'], default=defaults.backend,
+                        help='release — сохранённый v1.4; robust — проверенный DINOv3/CNN best (Windows CUDA)')
+    parser.add_argument('--runtime-manifest', type=Path, default=defaults.runtime_manifest,
+                        help='единый manifest October runtime (--backend october)')
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=8765)
     parser.add_argument('--threads', type=int, default=8)
@@ -39,6 +45,7 @@ def main() -> int:
                         help='разрешить привязку к нелокальному адресу без ключа; '
                              'так запускается контейнер, наружу его порт не публикуется')
     args = parser.parse_args()
+    logging.basicConfig(level=logging.INFO, format='%(message)s')
 
     if not 1 <= args.port <= 65535 or args.threads < 1:
         parser.error('Недопустимый порт или число потоков')
@@ -59,19 +66,20 @@ def main() -> int:
     os.environ['OPENBLAS_NUM_THREADS'] = str(args.threads)
 
     core = args.core_dir.resolve()
-    release = (args.release_dir or core / 'release').resolve()
-    settings = Settings(core, release, args.data_dir.resolve(), args.device, defaults.api_key,
-                        demo_dir=(core / 'demo'),
-                        # Строка подключения приходит из окружения: пустая — SQLite в
-                        # data_dir, непустая — PostgreSQL с pgvector (стек docker compose).
-                        database_url=defaults.database_url)
+    release = (args.release_dir or (defaults.release_dir if os.environ.get('VREID_RELEASE_DIR')
+                                   else core / 'release')).resolve()
+    demo = defaults.demo_dir if os.environ.get('VREID_DEMO_DIR') else core / 'demo'
+    # Preserve environment settings, including demo_ui; CLI overrides only its fields.
+    settings = replace(defaults, core_dir=core, release_dir=release,
+                       data_dir=args.data_dir.resolve(), device=args.device, demo_dir=demo,
+                       backend=args.backend, runtime_manifest=args.runtime_manifest)
 
     import uvicorn
     from service.app import create_app
     from service.storage import GalleryIdentityError
 
     print(f'ReID service: http://{args.host}:{args.port}  (OpenAPI: /docs)', flush=True)
-    storage = ('PostgreSQL/pgvector ' + settings.database_url.split('@')[-1]
+    storage = ('PostgreSQL/pgvector'
                if settings.database_url else 'SQLite в ' + str(settings.data_dir))
     print(f'  ядро     {core}\n  релиз    {release}\n  галерея  {storage}'
           f'\n  device   {args.device}', flush=True)
@@ -86,7 +94,7 @@ def main() -> int:
         print('Варианты: указать другое хранилище (--data-dir или VREID_DATABASE_URL) '
               'или очистить текущее — например, docker compose down -v.', flush=True)
         return 3
-    uvicorn.run(application, host=args.host, port=args.port, workers=1, log_level='info')
+    uvicorn.run(application, host=args.host, port=args.port, workers=1, log_level='info', access_log=False)
     return 0
 
 

@@ -1,0 +1,41 @@
+{
+  "winner": {
+    "model": "expanded-hgb31",
+    "threshold": 0.9890044812557033,
+    "CAL_macro_quality55_gain": 0.4379527686930064,
+    "domain_gains": {
+      "RGBNT100": 0.3791666666666668,
+      "VRAI": 0.10420814461108431,
+      "dn": 1.7006410256410258,
+      "night": 0.0,
+      "organizer": 0.44311468759710654,
+      "original": 0.0005860876421550643
+    },
+    "worst_episode": -0.0036106026958208307
+  },
+  "models": {
+    "expanded-hgb7": {
+      "path": "expanded-hgb7.joblib",
+      "SHA": "c6b4598397805bec4c934545c0f16c4b6c9fdddb52c36bcb927fcafeada9819b",
+      "bytes": 396160,
+      "seconds": 25.36880922317505
+    },
+    "expanded-hgb15": {
+      "path": "expanded-hgb15.joblib",
+      "SHA": "cc7b71273b5881aef4ea513c660abce591b6861b3f466040b430ef75f5b80cb2",
+      "bytes": 611200,
+      "seconds": 26.462607860565186
+    },
+    "expanded-hgb31": {
+      "path": "expanded-hgb31.joblib",
+      "SHA": "b573843f45df806690893ff333ee7a622edabfb96e881cdef73b5984e0a7f5bd",
+      "bytes": 1041280,
+      "seconds": 29.035099744796753
+    }
+  },
+  "protocol_SHA": "36d065afde7f387781d5ed91cef7dd989f34f41dddf90870cad69e3a5998349a",
+  "code_SHA": "4545d4f52646c319cf01cf879db983632cc6a88de6882c8305990f73ff204ad7",
+  "selection_SHA": "49542549445b318d10fcbf7aa515a3a52562a82069b30a9695693f06c3cb7804",
+  "created": 1792261644.9454591,
+  "holdout_used": false
+}

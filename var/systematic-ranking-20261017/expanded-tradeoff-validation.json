@@ -1,0 +1,99 @@
+{
+  "status": "PASS_PRACTICAL_DEVELOPMENT_PENDING_FRESH_RUNTIME",
+  "candidate": {
+    "model": "expanded-hgb31",
+    "threshold": 0.9890044812557033,
+    "CAL_macro_quality55_gain": 0.4379527686930064,
+    "domain_gains": {
+      "RGBNT100": 0.3791666666666668,
+      "VRAI": 0.10420814461108431,
+      "dn": 1.7006410256410258,
+      "night": 0.0,
+      "organizer": 0.44311468759710654,
+      "original": 0.0005860876421550643
+    },
+    "worst_episode": -0.0036106026958208307
+  },
+  "mask_original_tolerances_pass": true,
+  "mask_mean_quality55_delta": 0.011203986034056139,
+  "mask_worst_quality55_delta": -0.0007993379801703782,
+  "strict_mask_status_unchanged": "REJECT_MASK",
+  "all_pooled_domains_pass": true,
+  "weakmacro_CI95": [
+    0.31781570031338996,
+    0.4133951550878038,
+    0.5225934018350373
+  ],
+  "per_group_CI95": {
+    "external/natural": {
+      "quality55_CI95": [
+        0.0,
+        0.005222965692380655,
+        0.01647101508199529
+      ],
+      "coverage_delta_CI95": [
+        0.0,
+        0.09960159362550058,
+        0.3064508203491319
+      ],
+      "physical_ID_clusters": 1100
+    },
+    "CFV14/natural": {
+      "quality55_CI95": [
+        0.4043162157619104,
+        0.6078750824609855,
+        0.9483911177857712
+      ],
+      "coverage_delta_CI95": [
+        9.65367965367966,
+        13.809523809523807,
+        20.17424242424243
+      ],
+      "physical_ID_clusters": 14
+    },
+    "CFV14/removed": {
+      "quality55_CI95": [
+        0.3311883582895858,
+        0.5763112785551279,
+        0.8236777719276362
+      ],
+      "coverage_delta_CI95": [
+        8.492063492063501,
+        13.174603174603178,
+        18.33333333333333
+      ],
+      "physical_ID_clusters": 14
+    },
+    "CFV42/natural": {
+      "quality55_CI95": [
+        0.15340292411584255,
+        0.25748326299013513,
+        0.37568330953988655
+      ],
+      "coverage_delta_CI95": [
+        2.857142857142861,
+        4.761904761904759,
+        6.8253968253968225
+      ],
+      "physical_ID_clusters": 42
+    },
+    "CFV42/removed": {
+      "quality55_CI95": [
+        0.7282686100462071,
+        1.0271486586857868,
+        1.3509858366386154
+      ],
+      "coverage_delta_CI95": [
+        14.761904761904773,
+        20.158730158730158,
+        25.714285714285708
+      ],
+      "physical_ID_clusters": 42
+    }
+  },
+  "bootstrap_seed": 26017,
+  "resamples": 2000,
+  "holdout_read": false,
+  "baseline_promoted": false,
+  "limitations": "Exposed sets, fixed galleries, no foundation exclusion; some percontext regressions and FP tradeoff disclosed"
+}

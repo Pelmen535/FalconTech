@@ -1,16 +1,106 @@
 {
-  "tag": "v1.4",
-  "repo": "Pelmen535/FalconTech",
-  "files": {
-    "model.pt": {
-      "sha256": "33300d61d6b90899428858d264761933a496015d706cf2db02a5cc5a11bd10e7",
-      "size": 172315879,
-      "what": "DINOv2 ViT-B/14, основная модель: её вектор идёт в embeddings.npy, по её пути измеряется скорость"
+  "schema": 2,
+  "version": "2.0",
+  "tag": "v2.0",
+  "source": "https://github.com/Pelmen535/FalconTech/releases/tag/v2.0",
+  "sum_bytes": 1838245659,
+  "limit_bytes": 2000000000,
+  "files": [
+    {
+      "path": "var/competitive-margin-20261007/pca512-transform.npz",
+      "bytes": 8405504,
+      "sha256": "7c9ec4df4bcc3e8cd63dcceb2a6238e147cdc4448dabeab0b51d94f8ac676c36",
+      "url": "https://github.com/Pelmen535/FalconTech/releases/download/v2.0/pca512-transform.npz"
+    },
+    {
+      "path": "var/linux-a5000-20261017/runtime/dino.engine",
+      "bytes": 615661116,
+      "sha256": "466f8ad6ec4c4b42f8dade8d3aa79406442267d3e7c552adc1f714a561f88e3c",
+      "url": "https://github.com/Pelmen535/FalconTech/releases/download/v2.0/dino.engine"
+    },
+    {
+      "path": "var/linux-a5000-20261017/runtime/cnn.engine",
+      "bytes": 50828276,
+      "sha256": "620507d1f8f7a4950e3aa55fb6073633cb6141f05c2efbef86f387b7d03e8723",
+      "url": "https://github.com/Pelmen535/FalconTech/releases/download/v2.0/cnn.engine"
+    },
+    {
+      "path": "var/systematic-ranking-20261017/expanded-hgb31.joblib",
+      "bytes": 1041280,
+      "sha256": "b573843f45df806690893ff333ee7a622edabfb96e881cdef73b5984e0a7f5bd",
+      "url": "https://github.com/Pelmen535/FalconTech/releases/download/v2.0/expanded-hgb31.joblib"
+    },
+    {
+      "path": "var/three-directions-20261009/specialist-cnn.pt",
+      "bytes": 97004277,
+      "sha256": "ef3cf8824ee6ccafa7e2ec886957dd4951073df32500f0d5e4d2001e19a96907",
+      "url": "https://github.com/Pelmen535/FalconTech/releases/download/v2.0/specialist-cnn.pt"
+    },
+    {
+      "path": "var/confidence-contrast-20261017/learned/hgb7.joblib",
+      "bytes": 362680,
+      "sha256": "a0dd954efc6d06e200be987feacb43982ffb6a5fde854eeeff8f5d6571b08f7d",
+      "url": "https://github.com/Pelmen535/FalconTech/releases/download/v2.0/hgb7.joblib"
+    },
+    {
+      "path": "var/confidence-domain-20261017/extra8.joblib",
+      "bytes": 7928057,
+      "sha256": "4bd8cd8a9fca38120642d3512ec7b803b1125e83e24d9d8d971dd9fd60d838f4",
+      "url": "https://github.com/Pelmen535/FalconTech/releases/download/v2.0/extra8.joblib"
+    },
+    {
+      "path": "var/quality-margin-20261007/extra-refusal-multinomial_hgb20.joblib",
+      "bytes": 459328,
+      "sha256": "06c01754a90940d6eae2c9de10270d6943febb60352a54366fccce90bdc36629",
+      "url": "https://github.com/Pelmen535/FalconTech/releases/download/v2.0/extra-refusal-multinomial_hgb20.joblib"
+    },
+    {
+      "path": "var/quality-margin-20261007/extra_views-transform.npz",
+      "bytes": 8405504,
+      "sha256": "4290e89bef055fad59591089ea5947dfabed970ad0c1bc40a4f429a913ce0715",
+      "url": "https://github.com/Pelmen535/FalconTech/releases/download/v2.0/extra_views-transform.npz"
+    },
+    {
+      "path": "var/recall-road-fit-vric-20261018/vric-mass-2-leaves-63.joblib",
+      "bytes": 1615232,
+      "sha256": "8936297226b1038289861a00961789c5a9ec7c0a3b03f813f064cfefd63d65f4",
+      "url": "https://github.com/Pelmen535/FalconTech/releases/download/v2.0/vric-mass-2-leaves-63.joblib"
+    },
+    {
+      "path": "var/nive-night-transfer-20261009/night_soft-transform.npz",
+      "bytes": 8405504,
+      "sha256": "50f229b62334a74a6b7ec4a2cd81af6a2e3fd20d53bc1a91cd5578b1e07f8c88",
+      "url": "https://github.com/Pelmen535/FalconTech/releases/download/v2.0/night_soft-transform.npz"
+    },
+    {
+      "path": "var/nive-night-transfer-20261009/night-head.joblib",
+      "bytes": 320304,
+      "sha256": "365e44bc634b4985f8356dfed6929f4a2516fb3a2d26a20ddfc20d9da49b7a6a",
+      "url": "https://github.com/Pelmen535/FalconTech/releases/download/v2.0/night-head.joblib"
+    },
+    {
+      "path": "var/nive-night-transfer-20261009/domain.joblib",
+      "bytes": 15693,
+      "sha256": "7fac64ced4f8139b8d192c6ec5d8f8b04202e7d21a98e2937ddb012049f378a3",
+      "url": "https://github.com/Pelmen535/FalconTech/releases/download/v2.0/domain.joblib"
+    },
+    {
+      "path": "var/confidence-repair-20261017/extra-leaf16.joblib",
+      "bytes": 4196441,
+      "sha256": "c997236140f612f94ab9905965225819e5637f81e6aba06ba455d0fa287afc36",
+      "url": "https://github.com/Pelmen535/FalconTech/releases/download/v2.0/extra-leaf16.joblib"
+    },
+    {
+      "path": "var/general-refusal-final-20261017/raw-hgb15.joblib",
+      "bytes": 502896,
+      "sha256": "2e2bfc313a3d5b7ff97bf627acd5b141e29c18e1874f5a16aafb1cca097723b6",
+      "url": "https://github.com/Pelmen535/FalconTech/releases/download/v2.0/raw-hgb15.joblib"
+    },
+    {
+      "path": "var/october-v14-compatibility-20261019/artifacts/dino-fp32-shuffled.npz",
+      "bytes": 1033093567,
+      "sha256": "76c07501e972cc0bc19e2115fd02dd2438e64e40ff143818de32b670ec869335",
+      "url": "https://github.com/Pelmen535/FalconTech/releases/download/v2.0/dino-fp32-shuffled.npz"
     }
-  },
-  "twin_run": "runs/hack/ft_soup_r392dw40f4t2_fit",
-  "twin_map10": 82.7,
-  "twin_rank1": 80.412,
-  "twin_postprocess": "эталонный scorer",
-  "twin_val": "results/hack_ft_soup_r392dw40f4t2_fit_val.json"
+  ]
 }

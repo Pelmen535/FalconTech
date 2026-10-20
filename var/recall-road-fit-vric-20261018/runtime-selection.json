@@ -1,0 +1,35 @@
+{
+  "profile": "vric-road-verifier-v1",
+  "base_profile": "expanded-source-v1",
+  "rerank_profile": "current-query-v1",
+  "status": "READY_LOCAL_WINDOWS_WITH_TRADEOFF",
+  "head": "var/recall-road-fit-vric-20261018/vric-mass-2-leaves-63.joblib",
+  "alpha": 1.0,
+  "threshold": 0.6349104308612428,
+  "remove_columns": [
+    28
+  ],
+  "extra_model_weights_bytes": 1615232,
+  "gallery_style_routing": false,
+  "training": "600 VRIC authortrain IDs +398 WMVtrain +previous development. No VRICtest FIT. Localresearch; rights review before external distribution/deployment.",
+  "files": {
+    "vreid/refusal_policy_vric_road.py": "3750a8dfff82dc0253e9624be6f8e3d90f95785650d3229e5dd7eaffc6111148",
+    "vreid/refusal_policy_road_blend.py": "c5de7ff7b7c2b00d8349cb4a9c083620c24b8bbc47f28469faee8e7c0eecb9c8",
+    "var/recall-road-fit-vric-20261018/vric-mass-2-leaves-63.joblib": "8936297226b1038289861a00961789c5a9ec7c0a3b03f813f064cfefd63d65f4",
+    "var/recall-road-fit-vric-20261018/practical-selection.json": "c2f630d246f078908fbd6b4571185cde88e310e951c5a83b63f168ec6ef13b9b",
+    "var/recall-road-fit-vric-20261018/practical-plate-protocol.json": "b22945fd2ab845c9b3d13a4f4668df79c88e6afd93898303814524f3da2f90cc",
+    "var/systematic-ranking-20261017/expanded-runtime-selection.json": "2b76cf166ba6ea76da79b7925410cd3215f98752b79951e948faa5ea6f377d49",
+    "scripts/predict_current_vric_road.py": "7d208caa44e9111595ac92edd14833e12cfc0918f0aa264b42199e452ac71fab",
+    "scripts/run_service_vric_road.py": "47c9fd06b2a6e424eeaf448c6cdd947f82f013358430682959cfdd355bd8116a",
+    "service/vric_road.py": "df10a9a1544e10163d3fa1c5320fe25c0ea131e12ed0378de0c580703054e4cf",
+    "service/vric_road_worker.py": "ef24fa94f840b7a82610c72a3f5b582bcf6118c6fa2ea33b8b9339ef959ae8dc"
+  },
+  "confirmation_scope": "Remaining661 VRIC queryIDs, virtualcam samevideo pairs; no claim official independent physicalcamera transfer; earlier WMV uncertain andVRIC maskreject preserved. Research rights pending.",
+  "qualification_scope": "Windows nativeCLI B16/B1 +HTTP SQLite; separate explicit profile, default/release not switched",
+  "official_submission_ready": false,
+  "overall_service_harness": "BLOCKED:136PASS2existingSKIP (legacyfixture+PostgreSQL env absent)",
+  "training_domain_known": true,
+  "fresh_scope": "661 previously held authorTEST queryIDs;600authorTRAIN VRIC enteredFIT; samevideo/virtualcam pairs, fixedgallery bootstrap. No officialphysicalcrosscamera proof.",
+  "confirmation_protocol": "var/recall-road-fit-vric-20261018/practical-plate-protocol.json",
+  "training_rights": "Localresearch only established; external contest distribution/deployment needs source rights review"
+}

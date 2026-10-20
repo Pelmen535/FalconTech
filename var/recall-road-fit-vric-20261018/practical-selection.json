@@ -1,0 +1,476 @@
+{
+  "status": "FROZEN_PRACTICAL_PLATE_SELECTION",
+  "winner": {
+    "head": "var/recall-road-fit-vric-20261018/vric-mass-2-leaves-63.joblib",
+    "model_SHA": "8936297226b1038289861a00961789c5a9ec7c0a3b03f813f064cfefd63d65f4",
+    "bytes": 1615232,
+    "alpha": 1.0,
+    "threshold": 0.6349104308612428,
+    "remove_columns": [
+      28
+    ],
+    "reward": 3.4223500560495204,
+    "combinedcoveragegain": 4.961642587926588,
+    "oldOOFmacroQ": 2.7195381329240904,
+    "oldOOFmacrocoverage": 5.366664673102876,
+    "oldgroupQ": {
+      "CFV14/natural": 3.7204775624656747,
+      "CFV14/removed": 3.6425615789018764,
+      "CFV42/natural": 4.554803533168965,
+      "CFV42/removed": 0.5679144259145801,
+      "NiVe-dn": 4.5786163522012515,
+      "NiVe-night": 1.3824884792626762,
+      "NiVe-original": 1.2410677042525577,
+      "RGBNT100": 9.790896761108414,
+      "VRAI": 4.2690539249540365,
+      "VRIC/lower_half_blackout": 0.5627727526658788,
+      "VRIC/raw": 0.7199863464542489,
+      "VehicleRear": 0.013593885181506948,
+      "WMVeID/lower_half_blackout": 3.5366222103495915,
+      "WMVeID/raw": 2.051262429435198,
+      "contest": 0.7563265155797154,
+      "external": 1.3261146950596014
+    },
+    "plate_Qgain": {
+      "base": 2.5418526444221783,
+      "det": 2.2225847032985797,
+      "large": 2.5516484306536285,
+      "large_up": 2.81159772615851,
+      "rand": 1.9157982737837784,
+      "up": 2.6997578485391784
+    },
+    "plate_extra_mean": -0.10157524793544326,
+    "plate_extra_worst": -0.6260543706383999,
+    "road": {
+      "WMVeID": {
+        "raw": {
+          "Q": 4.798762451166354,
+          "coverage": 6.436781609195407,
+          "TNR": 0.8610086100861025
+        },
+        "lower_half_blackout": {
+          "Q": 4.486257614685428,
+          "coverage": 4.827586206896552,
+          "TNR": 1.3530135301353
+        }
+      },
+      "VRIC": {
+        "raw": {
+          "Q": 2.7487495840581175,
+          "coverage": 3.0814814814814824,
+          "TNR": -0.24691358024691112
+        },
+        "lower_half_blackout": {
+          "Q": 0.960874362607413,
+          "coverage": 0.6074074074074058,
+          "TNR": 0.8395061728395063
+        }
+      }
+    }
+  },
+  "choices": [
+    {
+      "head": "var/recall-road-fit-vric-20261018/vric-mass-1-leaves-31.joblib",
+      "model_SHA": "b357987b2fb5ce86f083f2d2e7306a976f4c9fc6555d476e5be78946978b10f2",
+      "bytes": 898896,
+      "alpha": 1.0,
+      "threshold": 0.6462083017273252,
+      "remove_columns": [
+        28
+      ],
+      "reward": 3.10591137023939,
+      "combinedcoveragegain": 4.529144182288555,
+      "oldOOFmacroQ": 2.5270991803691136,
+      "oldOOFmacrocoverage": 4.951417221195171,
+      "oldgroupQ": {
+        "CFV14/natural": 3.645069069623034,
+        "CFV14/removed": 3.6144024734071962,
+        "CFV42/natural": 4.33042475926726,
+        "CFV42/removed": 0.6373330537247028,
+        "NiVe-dn": 4.5786163522012515,
+        "NiVe-night": 1.1023335707858308,
+        "NiVe-original": 1.2603845332477306,
+        "RGBNT100": 9.391118245050833,
+        "VRAI": 3.79557341792065,
+        "VRIC/lower_half_blackout": 0.717167177467644,
+        "VRIC/raw": 0.7448853201001242,
+        "VehicleRear": -0.008529918313499252,
+        "WMVeID/lower_half_blackout": 3.1632158468647447,
+        "WMVeID/raw": 1.7423718450625927,
+        "contest": 0.3647848361592452,
+        "external": 1.0731825132551052
+      },
+      "plate_Qgain": {
+        "base": 2.393599321419032,
+        "det": 2.344611785598417,
+        "large": 2.5516484306536285,
+        "large_up": 2.5783318262259343,
+        "rand": 1.6350184557163914,
+        "up": 2.6255556077222764
+      },
+      "plate_extra_mean": -0.04656610023570238,
+      "plate_extra_worst": -0.7585808657026405,
+      "road": {
+        "WMVeID": {
+          "raw": {
+            "Q": 4.455024822390726,
+            "coverage": 5.747126436781606,
+            "TNR": 0.9840098400983948
+          },
+          "lower_half_blackout": {
+            "Q": 3.3791818070852386,
+            "coverage": 3.4482758620689644,
+            "TNR": 1.2300123001229935
+          }
+        },
+        "VRIC": {
+          "raw": {
+            "Q": 2.335610107958331,
+            "coverage": 2.8888888888888893,
+            "TNR": -0.8395061728395063
+          },
+          "lower_half_blackout": {
+            "Q": 0.7904559263995949,
+            "coverage": 0.681481481481482,
+            "TNR": 0.12345679012345556
+          }
+        }
+      }
+    },
+    {
+      "head": "var/recall-road-fit-vric-20261018/vric-mass-1-leaves-63.joblib",
+      "model_SHA": "cca41d524f8af900f34934f3089b8017930058e33bb04889d4d776a3056a98c4",
+      "bytes": 1615696,
+      "alpha": 0.5,
+      "threshold": 0.5939612459386765,
+      "remove_columns": [
+        28
+      ],
+      "reward": 1.87841584431165,
+      "combinedcoveragegain": 3.9468218350895548,
+      "oldOOFmacroQ": 1.9148603635701802,
+      "oldOOFmacrocoverage": 4.6052164631230665,
+      "oldgroupQ": {
+        "CFV14/natural": 3.211888117705456,
+        "CFV14/removed": 2.9892254563569196,
+        "CFV42/natural": 3.782131167168913,
+        "CFV42/removed": 1.0205775911271076,
+        "NiVe-dn": 3.9089601489127688,
+        "NiVe-night": 0.8809790820477588,
+        "NiVe-original": 0.2517118779757652,
+        "RGBNT100": 9.105403959336556,
+        "VRAI": 2.8921001547041243,
+        "VRIC/lower_half_blackout": 0.2714421994251097,
+        "VRIC/raw": 0.4540071022392169,
+        "VehicleRear": -0.9854613186773378,
+        "WMVeID/lower_half_blackout": 2.6467609947496697,
+        "WMVeID/raw": 1.7162231796780958,
+        "contest": -0.6816849118256414,
+        "external": 0.39628268566234226
+      },
+      "plate_Qgain": {
+        "base": 0.5866422550253674,
+        "det": 0.3061056262562829,
+        "large": 0.18495746428854432,
+        "large_up": 0.026627198257386908,
+        "rand": 0.06328190556257596,
+        "up": 0.38012460461214914
+      },
+      "plate_extra_mean": -0.39442289522997953,
+      "plate_extra_worst": -0.5600150567679805,
+      "road": {
+        "WMVeID": {
+          "raw": {
+            "Q": 2.4255699533739588,
+            "coverage": 5.05747126436782,
+            "TNR": -1.2300123001230077
+          },
+          "lower_half_blackout": {
+            "Q": 1.0114721184276618,
+            "coverage": 3.4482758620689644,
+            "TNR": -2.7060270602706
+          }
+        },
+        "VRIC": {
+          "raw": {
+            "Q": 1.2948172159908111,
+            "coverage": 2.177777777777777,
+            "TNR": -1.8271604938271508
+          },
+          "lower_half_blackout": {
+            "Q": 0.4752879881435277,
+            "coverage": 1.0074074074074062,
+            "TNR": -1.7777777777777715
+          }
+        }
+      }
+    },
+    {
+      "head": "var/recall-road-fit-vric-20261018/vric-mass-1-leaves-63.joblib",
+      "model_SHA": "cca41d524f8af900f34934f3089b8017930058e33bb04889d4d776a3056a98c4",
+      "bytes": 1615696,
+      "alpha": 1.0,
+      "threshold": 0.6335492298150153,
+      "remove_columns": [
+        28
+      ],
+      "reward": 3.1149520783263185,
+      "combinedcoveragegain": 5.031434481839237,
+      "oldOOFmacroQ": 2.5485129980551022,
+      "oldOOFmacrocoverage": 5.198007149221419,
+      "oldgroupQ": {
+        "CFV14/natural": 3.597850473604595,
+        "CFV14/removed": 3.5580174819305057,
+        "CFV42/natural": 4.415698563445417,
+        "CFV42/removed": 0.6260969568992323,
+        "NiVe-dn": 4.245283018867923,
+        "NiVe-night": 1.0756210413956069,
+        "NiVe-original": 1.2237176659378122,
+        "RGBNT100": 9.636502921383922,
+        "VRAI": 3.989223161809562,
+        "VRIC/lower_half_blackout": 0.495347265194205,
+        "VRIC/raw": 0.8307812407065995,
+        "VehicleRear": 0.2203515283614763,
+        "WMVeID/lower_half_blackout": 3.239890333352257,
+        "WMVeID/raw": 1.9857870984355657,
+        "contest": 0.47588517330159164,
+        "external": 0.8417396297339792
+      },
+      "plate_Qgain": {
+        "base": 2.5418526444221783,
+        "det": 2.344611785598417,
+        "large": 2.6632440143316103,
+        "large_up": 2.7745536891144695,
+        "rand": 1.8312025185671388,
+        "up": 2.6997578485391784
+      },
+      "plate_extra_mean": -0.07917867319201548,
+      "plate_extra_worst": -0.7106501258550395,
+      "road": {
+        "WMVeID": {
+          "raw": {
+            "Q": 4.134078422325132,
+            "coverage": 6.666666666666664,
+            "TNR": -0.2460024600246129
+          },
+          "lower_half_blackout": {
+            "Q": 3.0983093281955334,
+            "coverage": 3.6781609195402325,
+            "TNR": 0.4920049200491974
+          }
+        },
+        "VRIC": {
+          "raw": {
+            "Q": 2.6622648145987213,
+            "coverage": 3.2296296296296276,
+            "TNR": -0.7901234567901128
+          },
+          "lower_half_blackout": {
+            "Q": 0.8858321529085984,
+            "coverage": 0.681481481481482,
+            "TNR": 0.39506172839504927
+          }
+        }
+      }
+    },
+    {
+      "head": "var/recall-road-fit-vric-20261018/vric-mass-2-leaves-31.joblib",
+      "model_SHA": "0b1b74dddbcff3504ca3531dd24800df2640d2a55520f73165e5f11940bd8ca7",
+      "bytes": 898656,
+      "alpha": 1.0,
+      "threshold": 0.6569191572278519,
+      "remove_columns": [
+        28
+      ],
+      "reward": 3.1324577889921827,
+      "combinedcoveragegain": 4.381501535490452,
+      "oldOOFmacroQ": 2.55883624718798,
+      "oldOOFmacrocoverage": 4.923814951298938,
+      "oldgroupQ": {
+        "CFV14/natural": 3.6922873185544773,
+        "CFV14/removed": 3.5297915431367244,
+        "CFV42/natural": 4.574539768088158,
+        "CFV42/removed": 0.44030956646615493,
+        "NiVe-dn": 4.5786163522012515,
+        "NiVe-night": 1.1023335707858308,
+        "NiVe-original": 1.2315261246883153,
+        "RGBNT100": 9.72350550459042,
+        "VRAI": 3.777088280945378,
+        "VRIC/lower_half_blackout": 0.7011799106889782,
+        "VRIC/raw": 0.8505953234258783,
+        "VehicleRear": -0.08025273415526613,
+        "WMVeID/lower_half_blackout": 2.994160119349118,
+        "WMVeID/raw": 1.6567552333786608,
+        "contest": 0.6822177015771302,
+        "external": 0.9715865759520312
+      },
+      "plate_Qgain": {
+        "base": 2.430720473278626,
+        "det": 2.185581987724717,
+        "large": 2.6735448967189797,
+        "large_up": 2.504052391904878,
+        "rand": 1.8312025185671388,
+        "up": 2.6255556077222764
+      },
+      "plate_extra_mean": -0.06673299275102806,
+      "plate_extra_worst": -0.5995179547114873,
+      "road": {
+        "WMVeID": {
+          "raw": {
+            "Q": 4.253457591224688,
+            "coverage": 5.287356321839084,
+            "TNR": 1.1070110701107012
+          },
+          "lower_half_blackout": {
+            "Q": 4.0870256745147415,
+            "coverage": 3.6781609195402325,
+            "TNR": 2.091020910209096
+          }
+        },
+        "VRIC": {
+          "raw": {
+            "Q": 2.585079528563881,
+            "coverage": 2.9333333333333336,
+            "TNR": -0.3209876543209873
+          },
+          "lower_half_blackout": {
+            "Q": 0.6848784607432066,
+            "coverage": 0.474074074074073,
+            "TNR": 0.46913580246913966
+          }
+        }
+      }
+    },
+    {
+      "head": "var/recall-road-fit-vric-20261018/vric-mass-2-leaves-63.joblib",
+      "model_SHA": "8936297226b1038289861a00961789c5a9ec7c0a3b03f813f064cfefd63d65f4",
+      "bytes": 1615232,
+      "alpha": 1.0,
+      "threshold": 0.6349104308612428,
+      "remove_columns": [
+        28
+      ],
+      "reward": 3.4223500560495204,
+      "combinedcoveragegain": 4.961642587926588,
+      "oldOOFmacroQ": 2.7195381329240904,
+      "oldOOFmacrocoverage": 5.366664673102876,
+      "oldgroupQ": {
+        "CFV14/natural": 3.7204775624656747,
+        "CFV14/removed": 3.6425615789018764,
+        "CFV42/natural": 4.554803533168965,
+        "CFV42/removed": 0.5679144259145801,
+        "NiVe-dn": 4.5786163522012515,
+        "NiVe-night": 1.3824884792626762,
+        "NiVe-original": 1.2410677042525577,
+        "RGBNT100": 9.790896761108414,
+        "VRAI": 4.2690539249540365,
+        "VRIC/lower_half_blackout": 0.5627727526658788,
+        "VRIC/raw": 0.7199863464542489,
+        "VehicleRear": 0.013593885181506948,
+        "WMVeID/lower_half_blackout": 3.5366222103495915,
+        "WMVeID/raw": 2.051262429435198,
+        "contest": 0.7563265155797154,
+        "external": 1.3261146950596014
+      },
+      "plate_Qgain": {
+        "base": 2.5418526444221783,
+        "det": 2.2225847032985797,
+        "large": 2.5516484306536285,
+        "large_up": 2.81159772615851,
+        "rand": 1.9157982737837784,
+        "up": 2.6997578485391784
+      },
+      "plate_extra_mean": -0.10157524793544326,
+      "plate_extra_worst": -0.6260543706383999,
+      "road": {
+        "WMVeID": {
+          "raw": {
+            "Q": 4.798762451166354,
+            "coverage": 6.436781609195407,
+            "TNR": 0.8610086100861025
+          },
+          "lower_half_blackout": {
+            "Q": 4.486257614685428,
+            "coverage": 4.827586206896552,
+            "TNR": 1.3530135301353
+          }
+        },
+        "VRIC": {
+          "raw": {
+            "Q": 2.7487495840581175,
+            "coverage": 3.0814814814814824,
+            "TNR": -0.24691358024691112
+          },
+          "lower_half_blackout": {
+            "Q": 0.960874362607413,
+            "coverage": 0.6074074074074058,
+            "TNR": 0.8395061728395063
+          }
+        }
+      }
+    }
+  ],
+  "diagnostics": {
+    "vric-mass-1-leaves-31:0.5": {
+      "feasible_before_plate": 0,
+      "feasible_final": 0,
+      "maxreward": 2.509959047627414
+    },
+    "vric-mass-1-leaves-31:0.75": {
+      "feasible_before_plate": 691,
+      "feasible_final": 0,
+      "maxreward": 3.5553704418650978
+    },
+    "vric-mass-1-leaves-31:1.0": {
+      "feasible_before_plate": 1117,
+      "feasible_final": 1117,
+      "maxreward": 4.017903058151693
+    },
+    "vric-mass-1-leaves-63:0.5": {
+      "feasible_before_plate": 221,
+      "feasible_final": 42,
+      "maxreward": 2.543809806682606
+    },
+    "vric-mass-1-leaves-63:0.75": {
+      "feasible_before_plate": 1180,
+      "feasible_final": 0,
+      "maxreward": 3.3827492581539027
+    },
+    "vric-mass-1-leaves-63:1.0": {
+      "feasible_before_plate": 1903,
+      "feasible_final": 1903,
+      "maxreward": 3.4777420830956562
+    },
+    "vric-mass-2-leaves-31:0.5": {
+      "feasible_before_plate": 0,
+      "feasible_final": 0,
+      "maxreward": 2.6671371411858327
+    },
+    "vric-mass-2-leaves-31:0.75": {
+      "feasible_before_plate": 747,
+      "feasible_final": 0,
+      "maxreward": 3.732035762258024
+    },
+    "vric-mass-2-leaves-31:1.0": {
+      "feasible_before_plate": 964,
+      "feasible_final": 964,
+      "maxreward": 4.0885244874348645
+    },
+    "vric-mass-2-leaves-63:0.5": {
+      "feasible_before_plate": 0,
+      "feasible_final": 0,
+      "maxreward": 2.7166245309151122
+    },
+    "vric-mass-2-leaves-63:0.75": {
+      "feasible_before_plate": 542,
+      "feasible_final": 0,
+      "maxreward": 3.44010130677176
+    },
+    "vric-mass-2-leaves-63:1.0": {
+      "feasible_before_plate": 1461,
+      "feasible_final": 1461,
+      "maxreward": 3.5513373911845334
+    }
+  },
+  "scope": "Exposedsource/oldplate selection only;661newqueryIDs stillunscored, oldstrictreceipts retained."
+}

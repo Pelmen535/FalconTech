@@ -18,6 +18,7 @@ from __future__ import annotations
 from contextlib import contextmanager
 from datetime import datetime, timezone
 import json
+import hashlib
 from pathlib import Path
 import sqlite3
 import unicodedata
@@ -53,7 +54,7 @@ def validate_image_id(value: str) -> str:
     return value
 
 
-def prepare_item(item: dict, dimension: int) -> tuple:
+def prepare_item(item: dict, dimension: int, *, references_only=False, namespace=None) -> tuple:
     """Проверить запись и привести к виду, который кладётся в таблицу.
 
     Вектор обязан прийти уже L2-нормированным: нормализация здесь означала бы, что
@@ -74,6 +75,13 @@ def prepare_item(item: dict, dimension: int) -> tuple:
         or np.any(bbox[2:] <= 0)
     ):
         raise ValueError("bbox_xywh must have finite x,y >= 0 and width,height > 0")
+    if references_only:
+        from .october_reference import FeatureReference
+        ref = item['embedding']
+        if not isinstance(ref, FeatureReference) or ref.namespace != namespace:
+            raise ValueError('Expected feature_ref in selected extractor namespace')
+        created_at = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
+        return image_id, bytes(raw), json.dumps(bbox.tolist()), None, created_at
     try:
         original = np.asarray(item["embedding"])
         if original.dtype.kind not in "fiu":
@@ -89,6 +97,34 @@ def prepare_item(item: dict, dimension: int) -> tuple:
         raise ValueError("embedding must already be L2-normalized (tolerance 1e-3)")
     created_at = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     return image_id, bytes(raw), json.dumps(bbox.tolist()), vector, created_at
+
+
+def feature_reference(item):
+    value=item.get('feature_ref',getattr(item['embedding'],'feature_ref',None))
+    if value is not None and (not isinstance(value,str) or len(value)!=64 or any(c not in '0123456789abcdef' for c in value)):
+        raise ValueError('Invalid observation feature_ref')
+    return value
+
+
+def content_revision(raw,bbox):
+    data=json.dumps(json.loads(bbox),separators=(',',':'),allow_nan=False).encode()
+    return hashlib.sha256(hashlib.sha256(raw).digest()+len(data).to_bytes(4,'little')+data).hexdigest()
+
+
+class GalleryVectors(np.ndarray):
+    """One ordered DB snapshot; references stay aligned with its observations."""
+    def __new__(cls,vectors,feature_refs):
+        obj=np.asarray(vectors,dtype=np.float32).view(cls)
+        obj.feature_refs=tuple(feature_refs)
+        return obj
+    def __array_finalize__(self,source):
+        self.feature_refs=getattr(source,'feature_refs',None)
+    def __getitem__(self,index):
+        value=super().__getitem__(index)
+        if isinstance(value,GalleryVectors) and value.ndim==2 and self.feature_refs is not None:
+            rows=index[0] if isinstance(index,tuple) else index
+            value.feature_refs=tuple(np.asarray(self.feature_refs,dtype=object)[rows].tolist())
+        return value
 
 
 def expected_identity(model_sha256: str, recipe_sha256: str, dimension: int) -> dict:
@@ -122,6 +158,30 @@ def check_paging(offset: int, limit: int) -> None:
         raise ValueError("offset and limit must be nonnegative integers")
 
 
+def read_frame(store,image_id):
+    """One snapshot SELECT for image and bbox, including delete/re-add races."""
+    image_id=validate_image_id(image_id)
+    marker='?' if store.backend=='sqlite' else '%s'
+    with store._connection() as conn:
+        row=conn.execute('SELECT image_bytes,bbox_xywh FROM gallery_items WHERE image_id='+marker,(image_id,)).fetchone()
+    if row is None:raise KeyError(image_id)
+    return bytes(row[0]),json.loads(row[1]) if store.backend=='sqlite' else row[1]
+
+def find_existing_ids(store,image_ids):
+    """Indexed ID-only lookup; never deserialize embeddings/raw references."""
+    values=list(dict.fromkeys(validate_image_id(value) for value in image_ids))
+    result=set()
+    if not values:return result
+    marker='?' if store.backend=='sqlite' else '%s'
+    with store._connection() as conn:
+        for start in range(0,len(values),500):
+            chunk=values[start:start+500]
+            rows=conn.execute('SELECT image_id FROM gallery_items WHERE image_id IN ('+
+                              ','.join([marker]*len(chunk))+')',chunk).fetchall()
+            result.update(row[0] for row in rows)
+    return result
+
+
 # --------------------------------------------------------------------------- SQLite
 class GalleryStore:
     """Persistent, insertion-ordered gallery with one connection per operation."""
@@ -134,6 +194,7 @@ class GalleryStore:
         model_sha256: str,
         recipe_sha256: str,
         dimension: int,
+        *, references_only=False,
     ) -> None:
         check_arguments(model_sha256, recipe_sha256, dimension)
         self.data_dir = Path(data_dir)
@@ -142,7 +203,14 @@ class GalleryStore:
         self.dimension = dimension
         self.model_sha256 = model_sha256
         self.recipe_sha256 = recipe_sha256
+        self.references_only = bool(references_only)
+        if self.references_only:
+            # Prepare the representation contract before serving snapshots.
+            # This one-time initialization remains part of full cold startup.
+            from .october_reference import GalleryReferences
+            self._gallery_references_type = GalleryReferences
         expected = expected_identity(model_sha256, recipe_sha256, dimension)
+        if self.references_only:expected['representation'] = 'raw-pair-le-v2'
         with self._connection() as conn:
             conn.execute("PRAGMA journal_mode=WAL")
             with conn:
@@ -173,6 +241,17 @@ class GalleryStore:
                     "image_id TEXT NOT NULL UNIQUE, image_bytes BLOB NOT NULL, "
                     "bbox_xywh TEXT NOT NULL, embedding BLOB NOT NULL, created_at TEXT NOT NULL)"
                 )
+                # Additive schema extension: existing vectors/IDs/images remain intact.
+                columns={r[1] for r in conn.execute('PRAGMA table_info(gallery_items)')}
+                if 'feature_ref' not in columns:
+                    conn.execute('ALTER TABLE gallery_items ADD COLUMN feature_ref TEXT')
+                if self.references_only and 'content_revision' not in columns:
+                    conn.execute('ALTER TABLE gallery_items ADD COLUMN content_revision TEXT')
+                if self.references_only:
+                    # The metadata-only snapshot must not traverse image BLOB
+                    # overflow pages. Preserve sequence order and every value.
+                    conn.execute('CREATE INDEX IF NOT EXISTS gallery_ref_snapshot_v2 '
+                                 'ON gallery_items(sequence,image_id,embedding,feature_ref,content_revision)')
 
     @contextmanager
     def _connection(self) -> Iterator[sqlite3.Connection]:
@@ -188,8 +267,9 @@ class GalleryStore:
         return validate_image_id(value)
 
     def _prepare(self, item: dict) -> tuple:
-        image_id, raw, bbox, vector, created_at = prepare_item(item, self.dimension)
-        return image_id, raw, bbox, vector.tobytes(), created_at
+        image_id, raw, bbox, vector, created_at = prepare_item(item, self.dimension, references_only=self.references_only, namespace=self.recipe_sha256)
+        row=(image_id, raw, bbox, (b'' if vector is None else vector.tobytes()), created_at, feature_reference(item))
+        return (*row,content_revision(raw,bbox)) if self.references_only else row
 
     @staticmethod
     def _metadata(row) -> dict:
@@ -220,7 +300,7 @@ class GalleryStore:
                 with conn:
                     conn.executemany(
                         "INSERT INTO gallery_items "
-                        "(image_id,image_bytes,bbox_xywh,embedding,created_at) VALUES (?,?,?,?,?)",
+                        + ("(image_id,image_bytes,bbox_xywh,embedding,created_at,feature_ref,content_revision) VALUES (?,?,?,?,?,?,?)" if self.references_only else "(image_id,image_bytes,bbox_xywh,embedding,created_at,feature_ref) VALUES (?,?,?,?,?,?)"),
                         prepared,
                     )
             except sqlite3.IntegrityError as exc:
@@ -259,16 +339,29 @@ class GalleryStore:
         """Return IDs and vectors from one consistent, insertion-ordered SELECT."""
         with self._connection() as conn:
             rows = conn.execute(
-                "SELECT image_id,embedding FROM gallery_items ORDER BY sequence"
+                "SELECT image_id,embedding,feature_ref" + (",content_revision" if self.references_only else "") + " FROM gallery_items ORDER BY sequence"
             ).fetchall()
+        if self.references_only:
+            if any(bytes(row['embedding']) != b'' for row in rows):
+                raise ValueError('Reference-only SQLite gallery contains legacy vectors')
+            return [row['image_id'] for row in rows], self._gallery_references_type(tuple(row['feature_ref'] for row in rows),self.recipe_sha256,tuple(row['content_revision'] for row in rows))
         if not rows:
-            return [], np.empty((0, self.dimension), dtype=np.float32)
+            return [], GalleryVectors(np.empty((0, self.dimension), dtype=np.float32),[])
         vectors = np.stack([
             np.frombuffer(row["embedding"], dtype="<f4") for row in rows
         ]).astype(np.float32, copy=False)
         if vectors.shape != (len(rows), self.dimension) or not np.isfinite(vectors).all():
             raise ValueError("Persisted gallery contains malformed embeddings")
-        return [row["image_id"] for row in rows], vectors
+        return [row["image_id"] for row in rows], GalleryVectors(vectors,[row["feature_ref"] for row in rows])
+
+    def exists(self,image_id):
+        return bool(find_existing_ids(self,[image_id]))
+
+    def existing_ids(self,image_ids):
+        return find_existing_ids(self,image_ids)
+
+    def frame(self,image_id):
+        return read_frame(self,image_id)
 
     def image(self, image_id: str) -> bytes:
         image_id = validate_image_id(image_id)
@@ -301,7 +394,7 @@ class PostgresGalleryStore:
 
     backend = "postgresql+pgvector"
 
-    def __init__(self, dsn: str, model_sha256: str, recipe_sha256: str, dimension: int) -> None:
+    def __init__(self, dsn: str, model_sha256: str, recipe_sha256: str, dimension: int, *, references_only=False, transaction_connection=None) -> None:
         check_arguments(model_sha256, recipe_sha256, dimension)
         import psycopg
 
@@ -310,7 +403,15 @@ class PostgresGalleryStore:
         self.model_sha256 = model_sha256
         self.recipe_sha256 = recipe_sha256
         self._psycopg = psycopg
+        self._transaction_connection = transaction_connection
+        self.references_only = bool(references_only)
+        if self.references_only:
+            # Prepare the representation contract before serving snapshots.
+            # This one-time initialization remains part of full cold startup.
+            from .october_reference import GalleryReferences
+            self._gallery_references_type = GalleryReferences
         expected = expected_identity(model_sha256, recipe_sha256, dimension)
+        if self.references_only:expected['representation'] = 'raw-pair-le-v2'
         with self._connection() as conn:
             with conn.transaction():
                 conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
@@ -320,7 +421,9 @@ class PostgresGalleryStore:
                     "CREATE TABLE IF NOT EXISTS gallery_items ("
                     "sequence BIGSERIAL PRIMARY KEY, image_id TEXT NOT NULL UNIQUE, "
                     "image_bytes BYTEA NOT NULL, bbox_xywh JSONB NOT NULL, "
-                    f"embedding vector({dimension}) NOT NULL, created_at TEXT NOT NULL)")
+                    f"embedding vector({dimension}) " + ("" if self.references_only else "NOT NULL ") + ", created_at TEXT NOT NULL)")
+                conn.execute('ALTER TABLE gallery_items ADD COLUMN IF NOT EXISTS feature_ref TEXT')
+                if self.references_only:conn.execute('ALTER TABLE gallery_items ADD COLUMN IF NOT EXISTS content_revision TEXT')
                 actual = dict(conn.execute("SELECT key, value FROM gallery_metadata").fetchall())
                 if actual and actual != expected:
                     raise GalleryIdentityError(
@@ -336,6 +439,12 @@ class PostgresGalleryStore:
 
     @contextmanager
     def _connection(self):
+        # Administrative restore may join its one outer transaction. Normal
+        # service stores retain the existing per-operation connection lifecycle.
+        if self._transaction_connection is not None:
+            if self._transaction_connection.closed:raise RuntimeError('Restore transaction connection is closed')
+            yield self._transaction_connection
+            return
         conn = self._psycopg.connect(self.dsn, autocommit=True, connect_timeout=15)
         try:
             yield conn
@@ -349,8 +458,9 @@ class PostgresGalleryStore:
         return "[" + ",".join(repr(float(x)) for x in vector) + "]"
 
     def _prepare(self, item: dict) -> tuple:
-        image_id, raw, bbox, vector, created_at = prepare_item(item, self.dimension)
-        return image_id, raw, bbox, self._vector_literal(vector), created_at
+        image_id, raw, bbox, vector, created_at = prepare_item(item, self.dimension, references_only=self.references_only, namespace=self.recipe_sha256)
+        row=(image_id, raw, bbox, (None if vector is None else self._vector_literal(vector)), created_at, feature_reference(item))
+        return (*row,content_revision(raw,bbox)) if self.references_only else row
 
     def add(self, image_id: str, image_bytes: bytes, bbox_xywh: tuple, embedding: np.ndarray) -> dict:
         return self.add_many([{
@@ -370,8 +480,7 @@ class PostgresGalleryStore:
                 with conn.transaction():
                     conn.cursor().executemany(
                         "INSERT INTO gallery_items "
-                        "(image_id,image_bytes,bbox_xywh,embedding,created_at) "
-                        "VALUES (%s,%s,%s::jsonb,%s::vector,%s)", prepared)
+                        + ("(image_id,image_bytes,bbox_xywh,embedding,created_at,feature_ref,content_revision) VALUES (%s,%s,%s::jsonb,%s::vector,%s,%s,%s)" if self.references_only else "(image_id,image_bytes,bbox_xywh,embedding,created_at,feature_ref) VALUES (%s,%s,%s::jsonb,%s::vector,%s,%s)"), prepared)
             except self._psycopg.errors.UniqueViolation as exc:
                 raise DuplicateImageError("image_id already exists in gallery") from exc
         return [{"image_id": row[0], "bbox_xywh": json.loads(row[2]), "created_at": row[4]}
@@ -400,15 +509,27 @@ class PostgresGalleryStore:
 
     def snapshot(self) -> tuple[list[str], np.ndarray]:
         with self._connection() as conn:
-            rows = conn.execute("SELECT image_id, embedding::text FROM gallery_items "
-                                "ORDER BY sequence").fetchall()
+            rows = conn.execute("SELECT image_id, embedding::text, feature_ref" + (",content_revision" if self.references_only else "") + " FROM gallery_items ORDER BY sequence").fetchall()
+        if self.references_only:
+            if any(row[1] is not None for row in rows):
+                raise ValueError('Reference-only PostgreSQL gallery contains legacy vectors')
+            return [row[0] for row in rows], self._gallery_references_type(tuple(row[2] for row in rows),self.recipe_sha256,tuple(row[3] for row in rows))
         if not rows:
-            return [], np.empty((0, self.dimension), dtype=np.float32)
+            return [], GalleryVectors(np.empty((0, self.dimension), dtype=np.float32),[])
         # pgvector печатает вектор как '[1,2,3]' — это корректный JSON-массив.
         vectors = np.stack([np.asarray(json.loads(row[1]), dtype=np.float32) for row in rows])
         if vectors.shape != (len(rows), self.dimension) or not np.isfinite(vectors).all():
             raise ValueError("Persisted gallery contains malformed embeddings")
-        return [row[0] for row in rows], vectors
+        return [row[0] for row in rows], GalleryVectors(vectors,[row[2] for row in rows])
+
+    def exists(self,image_id):
+        return bool(find_existing_ids(self,[image_id]))
+
+    def existing_ids(self,image_ids):
+        return find_existing_ids(self,image_ids)
+
+    def frame(self,image_id):
+        return read_frame(self,image_id)
 
     def image(self, image_id: str) -> bytes:
         image_id = validate_image_id(image_id)
@@ -427,9 +548,9 @@ class PostgresGalleryStore:
                 return cursor.rowcount == 1
 
 
-def open_store(settings, model_sha256: str, recipe_sha256: str, dimension: int):
+def open_store(settings, model_sha256: str, recipe_sha256: str, dimension: int, *, references_only=False):
     """Выбрать бэкенд по настройкам: строка подключения есть — PostgreSQL, нет — SQLite."""
     dsn = getattr(settings, "database_url", "") or ""
     if dsn:
-        return PostgresGalleryStore(dsn, model_sha256, recipe_sha256, dimension)
-    return GalleryStore(settings.data_dir, model_sha256, recipe_sha256, dimension)
+        return PostgresGalleryStore(dsn, model_sha256, recipe_sha256, dimension, references_only=references_only)
+    return GalleryStore(settings.data_dir, model_sha256, recipe_sha256, dimension, references_only=references_only)

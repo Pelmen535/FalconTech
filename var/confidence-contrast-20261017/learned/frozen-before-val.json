@@ -1,0 +1,98 @@
+{
+  "created": 1792256370.2898278,
+  "winners": {
+    "extra8_practical": {
+      "config": {
+        "model": "extra8",
+        "threshold": 0.9914391015488158,
+        "scope": "source"
+      },
+      "objective": 7.082587731200491,
+      "newFP": 1.0
+    },
+    "extra8_conservative": {
+      "config": {
+        "model": "extra8",
+        "threshold": 0.9981062149312225,
+        "scope": "source"
+      },
+      "objective": 5.618449239311244,
+      "newFP": 0.0
+    },
+    "extra24_practical": {
+      "config": {
+        "model": "extra24",
+        "threshold": 0.9836864916913471,
+        "scope": "source"
+      },
+      "objective": 7.382189960305306,
+      "newFP": 3.0
+    },
+    "extra24_conservative": {
+      "config": {
+        "model": "extra24",
+        "threshold": 0.9986028004458799,
+        "scope": "source"
+      },
+      "objective": 3.64850489608475,
+      "newFP": 0.0
+    },
+    "hgb7_practical": {
+      "config": {
+        "model": "hgb7",
+        "threshold": 0.9983150951234327,
+        "scope": "source"
+      },
+      "objective": 5.921674121444049,
+      "newFP": 3.0
+    },
+    "hgb7_conservative": {
+      "config": {
+        "model": "hgb7",
+        "threshold": 0.9992508604107972,
+        "scope": "source"
+      },
+      "objective": 0.26923076923076916,
+      "newFP": 0.0
+    },
+    "hgb15_practical": {
+      "config": {
+        "model": "hgb15",
+        "threshold": 0.998239678815797,
+        "scope": "source"
+      },
+      "objective": 7.048339073214396,
+      "newFP": 3.0
+    },
+    "hgb15_conservative": {
+      "config": {
+        "model": "hgb15",
+        "threshold": 0.9993538656064738,
+        "scope": "source"
+      },
+      "objective": 1.730799443281697,
+      "newFP": 0.0
+    }
+  },
+  "models": {
+    "extra8": {
+      "SHA": "e72878fdbe67498523999c743b2df625863495d1906771b4964263ad8e134554",
+      "bytes": 2316537
+    },
+    "extra24": {
+      "SHA": "9006065592cb71b5886b113e310234188e4a6ff660e226f35792dbde273870ec",
+      "bytes": 1435417
+    },
+    "hgb7": {
+      "SHA": "a0dd954efc6d06e200be987feacb43982ffb6a5fde854eeeff8f5d6571b08f7d",
+      "bytes": 362680
+    },
+    "hgb15": {
+      "SHA": "64495fdc7c6258a7f67ec6cd444975b4302ddbb83d8a77738de9df5410be0ee2",
+      "bytes": 499992
+    }
+  },
+  "protocol_SHA": "b57983565067002ab06a9eeedf51deb57c01783317132beeb959368dd578db8e",
+  "CAL_SHA": "99e7198a603aece0c28d5cea7a708d4b1b6cf7a2a43d7539ff9c58924c14f686",
+  "code_SHA": "9b7d7a0dda3f162ef6f5ff22d03344546d2b49ea59cadbb56a134ee21680a80d"
+}

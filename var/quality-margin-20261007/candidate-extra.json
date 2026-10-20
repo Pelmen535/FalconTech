@@ -1,0 +1,23 @@
+{
+  "name": "D3 mixedTRT + extra_views + multinomial_hgb20",
+  "transform": "extra_views-transform.npz",
+  "head": "extra-refusal-multinomial_hgb20.joblib",
+  "kind": "hgb20",
+  "threshold": 0.7988346717209206,
+  "sha256": {
+    "extra_views-transform.npz": "4290e89bef055fad59591089ea5947dfabed970ad0c1bc40a4f429a913ce0715",
+    "extra-refusal-multinomial_hgb20.joblib": "06c01754a90940d6eae2c9de10270d6943febb60352a54366fccce90bdc36629",
+    "../competitive-margin-20261007/pca512-transform.npz": "7c9ec4df4bcc3e8cd63dcceb2a6238e147cdc4448dabeab0b51d94f8ac676c36"
+  },
+  "fit": "original TRAIN only, fresh1000cal+1000val excluded from metric/head fit",
+  "head_validation_gate": "PASS",
+  "query_independent": true,
+  "speed_verified": false,
+  "A5000_verified": false,
+  "goal_gap": 10,
+  "goal_minimum_gap": 8,
+  "gallery_adaptation": {
+    "center": 1,
+    "power": 0.125
+  }
+}

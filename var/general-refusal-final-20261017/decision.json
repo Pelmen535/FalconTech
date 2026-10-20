@@ -1,0 +1,11 @@
+{
+  "status": "READY_LOCAL_WINDOWS_Q_GAIN_WITH_TNR_TRADEOFF",
+  "selection_SHA": "92169795dbbb72aa1d04e842d4bba4d9e778606ce02409ebcf4d90bb83bf05b1",
+  "source_variant": "general-refusal-20261017d",
+  "strict_TNR_guard_passed": false,
+  "old_strict_failures_preserved": true,
+  "new52_evaluated": true,
+  "native_acceptance_complete": true,
+  "purpose": "Separate practical quality evaluation, not a retroactive strict-transfer PASS",
+  "new_ID_status": "PASS_NEW_ID_CONFIRMATION"
+}

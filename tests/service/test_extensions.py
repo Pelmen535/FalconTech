@@ -226,6 +226,21 @@ def test_demo_buttons_are_off_by_default(tmp_path):
     assert client.get("/v1/gallery").json()["count"] == 0
 
 
+def test_demo_import_rechecks_gallery_after_archive_validation(client, monkeypatch):
+    from service import app as app_module
+    original = app_module.gallery_archive
+    def concurrent_add(content, settings):
+        records = original(content, settings)
+        client.app.state.store.add('user-car', frame(1), (0, 0, 20, 20),
+                                   np.array([0, 1, 0, 0], dtype=np.float32))
+        return records
+    monkeypatch.setattr(app_module, 'gallery_archive', concurrent_add)
+    monkeypatch.setattr(client.app.state.core, 'encode',
+                        lambda *args: pytest.fail('demo must not encode into a nonempty gallery'))
+    assert client.post('/v1/demo/gallery').status_code == 409
+    assert [item['image_id'] for item in client.get('/v1/gallery').json()['items']] == ['user-car']
+
+
 def test_health_reports_the_storage_backend(client):
     assert client.get("/health").json()["storage"] == "sqlite"
 

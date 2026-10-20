@@ -96,15 +96,29 @@ def _safe_filename(key: str) -> str:
 
 
 # --------------------------------------------------------------------------- аугментации
+def _perspective_coeffs(out_pts, in_pts):
+    """Коэффициенты PIL PERSPECTIVE: для каждой точки выхода — где брать пиксель на входе."""
+    rows, rhs = [], []
+    for (x, y), (u, v) in zip(out_pts, in_pts):
+        rows.append([x, y, 1, 0, 0, 0, -u * x, -u * y]); rhs.append(u)
+        rows.append([0, 0, 0, x, y, 1, -v * x, -v * y]); rhs.append(v)
+    return tuple(np.linalg.solve(np.array(rows, dtype=np.float64), np.array(rhs, dtype=np.float64)))
+
+
 class TrainTransform:
     """Аугментации обучения. __call__(im, bbox, mask_frac) → нормализованный тензор
     3×img_size×img_size; bbox задан в координатах кэш-кропа, mask_frac — в долях кропа.
     strong=False (--no-strong-aug) оставляет только джиттер bbox и флип, отключая цвет,
     grayscale, даунскейл+JPEG, блюр и random erasing."""
 
-    def __init__(self, img_size: int, mean, std, mask_p: float = 0.0, strong: bool = True):
+    def __init__(self, img_size: int, mean, std, mask_p: float = 0.0, strong: bool = True,
+                 tilt_p: float = 0.0, plate_erase_p: float = 0.0):
         import torchvision.transforms as T
         self.size = img_size
+        # Новые аугментации стоят в конце __call__ и при p=0 не трогают генератор random:
+        # прежний рецепт воспроизводится побитово.
+        self.tilt_p = float(tilt_p)
+        self.plate_erase_p = float(plate_erase_p)
         # mask_p — вероятность закрасить зону анонимизации номера (боксы приходят из кеша).
         # Это аугментация «номера нет», а не фиксированный прямоугольник: она учит модель
         # не опираться на эту зону, при этом на инференсе ничего закрывать не нужно.
@@ -149,6 +163,37 @@ class TrainTransform:
             crop = crop.filter(ImageFilter.GaussianBlur(radius=random.uniform(0.5, 1.5)))
         return crop
 
+    @staticmethod
+    def _tilt(crop: Image.Image) -> Image.Image:
+        """Наклон камеры: вертикальный сдвиг (shear) 4–12° в случайную сторону и изредка
+        перспектива. Камеры над дорогой смотрят на машину под разными углами."""
+        w, h = crop.size
+        shear = math.tan(math.radians(random.uniform(4, 12))) * random.choice((-1, 1))
+        crop = crop.transform((w, h), Image.AFFINE, (1, 0, 0, shear, 1, -shear * w / 2),
+                              resample=Image.BILINEAR)
+        if random.random() < 0.5:
+            d = 0.15
+            jit = lambda: random.uniform(0, d)
+            src = [(jit() * w, jit() * h), (w - jit() * w, jit() * h),
+                   (w - jit() * w, h - jit() * h), (jit() * w, h - jit() * h)]
+            dst = [(0, 0), (w, 0), (w, h), (0, h)]
+            coeffs = _perspective_coeffs(dst, src)
+            crop = crop.transform((w, h), Image.PERSPECTIVE, coeffs, resample=Image.BILINEAR)
+        return crop
+
+    @staticmethod
+    def _plate_erase(crop: Image.Image) -> Image.Image:
+        """Сплошная заливка зоны, где обычно стоит номер (низ по центру кропа). Учит модель не
+        опираться на номер: финалистов проверяют на тесте с залитой зоной номера (ответ 48)."""
+        w, h = crop.size
+        bw, bh = random.uniform(0.18, 0.32) * w, random.uniform(0.06, 0.12) * h
+        cx, cy = random.uniform(0.40, 0.60) * w, random.uniform(0.70, 0.90) * h
+        crop = crop.copy()
+        shade = random.randint(40, 200)
+        crop.paste((shade, shade, shade), (int(cx - bw / 2), int(cy - bh / 2),
+                                           int(cx + bw / 2), int(cy + bh / 2)))
+        return crop
+
     def __call__(self, im: Image.Image, bbox, mask_frac=None) -> "torch.Tensor":
         crop = self._jitter_crop(im, bbox)
         # random.random() специально последним: при mask_p=0 (а релиз обучен с mask_p=0)
@@ -161,6 +206,10 @@ class TrainTransform:
             crop = crop.transpose(Image.FLIP_LEFT_RIGHT)
         if self.strong:
             crop = self._degrade(crop)
+        if self.tilt_p and random.random() < self.tilt_p:
+            crop = self._tilt(crop)
+        if self.plate_erase_p and random.random() < self.plate_erase_p:
+            crop = self._plate_erase(crop)
         crop = crop.resize((self.size, self.size), Image.BICUBIC)
         tensor = self.norm(crop)
         return self.erase(tensor) if self.strong else tensor
@@ -608,8 +657,97 @@ def validate(model, query: Split, gallery: Split, has_match, transform, device, 
 
 
 # --------------------------------------------------------------------------- обучение
+class WeightEMA:
+    """Скользящее среднее весов (backbone + BNNeck). Валидируется и сохраняется именно оно:
+    у других команд EMA давала заметную прибавку на новых машинах. Буферы BN копируются как есть."""
+
+    def __init__(self, model: "ReIDModel", decay: float):
+        import copy
+        self.decay = float(decay)
+        self.model = copy.deepcopy(model)
+        for m in self.model.modules():
+            for p in m.parameters():
+                p.requires_grad_(False)
+
+    def update(self, model: "ReIDModel") -> None:
+        import torch
+        with torch.no_grad():
+            for live, avg in zip(model.modules(), self.model.modules()):
+                for p, e in zip(live.parameters(), avg.parameters()):
+                    e.mul_(self.decay).add_(p.detach(), alpha=1 - self.decay)
+                for b, eb in zip(live.buffers(), avg.buffers()):
+                    eb.copy_(b)
+
+
+def layerwise_groups(model: "ReIDModel", lr: float, decay: float, top: float = 1.0) -> list[dict]:
+    """Разная скорость обучения по слоям ViT: верхний блок — lr·top, каждый ниже — ещё ×decay,
+    эмбеддинги — самые медленные. Меньше забываем предобучение DINOv2 в нижних слоях."""
+    bb = model.backbone
+    n = len(getattr(bb, "blocks", []))
+    groups: dict[int, list] = defaultdict(list)
+    for name, p in bb.named_parameters():
+        if not p.requires_grad:
+            continue
+        if name.startswith("blocks."):
+            layer = int(name.split(".")[1]) + 1
+        elif name.startswith(("norm", "fc_norm", "head")):
+            layer = n + 1
+        else:
+            layer = 0
+        groups[layer].append(p)
+    return [{"params": ps, "lr": lr * top * decay ** (n + 1 - layer)} for layer, ps in sorted(groups.items())]
+
+
+def init_from(model: "ReIDModel", path: str) -> None:
+    """Старт с чужого чекпоинта той же архитектуры (например, предобученного на внешнем наборе).
+    Позиционные эмбеддинги пересчитываются под текущий вход, если он другой."""
+    import torch
+    ck = torch.load(path, map_location="cpu", weights_only=False)
+    sd = dict(ck["backbone"])
+    own = model.backbone.state_dict()
+    if "pos_embed" in sd and sd["pos_embed"].shape != own["pos_embed"].shape:
+        from timm.layers import resample_abs_pos_embed
+        grid = model.backbone.patch_embed.grid_size
+        sd["pos_embed"] = resample_abs_pos_embed(
+            sd["pos_embed"], new_size=list(grid),
+            num_prefix_tokens=getattr(model.backbone, "num_prefix_tokens", 1))
+        print(f"[train] init: pos_embed {tuple(ck['backbone']['pos_embed'].shape)} → {tuple(sd['pos_embed'].shape)}")
+    model.backbone.load_state_dict(sd)
+    if ck.get("bnneck") and ck.get("dim") == model.dim:
+        model.bnneck.load_state_dict(ck["bnneck"])
+    print(f"[train] init: веса из {path} ({ck.get('model_name')}, вход {ck.get('img_size')})")
+
+
+def read_train_list(path: str) -> list[Record]:
+    """Внешний набор готовых кропов: строки «путь vid cam w h». bbox = весь кроп."""
+    recs = []
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            parts = line.rstrip("\n").split("\t")
+            if len(parts) < 5:
+                continue
+            p, vid, cam, w, h = parts[:5]
+            recs.append(Record(p, int(vid), int(cam), (0, 0, int(w), int(h)), p))
+    return recs
+
+
+def arcface_from_means(model: "ReIDModel", arc, records: list[Record], label_map: dict, transform,
+                       device, batch_size: int, workers: int) -> None:
+    """Инициализация весов ArcFace средними нормированными эмбеддингами классов: голова
+    стартует уже «знающей» машины, первые эпохи не тратятся на случайную W."""
+    import torch
+    emb = embed_records(model, records, transform, device, batch_size, workers)
+    W = np.zeros((len(label_map), emb.shape[1]), dtype=np.float32)
+    for r, e in zip(records, emb):
+        W[label_map[r.vid]] += e
+    W /= np.linalg.norm(W, axis=1, keepdims=True) + 1e-8
+    with torch.no_grad():
+        arc.W.copy_(torch.from_numpy(W).to(arc.W.device))
+    print(f"[train] ArcFace: W инициализирована средними {len(label_map)} классов")
+
+
 def train_one_epoch(model, loader, arc, teachers, opt, sched, scaler, params, args, device,
-                    throttle) -> list[float]:
+                    throttle, ema=None) -> list[float]:
     """Одна эпоха: тело цикла вынесено из main как есть, без перестановок. Порядок внутри шага
     (autocast → fp32 → scaler.step → scaler.update → sched.step) несущий. Возвращает лоссы
     по шагам — среднее по ним печатается и уходит в log.json."""
@@ -655,6 +793,8 @@ def train_one_epoch(model, loader, arc, teachers, opt, sched, scaler, params, ar
         scaler.step(opt)
         scaler.update()
         sched.step()
+        if ema is not None:
+            ema.update(model)
         losses.append(loss.item())
         if throttle > 0:
             if device == "cuda":
@@ -721,6 +861,17 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--throttle", type=float, default=None,
                         help="доля паузы после каждого шага (0.15 = GPU занят ~85%%), чтобы компьютер не лагал; "
                              "по умолчанию из переменной окружения VREID_THROTTLE")
+    # --- приёмы, найденные у других команд; по умолчанию выключены, прежний рецепт не меняется
+    parser.add_argument("--init", default=None, help="стартовые веса backbone/BNNeck из чекпоинта")
+    parser.add_argument("--train-list", default=None,
+                        help="обучаться на внешнем наборе кропов (TSV: путь, vid, cam, w, h) вместо fit")
+    parser.add_argument("--ema", type=float, default=0.0, help="EMA весов, например 0.998; 0 — выкл.")
+    parser.add_argument("--llrd", type=float, default=0.0, help="затухание lr по слоям ViT, например 0.9")
+    parser.add_argument("--llrd-top", type=float, default=1.0, help="множитель lr верхнего блока при --llrd")
+    parser.add_argument("--arc-init-means", action="store_true", help="W ArcFace = средние классов")
+    parser.add_argument("--tilt-p", type=float, default=0.0, help="вероятность наклона/перспективы")
+    parser.add_argument("--plate-erase-p", type=float, default=0.0,
+                        help="вероятность залить зону номера (низ по центру)")
     return parser
 
 
@@ -767,8 +918,13 @@ def main(argv=None):
     # запас 30% здесь намеренно больше crop.pad инференса (0.08): внутри этого запаса живёт
     # джиттер bbox в TrainTransform (масштаб до 1.2, сдвиг ±10%). crop.pad из конфига —
     # только для валидации
-    fit = prepare_crops(splits["fit"].records, cache / "fit")
-    print(f"[train] кропы fit: {len(fit)} ({time.time() - t0:.0f} c)")
+    if args.train_list:
+        fit = read_train_list(args.train_list)
+        print(f"[train] обучение на внешнем наборе {args.train_list}: {len(fit)} кропов, "
+              f"{len({r.vid for r in fit})} машин; валидация — наша")
+    else:
+        fit = prepare_crops(splits["fit"].records, cache / "fit")
+        print(f"[train] кропы fit: {len(fit)} ({time.time() - t0:.0f} c)")
     # sorted фиксирует соответствие vehicle_id → номер класса ArcFace: порядок множества зависит
     # от хеширования, а от номера класса зависит строка матрицы W. Без сортировки два запуска
     # на одних данных дают разные метки и несравнимые веса
@@ -777,6 +933,9 @@ def main(argv=None):
 
     model_name = _REGISTRY.get(args.backbone, {}).get("model_name", args.backbone)
     model = ReIDModel(model_name, args.img_size, pretrained=(args.pretrained.lower() == "true")).to(device)
+    if args.init:
+        init_from(model, args.init)
+        model.to(device)
     if args.freeze_blocks and hasattr(model.backbone, "blocks"):
         for p in model.backbone.patch_embed.parameters():
             p.requires_grad_(False)
@@ -826,8 +985,11 @@ def main(argv=None):
     else:
         args.P = int(args.P)
 
-    tf_train = TrainTransform(args.img_size, model.mean, model.std, float(args.mask_p), strong=not args.no_strong_aug)
+    tf_train = TrainTransform(args.img_size, model.mean, model.std, float(args.mask_p), strong=not args.no_strong_aug,
+                              tilt_p=args.tilt_p, plate_erase_p=args.plate_erase_p)
     tf_eval = EvalTransform(args.img_size, model.mean, model.std, crop_cfg.get("pad", 0.08))
+    if args.arc_init_means:
+        arcface_from_means(model, arc, fit, label_map, tf_eval, device, args.batch_size_eval, args.workers)
     mask = None
     if args.mask_p > 0:
         from .plate import load_cache
@@ -846,8 +1008,12 @@ def main(argv=None):
     loader = DataLoader(ds, batch_sampler=sampler, num_workers=args.workers,
                         pin_memory=(device == "cuda"))
 
-    params = [{"params": [p for p in model.backbone.parameters() if p.requires_grad], "lr": args.lr},
-              {"params": list(model.bnneck.parameters()) + [arc.W], "lr": args.lr_head}]
+    if args.llrd > 0:
+        params = layerwise_groups(model, args.lr, args.llrd, args.llrd_top)
+        print(f"[train] lr по слоям: {params[0]['lr']:.2e} (эмбеддинги) … {params[-1]['lr']:.2e} (верх)")
+    else:
+        params = [{"params": [p for p in model.backbone.parameters() if p.requires_grad], "lr": args.lr}]
+    params.append({"params": list(model.bnneck.parameters()) + [arc.W], "lr": args.lr_head})
     opt = torch.optim.AdamW(params, weight_decay=args.wd)
     steps_total = args.epochs * len(sampler)
     steps_warm = args.warmup * len(sampler)
@@ -878,10 +1044,14 @@ def main(argv=None):
     # и если ни одна эпоха не побьёт стартовую метрику; get_backbone("ft:<out>/best.pt")
     # не останется без файла
     torch.save(model.state(), out / "best.pt")
+    ema = WeightEMA(model, args.ema) if args.ema > 0 else None
+    if ema is not None:
+        print(f"[train] EMA весов, decay={args.ema}: валидируется и сохраняется среднее")
+    target = ema.model if ema is not None else model
     for epoch in range(1, args.epochs + 1):
         t0 = time.time()
         losses = train_one_epoch(model, loader, arc, teachers, opt, sched, scaler, params, args,
-                                 device, throttle)
+                                 device, throttle, ema=ema)
         if full_fit:   # валидации нет: держим последнюю эпоху
             # в mAP кладётся НОМЕР ЭПОХИ — так условие улучшения ниже истинно каждый раз
             # и best.pt всегда хранит последнюю эпоху. Внимание: в этом режиме поле mAP
@@ -889,7 +1059,7 @@ def main(argv=None):
             metrics = {"mAP": float(epoch)}
             print(f"[ep {epoch:02d}] loss={np.mean(losses):.3f} ({time.time() - t0:.0f} c)")
         else:
-            metrics = validate(model, splits["query"], splits["gallery"], splits["has_match"],
+            metrics = validate(target, splits["query"], splits["gallery"], splits["has_match"],
                                tf_eval, device, args.batch_size_eval, args.workers)
             print(f"[ep {epoch:02d}] loss={np.mean(losses):.3f} {format_metrics(metrics, '')} "
                   f"({time.time() - t0:.0f} c)")
@@ -901,10 +1071,10 @@ def main(argv=None):
             # отобранную по валидации, с моделью, которая отбора не видела, и разница между ними
             # — не свойство рецепта, а сам факт отбора.
             best, best_epoch = metrics["mAP"], epoch
-            torch.save(model.state(), out / "best.pt")
+            torch.save(target.state(), out / "best.pt")
         elif metrics["mAP"] > best:
             best, best_epoch, epochs_without_gain = metrics["mAP"], epoch, 0
-            torch.save(model.state(), out / "best.pt")
+            torch.save(target.state(), out / "best.pt")
         else:
             epochs_without_gain += 1
             if epochs_without_gain >= args.patience:

@@ -1,0 +1,25 @@
+{
+  "profile": "domain-source-v1",
+  "rerank_profile": "current-query-v1",
+  "scope": "source",
+  "status": "READY_LOCAL_WINDOWS_Q_GAIN_WITH_TNR_TRADEOFF",
+  "threshold": 0.9942770103671651,
+  "head": "var/confidence-domain-20261017/extra8.joblib",
+  "strict_TNR_guard_passed": false,
+  "preserve_all_prior_accepted": true,
+  "independent_holdout": false,
+  "files": {
+    "var/confidence-domain-20261017/extra8.joblib": "4bd8cd8a9fca38120642d3512ec7b803b1125e83e24d9d8d971dd9fd60d838f4",
+    "vreid/refusal_policy_domain.py": "b23e8d1437d04d78b7e8eb2682cec6afba8b9535f7edf07907a83ba8b73ba345",
+    "var/confidence-repair-20261017/runtime-selection.json": "d5d005c903383c120c6741d04375a8e2d7f43411f05cc2333d8dcbecc4bd52af",
+    "var/confidence-domain-20261017/frozen-before-val.json": "6a7aa2e541fa18c837e564c9e6e34e8e49bc1b3bd5b0d50f9d158a40ceadabca"
+  },
+  "acceptance": [
+    "practical-review.json",
+    "official-verification.json",
+    "production-policy-verification.json",
+    "native-verification.json",
+    "http-final-CFV-natural-00/results.json",
+    "mask-replay.json"
+  ]
+}

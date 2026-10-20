@@ -317,17 +317,24 @@ class CoreAdapter:
             frame_ids = {item.split("#")[0] for item in ids}
             while query_id in frame_ids:
                 query_id += "_"
-        keys = [query_id] + ids
-        block = rerank.frame_block_mask(keys, keys)
-        np.fill_diagonal(block, True)
-        valid = ~block[0, 1:]
+        # Cosine needs only query-gallery eligibility. Avoid a quadratic
+        # gallery-gallery mask unless the reranker actually consumes it.
+        use_rerank = bool(self._recipe.get("kr", False))
+        block = None
+        if use_rerank:
+            keys = [query_id] + ids
+            block = rerank.frame_block_mask(keys, keys)
+            np.fill_diagonal(block, True)
+            valid = ~block[0, 1:]
+        else:
+            valid = ~rerank.frame_block_mask([query_id], ids)[0]
         if int(valid.sum()) < 10:
             raise ValueError(
                 f"At least 10 gallery records excluding the query's frame are required; got {int(valid.sum())}"
             )
         raw = (query @ gallery.T)[0]
         raw[~valid] = -np.inf
-        if self._recipe.get("kr", False):
+        if use_rerank:
             distance = rerank.k_reciprocal(
                 query, gallery, k1=int(self._recipe.get("k1", 10)),
                 k2=int(self._recipe.get("k2", 3)),

@@ -1,0 +1,102 @@
+{
+  "verified_date": "2026-10-20",
+  "columns": [
+    "name",
+    "version_author",
+    "source",
+    "access",
+    "role",
+    "terms_note"
+  ],
+  "rows": [
+    [
+      "DINOv3 ViT-L/16 LVD-1689M",
+      "Meta; model family 2025; runtime timm 1.0.29",
+      "https://github.com/facebookresearch/dinov3",
+      "https://huggingface.co/facebook/dinov3-vitl16-pretrain-lvd1689m",
+      "pretrained foundation → own full fine-tuning → interpolation25 → immutable CPU/TRT artifacts",
+      "DINOv3 License; include exact license text"
+    ],
+    [
+      "FastReID R50-IBN/GeM",
+      "JDAI-CV; v0.1.1; commit c9bc3ceb2f7a6438b62fb515ea3df6d1e999e95d",
+      "https://github.com/JDAI-CV/fast-reid/tree/c9bc3ceb2f7a6438b62fb515ea3df6d1e999e95d",
+      "https://github.com/JDAI-CV/fast-reid/releases/download/v0.1.1/veriwild_bot_R50-ibn.pth",
+      "pretrained CNN, own final-layer/residual fine-tuning; upstream SHA f591e4f7f31ce0be2f4079171cfc03fcbecab5ea5b40f9148c753b9c6f061e8e",
+      "Apache-2.0 code; dataset access terms separate"
+    ],
+    [
+      "VERI-Wild",
+      "Lou et al.; original 2019 dataset, author TRAIN split",
+      "https://github.com/PKU-IMRE/VERI-Wild",
+      "https://github.com/PKU-IMRE/VERI-Wild",
+      "foundation ReID training, source transformations/heads, historical CAL/VAL; CNN author pretraining",
+      "author access terms; non-commercial research; raw images not redistributed"
+    ],
+    [
+      "NiVe1303",
+      "Ruozheng LI; Mendeley v1; DOI 10.17632/42wv2svztx.1",
+      "https://data.mendeley.com/datasets/42wv2svztx/1",
+      "https://doi.org/10.17632/42wv2svztx.1",
+      "night backbone fine-tuning, transforms/routing/confidence; 500 FIT IDs, 12319 FIT images",
+      "use original dataset terms; source ZIP SHA98b98075cff50055a7577d64633eeb6f21678deba12e79d6bf198c73a507c954"
+    ],
+    [
+      "DN-348",
+      "Li et al.; CVPR2024 DN-ReID dataset",
+      "https://github.com/chenjingong/DN-ReID",
+      "https://drive.google.com/uc?export=download&id=1I7khNI6upkvZqJmhygQ2CQUlHzLGFEFO",
+      "CNN fine-tuning: 1800 images; additional development/CAL/VAL",
+      "raw images not redistributed; distinct from DN-Wild"
+    ],
+    [
+      "CFV / Car Full View",
+      "Electronics 2023 12(24),4947; public train/test archives",
+      "https://www.mdpi.com/2079-9292/12/24/4947",
+      "https://huggingface.co/datasets/fort-cyber/CFV-Dataset",
+      "historical transfer diagnostics; reused as downstream head development/training; NOT a fresh final holdout",
+      "raw images not redistributed"
+    ],
+    [
+      "VRAI",
+      "Wang et al.; ICCV2019; author train/dev",
+      "https://github.com/JiaoBL1234/VRAI-Dataset",
+      "https://drive.google.com/drive/folders/1S8BCBDHxXJeqyv8v6LFWS5EZHvVdrHeN",
+      "expanded head FIT/CAL and historical downstream development",
+      "research/non-commercial author terms; no images bundled"
+    ],
+    [
+      "RGBNT100",
+      "100-vehicle multispectral dataset; RGB only",
+      "https://github.com/lsh-ahu/ICPL-ReID",
+      "https://github.com/lsh-ahu/ICPL-ReID#datasets",
+      "expanded head and downstream development; aliases with WMVeID excluded where known",
+      "code license does not automatically license dataset images"
+    ],
+    [
+      "Vehicle-Rear",
+      "de Oliveira et al.; 2019 author dataset",
+      "https://github.com/icarofua/vehicle-rear",
+      "https://github.com/icarofua/vehicle-rear",
+      "historical transfer and later exposed downstream-head development",
+      "author dataset terms; vN views are not proven independent cameras"
+    ],
+    [
+      "WMVeID863",
+      "author public RGB/NIR/TIR dataset; visible modality only",
+      "https://github.com/lsh-ahu/ICPL-ReID",
+      "https://drive.google.com/uc?export=download&id=186Ep0YgHY0a8BQ1Z59HP1D2-kZazbH02",
+      "398 filtered author TRAIN IDs for road refusal; known RGBNT aliases/train-test aliases excluded",
+      "raw images not bundled; redistribution rights beyond author terms not certified"
+    ],
+    [
+      "VRIC",
+      "Kanaci, Zhu, Gong; GCPR2018; author TRAIN/TEST",
+      "https://qmul-vric.github.io/index.html",
+      "https://qmul-vric.github.io/index.html",
+      "600 author TRAIN IDs / 7826 raw/blackout FIT images for road head; 661-query diagnostic separate",
+      "images owned by original UA-DETRAC owners; research-use limitations preserved"
+    ]
+  ],
+  "disclaimer": "All historical CAL/VAL/diagnostics reused in downstream head development are exposed development, not independent final validation. Exact reconstruction uses shipped immutable weights and runtime manifest, no online pretrained loading. No raw third-party images are redistributed."
+}

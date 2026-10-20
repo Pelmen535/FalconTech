@@ -1,0 +1,271 @@
+{
+  "date": "2026-10-20",
+  "image_ID": "sha256:fa4ad6c08349f6b2b66eeb122f65f3047685b4d569ac5995f494fe32c28b323a",
+  "manifest_SHA256": "0e24cd2cc802518cba3cf094c40411fa933efa6701a168231d396bd066545a35",
+  "quality_scope": "Exposed historical development; v1.4 literal release trained all organizer TRAIN identities, organizer local evaluation overlaps its training; not fair holdout or official closed test.",
+  "quality": [
+    {
+      "dataset": "external",
+      "variant": "current",
+      "inference_date": "2026-10-20",
+      "ranking": {
+        "n_scored": 1000,
+        "n_openset_excluded": 100,
+        "mAP@10": 0.7616203042328041,
+        "Rank-1": 0.8,
+        "Rank-5": 0.919,
+        "Rank-10": 0.96
+      },
+      "candidate": {
+        "TP": 672,
+        "FP": 88,
+        "FN": 258,
+        "TN": 82,
+        "n_openset_queries": 100,
+        "Precision": 0.8842105263157894,
+        "Recall": 0.7225806451612903,
+        "F1": 0.7952662721893491,
+        "TNR": 0.82,
+        "PR-AUC": 0.9894048686982833
+      },
+      "correct_coverage": 0.672,
+      "known_queries": 1000,
+      "n_queries": 1100,
+      "GT_SHA256": "54a4221fd3cea713530be810c987abf91e3c0bde8f8a6babb8c0fbdab32b99bf"
+    },
+    {
+      "dataset": "contest",
+      "variant": "current",
+      "inference_date": "2026-10-20",
+      "ranking": {
+        "n_scored": 970,
+        "n_openset_excluded": 243,
+        "mAP@10": 0.8706582256041019,
+        "Rank-1": 0.8391752577319588,
+        "Rank-5": 0.9463917525773196,
+        "Rank-10": 0.9762886597938144
+      },
+      "candidate": {
+        "TP": 946,
+        "FP": 13,
+        "FN": 21,
+        "TN": 233,
+        "n_openset_queries": 243,
+        "Precision": 0.986444212721585,
+        "Recall": 0.9782833505687694,
+        "F1": 0.9823468328141226,
+        "TNR": 0.9588477366255144,
+        "PR-AUC": 0.9949255963312932
+      },
+      "correct_coverage": 0.9752577319587629,
+      "known_queries": 970,
+      "n_queries": 1213,
+      "GT_SHA256": "0e5db109fd37c3bd76f2db7a5a87b1063419996b561345f115b52fda4fe3e8ef"
+    },
+    {
+      "dataset": "VRIC661",
+      "variant": "current",
+      "inference_date": "2026-10-20",
+      "ranking": {
+        "n_scored": 495,
+        "n_openset_excluded": 166,
+        "mAP@10": 0.4812065095398429,
+        "Rank-1": 0.4262626262626263,
+        "Rank-5": 0.5393939393939394,
+        "Rank-10": 0.6505050505050505
+      },
+      "candidate": {
+        "TP": 125,
+        "FP": 61,
+        "FN": 334,
+        "TN": 141,
+        "n_openset_queries": 166,
+        "Precision": 0.6720430107526881,
+        "Recall": 0.27233115468409586,
+        "F1": 0.3875968992248062,
+        "TNR": 0.8493975903614458,
+        "PR-AUC": 0.8185039722513644
+      },
+      "correct_coverage": 0.25252525252525254,
+      "known_queries": 495,
+      "n_queries": 661,
+      "GT_SHA256": "d6f7b476d5630cea284085ffaa93d7e6b92426de9edd7f5435c77af0c887204e"
+    },
+    {
+      "dataset": "external",
+      "variant": "v1.4_release",
+      "inference_date": "2026-10-20",
+      "ranking": {
+        "n_scored": 1000,
+        "n_openset_excluded": 100,
+        "mAP@10": 0.4297604497354497,
+        "Rank-1": 0.56,
+        "Rank-5": 0.699,
+        "Rank-10": 0.747
+      },
+      "candidate": {
+        "TP": 494,
+        "FP": 329,
+        "FN": 232,
+        "TN": 45,
+        "n_openset_queries": 100,
+        "Precision": 0.6002430133657352,
+        "Recall": 0.6804407713498623,
+        "F1": 0.6378308586184636,
+        "TNR": 0.45,
+        "PR-AUC": 0.9626768348392605
+      },
+      "correct_coverage": 0.494,
+      "known_queries": 1000,
+      "n_queries": 1100,
+      "GT_SHA256": "54a4221fd3cea713530be810c987abf91e3c0bde8f8a6babb8c0fbdab32b99bf"
+    },
+    {
+      "dataset": "contest",
+      "variant": "v1.4_release",
+      "inference_date": "2026-10-20",
+      "ranking": {
+        "n_scored": 970,
+        "n_openset_excluded": 243,
+        "mAP@10": 0.995472263132057,
+        "Rank-1": 0.9948453608247423,
+        "Rank-5": 0.9989690721649485,
+        "Rank-10": 1.0
+      },
+      "candidate": {
+        "TP": 947,
+        "FP": 0,
+        "FN": 23,
+        "TN": 243,
+        "n_openset_queries": 243,
+        "Precision": 1.0,
+        "Recall": 0.9762886597938144,
+        "F1": 0.9880020865936359,
+        "TNR": 1.0,
+        "PR-AUC": 0.9952062968793612
+      },
+      "correct_coverage": 0.9762886597938144,
+      "known_queries": 970,
+      "n_queries": 1213,
+      "GT_SHA256": "0e5db109fd37c3bd76f2db7a5a87b1063419996b561345f115b52fda4fe3e8ef"
+    },
+    {
+      "dataset": "external",
+      "variant": "v1.4_fitonly_control",
+      "inference_date": "2026-10-20",
+      "ranking": {
+        "n_scored": 1000,
+        "n_openset_excluded": 100,
+        "mAP@10": 0.4212609788359788,
+        "Rank-1": 0.545,
+        "Rank-5": 0.677,
+        "Rank-10": 0.737
+      },
+      "candidate": {
+        "TP": 489,
+        "FP": 367,
+        "FN": 202,
+        "TN": 42,
+        "n_openset_queries": 100,
+        "Precision": 0.5712616822429907,
+        "Recall": 0.7076700434153401,
+        "F1": 0.6321913380736911,
+        "TNR": 0.42,
+        "PR-AUC": 0.9626001163265832
+      },
+      "correct_coverage": 0.489,
+      "known_queries": 1000,
+      "n_queries": 1100,
+      "GT_SHA256": "54a4221fd3cea713530be810c987abf91e3c0bde8f8a6babb8c0fbdab32b99bf"
+    },
+    {
+      "dataset": "contest",
+      "variant": "v1.4_fitonly_control",
+      "inference_date": "2026-10-20",
+      "ranking": {
+        "n_scored": 970,
+        "n_openset_excluded": 243,
+        "mAP@10": 0.82845895379916,
+        "Rank-1": 0.8082474226804124,
+        "Rank-5": 0.9144329896907216,
+        "Rank-10": 0.9484536082474226
+      },
+      "candidate": {
+        "TP": 916,
+        "FP": 10,
+        "FN": 52,
+        "TN": 235,
+        "n_openset_queries": 243,
+        "Precision": 0.9892008639308856,
+        "Recall": 0.9462809917355371,
+        "F1": 0.9672650475184794,
+        "TNR": 0.9670781893004116,
+        "PR-AUC": 0.9888721679687343
+      },
+      "correct_coverage": 0.9443298969072165,
+      "known_queries": 970,
+      "n_queries": 1213,
+      "GT_SHA256": "0e5db109fd37c3bd76f2db7a5a87b1063419996b561345f115b52fda4fe3e8ef"
+    }
+  ],
+  "final_image_feature_benchmark": {
+    "status": "MEASURED_MATCHED_AS_DEPLOYED_PREFETCH",
+    "profile": "october",
+    "warmup": 50,
+    "B1_iterations": 300,
+    "throughput_min_seconds": 10,
+    "batch_sizes": [
+      1,
+      8,
+      16,
+      32
+    ],
+    "throughput_pipeline": "one prefetched batch, four preprocessing threads, same delivered encoders and feature transforms; no encoder cache",
+    "scope": "JPEG/bbox/crop/preprocessing + delivered encoders + feature transformations/L2; fixed gallery preparation, ranking/refusal excluded",
+    "comparison": "as-deployed: v1.4 PyTorch versus October TensorRT, not same numeric precision",
+    "CPU_threads": 2,
+    "preprocess_workers": 4,
+    "CUDA_sync": true,
+    "load_and_gallery_prepare_seconds": 6.56811295999978,
+    "repeat_max_abs": 0.0,
+    "export_CNN_feature_max_abs": 0.0,
+    "p50_ms": 34.58069750013237,
+    "p95_ms": 39.284840799473386,
+    "rates": {
+      "1": {
+        "FPS": 49.74192835796005,
+        "images": 498,
+        "seconds": 10.011674585999572
+      },
+      "8": {
+        "FPS": 122.56666240073899,
+        "images": 1232,
+        "seconds": 10.051672908999535
+      },
+      "16": {
+        "FPS": 132.18582665913377,
+        "images": 1328,
+        "seconds": 10.046462874000099
+      },
+      "32": {
+        "FPS": 135.71795474182053,
+        "images": 1376,
+        "seconds": 10.138673270000254
+      }
+    },
+    "batch_max_abs": {
+      "1": 8.940696716308594e-08,
+      "8": 9.313225746154785e-08,
+      "16": 0.0,
+      "32": 0.0
+    },
+    "sampled_GPU_used_MiB_max": 1497.0,
+    "sampled_RSS_bytes_max": 2033065984,
+    "memory_scope": "sampled nvidia-smi whole dedicated GPU and process RSS, not allocator peak"
+  },
+  "tests": {
+    "pytest_pass": 260,
+    "pytest_skip": 3
+  },
+  "server_work_complete": true
+}

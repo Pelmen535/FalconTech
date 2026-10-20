@@ -16,3 +16,11 @@ tests/service/fixtures/** -text
 *.jpg binary
 *.npy binary
 *.zip binary
+
+# v2 runtime pins cover exact source bytes, including existing CRLF files.
+service/** -text
+vreid/** -text
+scripts/** -text
+var/** -text
+release/** -text
+release_current/** -text

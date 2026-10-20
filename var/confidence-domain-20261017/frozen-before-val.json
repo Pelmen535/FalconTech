@@ -1,0 +1,43 @@
+{
+  "time": 1792253299.6533072,
+  "winners": {
+    "practical": {
+      "config": {
+        "model": "extra8",
+        "scope": "source",
+        "threshold": 0.9520674395710501
+      },
+      "objective": 4.974173398155195,
+      "worstQ": -0.2644499760028083,
+      "worstTNR": -0.9174311926605583,
+      "new_unknown": 6.0
+    },
+    "conservative": {
+      "config": {
+        "model": "extra8",
+        "scope": "source",
+        "threshold": 0.9942770103671651
+      },
+      "objective": 1.0837286521783907,
+      "worstQ": 0.0,
+      "worstTNR": 0.0,
+      "new_unknown": 0.0
+    }
+  },
+  "models": {
+    "extra8": {
+      "SHA": "4bd8cd8a9fca38120642d3512ec7b803b1125e83e24d9d8d971dd9fd60d838f4",
+      "bytes": 7928057
+    },
+    "extra24": {
+      "SHA": "bcf23b9b83c084dadd7045ffb3b6a45cded585d7bce6298a06617cc73dcabadd",
+      "bytes": 4232057
+    },
+    "hgb7": {
+      "SHA": "e95ad9f942066881f780bcc300ce427d7537ce23957229eb20d6945e1e05e3c0",
+      "bytes": 345288
+    }
+  },
+  "CAL_SHA": "5c0255c6a21f40f8fea26048de085b8991329305264f9ed2cf6d0c387f6990b5",
+  "protocol_SHA": "1ee5fff603589f1b7e397fab9b46c04b6a332162b48a8475991571673acf4d42"
+}

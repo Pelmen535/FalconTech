@@ -29,33 +29,47 @@ DEFAULT_COLS = {"image_id": "image_id", "x": "x", "y": "y", "w": "w", "h": "h", 
 IMG_EXT = (".jpg", ".jpeg", ".png", ".bmp", ".webp")
 
 
-_img_index: dict[Path, dict[str, str]] = {}
+_img_index: dict[Path, dict[str, list[str]]] = {}
 
 
-def _build_index(images_dir: Path) -> dict[str, str]:
+def _build_index(images_dir: Path) -> dict[str, list[str]]:
     """Рекурсивный указатель «имя файла → путь», строится один раз на папку.
 
     Страховка на закрытый прогон: в опубликованном наборе картинки лежат плоско в images/,
     но если на стенде они окажутся в подпапках (images/cam01/...) или с другим
     регистром расширения, прямой путь не сойдётся и весь прогон упадёт на первом же кадре.
     Обход папки стоит долю секунды и случается только после первого промаха."""
-    idx: dict[str, str] = {}
+    idx: dict[str, list[str]] = {}
     for f in images_dir.rglob("*"):
         if not f.is_file() or f.suffix.lower() not in IMG_EXT:
             continue
         for k in (f.name, f.stem, f.name.lower(), f.stem.lower()):
-            idx.setdefault(k, str(f))
+            paths = idx.setdefault(k, [])
+            if str(f) not in paths:
+                paths.append(str(f))
     return idx
 
 
-def _resolve_image(images_dir: Path, image_id: str) -> str:
+def _resolve_image(images_dir: Path, image_id: str, strict: bool = False) -> str:
+    root = images_dir.resolve()
+    def checked(path):
+        if strict and not path.resolve().is_relative_to(root):
+            raise ValueError(f'image_id points outside images directory: {image_id}')
+        return str(path)
     p = images_dir / image_id
-    if p.exists():
-        return str(p)
+    if strict and (Path(image_id).is_absolute() or not p.resolve().is_relative_to(root)):
+        raise ValueError(f'image_id points outside images directory: {image_id}')
+    if p.is_file():
+        return checked(p)
+    matches = []
     for ext in IMG_EXT:
         q = images_dir / f"{image_id}{ext}"
-        if q.exists():
-            return str(q)
+        if q.is_file():
+            matches.append(q)
+    if matches:
+        if strict and len(matches) != 1:
+            raise ValueError(f'Ambiguous image_id: {image_id}; specify filename with extension')
+        return checked(matches[0])
     if images_dir not in _img_index:
         _img_index[images_dir] = _build_index(images_dir) if images_dir.is_dir() else {}
         if _img_index[images_dir]:
@@ -65,7 +79,11 @@ def _resolve_image(images_dir: Path, image_id: str) -> str:
     name = Path(image_id).name
     for k in (image_id, name, Path(name).stem, name.lower(), Path(name).stem.lower()):
         if k in idx:
-            return idx[k]
+            if strict and len(idx[k]) != 1:
+                raise ValueError(f'Ambiguous image_id in images directory: {image_id}')
+            return checked(Path(idx[k][0]))
+    if strict:
+        raise FileNotFoundError(f'Image not found for image_id {image_id}: {p}')
     return str(p)  # пусть упадёт при открытии с понятным путём
 
 
@@ -79,7 +97,18 @@ def read_annotations(csv_path: str | Path, images_dir: str | Path, cols: dict | 
     if bbox_format not in ('xywh','xyxy'):
         raise ValueError('bbox_format must be xywh or xyxy')
     with open(csv_path, newline="", encoding="utf-8-sig") as f:
-        rows = list(csv.DictReader(f))
+        reader = csv.DictReader(f, strict=strict)
+        try:
+            if strict:
+                fields = reader.fieldnames or []
+                required = [cols[k] for k in ('image_id', 'x', 'y', 'w', 'h')]
+                if len(fields) != len(set(fields)) or not set(required) <= set(fields):
+                    raise ValueError('Competition CSV requires unique headers: ' + ','.join(required))
+            rows = list(reader)
+        except csv.Error as exc:
+            raise ValueError('Malformed competition CSV') from exc
+    if strict and any(None in r or any(v is None for v in r.values()) for r in rows):
+        raise ValueError('Competition CSV row length does not match headers')
     ids = [str(r[cols["image_id"]]) for r in rows]
     unique = len(set(ids)) == len(ids)
     if strict and (not ids or not unique or any(not x.strip() or x!=x.strip() for x in ids)):
@@ -101,7 +130,7 @@ def read_annotations(csv_path: str | Path, images_dir: str | Path, cols: dict | 
         vid_raw = row.get(cols["vehicle_id"], "")
         vid = _vid_to_int(vid_raw) if vid_raw not in ("", None) else -1
         cam = _to_int_cam(row[cols["camera_id"]]) if has_cam else 0
-        out.append(Record(path=_resolve_image(images_dir, image_id), vid=vid, cam=cam,
+        out.append(Record(path=_resolve_image(images_dir, image_id, strict=strict), vid=vid, cam=cam,
                           bbox=(x, y, w, h), key=image_id if unique else f"{image_id}#{i}"))
     return out
 

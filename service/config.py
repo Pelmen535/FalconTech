@@ -29,6 +29,8 @@ class Settings:
     # Пустая строка — хранить галерею в SQLite внутри data_dir. Непустая — строка
     # подключения к PostgreSQL с pgvector: так работает стек из docker compose.
     database_url: str = ''
+    backend: str = 'release'
+    runtime_manifest: Path | None = None
 
     @classmethod
     def from_env(cls):
@@ -41,4 +43,7 @@ class Settings:
                    os.environ.get('VREID_API_KEY', ''),
                    demo_dir=demo,
                    demo_ui=os.environ.get('VREID_DEMO_UI', '0').strip().lower() in ('1', 'true', 'yes'),
-                   database_url=os.environ.get('VREID_DATABASE_URL', ''))
+                   database_url=os.environ.get('VREID_DATABASE_URL', ''),
+                   backend=os.environ.get('VREID_BACKEND', 'release'),
+                   runtime_manifest=(Path(os.environ['VREID_RUNTIME_MANIFEST']).expanduser().resolve()
+                                     if os.environ.get('VREID_RUNTIME_MANIFEST') else None))

@@ -1,65 +1,15 @@
-# HTTP-сервис инференса: то же ядро и те же веса, что в образе пакетного прогона, плюс API.
-#
-# Почему отдельный Dockerfile, а не вторая стадия основного. Основной образ собирается
-# командой без аргументов (docker build -t vreid:1.0 .) и обязан оставаться ровно тем, что
-# запускается для пакетного прогона: один ENTRYPOINT, читает /data, пишет /out. Отдельный файл гарантирует,
-# что никакая правка сервиса не может изменить поведение основной сборки.
-#
-# База и правила те же, что в Dockerfile: см. комментарии там про CUDA 12.1 и целевой стенд.
-# Для локальной проверки на карте sm_120:
-#     docker build -f Dockerfile.service \
-#       --build-arg BASE_IMAGE=pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime \
-#       --build-arg PIP_FLAGS=--break-system-packages \
-#       --build-arg REQUIREMENTS=requirements-infer-dev.txt -t vreid-api-dev .
-ARG BASE_IMAGE=pytorch/pytorch@sha256:fc47f8018254e6df30f48c48f2db1c758d44de21a8c553de1a1c451a65baa70a
-FROM ${BASE_IMAGE}
-
-ENV PYTHONUNBUFFERED=1 PYTHONUTF8=1 \
-    HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 \
-    OMP_NUM_THREADS=8 \
-    VREID_COMPILE=0 \
-    VREID_THROTTLE=0 \
-    VREID_CORE_DIR=/app \
-    VREID_RELEASE_DIR=/app/release \
-    VREID_SERVICE_DATA=/var/lib/vreid \
-    VREID_DEMO_DIR=/app/demo
-
+FROM pytorch/pytorch@sha256:eee11b3b3872a8c838e35ef48f08b2d5def2080902c7f666831310ca1a0ef2be AS environment
+ENV PYTHONUNBUFFERED=1 PYTHONUTF8=1 PYTHONDONTWRITEBYTECODE=1 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 VREID_COMPILE=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2
+COPY requirements-robust-linux.txt requirements-robust-linux.lock.txt /tmp/
+RUN python -m pip install --break-system-packages --no-cache-dir -r /tmp/requirements-robust-linux.txt -r /tmp/requirements-robust-linux.lock.txt && python -m pip check
+RUN python -m venv --without-pip --system-site-packages /opt/falcon-ann-venv && python -m pip --python /opt/falcon-ann-venv/bin/python install --no-cache-dir --no-deps faiss-cpu==1.15.0
+ENV PATH="/opt/falcon-ann-venv/bin:${PATH}"
 WORKDIR /app
-ARG PIP_FLAGS=""
-ARG REQUIREMENTS=requirements-infer.txt
-COPY requirements-infer.txt requirements-infer-dev.txt requirements-service.txt ./
-# Тот же закреплённый набор ядра плюс слой сервиса. --no-deps и pip check — по тем же
-# причинам, что в образе пакетного прогона: набор либо согласован, либо образ не собирается.
-# В релизной базе typing_extensions записан дважды (4.11.0 от conda и 4.12.1 от pip). pip при
-# обновлении снимает только одну запись, вторая перекрывает новую версию, и pip check падает.
-# Поэтому при дубле лишняя запись снимается заранее; в базе без дубля шаг ничего не делает.
-RUN python -m pip install --no-cache-dir --no-deps ${PIP_FLAGS} -r ${REQUIREMENTS} \
- && n=$(python -c "import importlib.metadata as m; print(sum(d.metadata['Name'].lower().replace('-', '_') == 'typing_extensions' for d in m.distributions()))") \
- && if [ "$n" -gt 1 ]; then python -m pip uninstall -y ${PIP_FLAGS} typing_extensions; fi \
- && python -m pip install --no-cache-dir --no-deps ${PIP_FLAGS} -r requirements-service.txt \
- && python -m pip check \
- && python -m pip freeze --all > /app/installed-packages.txt
 
-COPY vreid/ /app/vreid/
-COPY scripts/ /app/scripts/
-COPY service/ /app/service/
-COPY release/ /app/release/
-COPY demo/ /app/demo/
-# Результат замера масштабируемости показывает вкладка интерфейса. Файл необязателен:
-# если его нет, интерфейс честно пишет «замер не выполнялся».
-COPY results/ann_scalability.json /app/results/ann_scalability.json
-
-RUN python -c "import fastapi, uvicorn, faiss, psycopg, torch, timm; \
-from vreid.predict import load_recipe; \
-print('[build] fastapi', fastapi.__version__, '| faiss', faiss.__version__, '| torch', torch.__version__); \
-print('[build] recipe ok:', load_recipe('/app/release')['threshold'])"
-
-# Данные галереи переживают перезапуск контейнера: том объявлен явно.
-VOLUME ["/var/lib/vreid"]
+FROM environment AS runtime
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 VREID_DEVICE=cuda VREID_CORE_DIR=/app VREID_BACKEND=october VREID_SERVICE_DATA=/var/lib/vreid
+COPY . /app
+RUN python -B scripts/fetch_weights.py && python -B scripts/october_entrypoint.py verify
 EXPOSE 8765
-
-# 0.0.0.0 внутри контейнера — это сеть compose, наружу торчит только web.
-# Ключ доступа включается переменной VREID_API_KEY, её проверяет сам сервис.
-ENTRYPOINT ["python", "scripts/run_service.py", "--host", "0.0.0.0", "--port", "8765", \
-            "--allow-remote", "--core-dir", "/app", "--release-dir", "/app/release", \
-            "--data-dir", "/var/lib/vreid"]
+ENTRYPOINT ["python","-u","-B","scripts/october_entrypoint.py"]
+CMD ["serve","--host","0.0.0.0","--allow-remote"]

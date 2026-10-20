@@ -1,0 +1,12 @@
+{
+  "time": 1792250532.8869057,
+  "config": {
+    "model": "extra-leaf16",
+    "scope": "source",
+    "gate": "none",
+    "threshold": 0.9958555679148865
+  },
+  "CAL_SHA": "911086f7d0ddb46163168e88ac450aa2c525352b06ed249b785d2baacd17194a",
+  "protocol_SHA": "4735bb49ab525bbf8a69a83b8e577345d1f6d5a8b7778392cb357254667c7156",
+  "model_SHA": "c997236140f612f94ab9905965225819e5637f81e6aba06ba455d0fa287afc36"
+}

@@ -1,0 +1,92 @@
+{
+  "status": "FROZEN_BEFORE_FUSION_VAL_AND_TEST",
+  "config": {
+    "name": "rank-fusion-0.5",
+    "kind": "base",
+    "fusion": 0.5,
+    "cnn": 1.0,
+    "cnn_head": "specialist-cnn.pt",
+    "recipe": {
+      "kind": "retune_old",
+      "source_threshold": 0.47480770844997583,
+      "night_threshold": 0.30021713454777316
+    }
+  },
+  "CAL": {
+    "config": {
+      "name": "rank-fusion-0.5",
+      "kind": "base",
+      "fusion": 0.5,
+      "cnn": 1.0,
+      "cnn_head": "specialist-cnn.pt",
+      "recipe": {
+        "kind": "retune_old",
+        "source_threshold": 0.47480770844997583,
+        "night_threshold": 0.30021713454777316
+      }
+    },
+    "metrics": {
+      "original-natural": {
+        "mAP": 96.36155753968254,
+        "rank1": 97.125,
+        "Q": 93.8015503875969
+      },
+      "original-removed": {
+        "mAP": 97.89523809523808,
+        "rank1": 98.0,
+        "Q": 93.44661558109833
+      },
+      "night-natural": {
+        "mAP": 83.56696428571428,
+        "rank1": 86.25,
+        "Q": 82.33333333333334
+      },
+      "night-removed": {
+        "mAP": 86.70932539682539,
+        "rank1": 87.5,
+        "Q": 76.36301369863013
+      },
+      "dn-day-night-natural": {
+        "mAP": 97.91666666666666,
+        "rank1": 100.0,
+        "Q": 36.666666666666664
+      },
+      "dn-day-night-removed": {
+        "mAP": 96.58333333333333,
+        "rank1": 100.0,
+        "Q": 30.0
+      },
+      "dn-night-day-natural": {
+        "mAP": 95.75595238095238,
+        "rank1": 95.0,
+        "Q": 36.666666666666664
+      },
+      "dn-night-day-removed": {
+        "mAP": 93.59523809523809,
+        "rank1": 90.0,
+        "Q": 30.0
+      }
+    },
+    "deltas": {
+      "original-natural": 0.5681368301134739,
+      "original-removed": 0.2583615039972713,
+      "night-natural": 1.6102831457925575,
+      "night-removed": 0.3963975237091546,
+      "dn-day-night-natural": 0.0,
+      "dn-day-night-removed": 1.312499999999993,
+      "dn-night-day-natural": -0.07857142857142918,
+      "dn-night-day-removed": -0.1071428571428612
+    },
+    "objective_gain": 0.5417528433876058,
+    "eligible": true
+  },
+  "files": {
+    "fusion_evaluate.py": "0f87986cfe9704ddde4b4d025056703868f401c5342b450814bc934dd09cb04d",
+    "runtime_features.py": "4da8815dc012b04eb364fcd20e6f269ff8a1d504500e87cde1e3769986112753",
+    "specialist-cnn.pt": "ef3cf8824ee6ccafa7e2ec886957dd4951073df32500f0d5e4d2001e19a96907"
+  },
+  "baseline_engine_SHA": "68b18e2ff7cc9e23cbe2dd8143fd49eec5fe0ac1c2b1e9fc46dc2994eec0e786",
+  "VAL_reused_previous_family": true,
+  "TEST_reused_previous_family": true,
+  "not_independent_acceptance": true
+}

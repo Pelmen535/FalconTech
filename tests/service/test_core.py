@@ -284,3 +284,24 @@ def test_representative_cached_queries_match_received_output_on_full_750_gallery
             assert result["candidate"] is None
     assert saw == {True, False}
     assert adapter.metadata()["loaded"] is False  # no duplicate model inference
+
+
+def test_cosine_builds_only_query_gallery_mask(make_adapter, monkeypatch):
+    adapter = make_adapter(kr=False, threshold=-1)
+    query, gallery, ids = normalized(count=24)
+    ids[:2] = ["frame#0", "frame#1"]
+    gallery[:2] = query
+    kernel = adapter._import_kernel("rerank")
+    original = kernel.frame_block_mask
+    shapes = []
+
+    def bounded_mask(query_keys, gallery_keys):
+        shapes.append((len(query_keys), len(gallery_keys)))
+        assert len(query_keys) == 1  # no gallery-square allocation in cosine mode
+        return original(query_keys, gallery_keys)
+
+    monkeypatch.setattr(kernel, "frame_block_mask", bounded_mask)
+    result = adapter.rank(query, gallery, ids, query_id="frame#query")
+    assert shapes == [(1, len(ids))]
+    assert len(result["ranking"]) == 10
+    assert not set(ids[:2]).intersection(row["image_id"] for row in result["ranking"])

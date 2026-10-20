@@ -1,0 +1,60 @@
+{
+  "profile": "expanded-source-v1",
+  "rerank_profile": "current-query-v1",
+  "scope": "all",
+  "columns": 93,
+  "feature_dtype": "float32",
+  "status": "READY_LOCAL_WINDOWS_WITH_TRADEOFF",
+  "threshold": 0.9890044812557033,
+  "head": "var/systematic-ranking-20261017/expanded-hgb31.joblib",
+  "config": {
+    "model": "expanded-hgb31",
+    "threshold": 0.9890044812557033,
+    "CAL_macro_quality55_gain": 0.4379527686930064,
+    "domain_gains": {
+      "RGBNT100": 0.3791666666666668,
+      "VRAI": 0.10420814461108431,
+      "dn": 1.7006410256410258,
+      "night": 0.0,
+      "organizer": 0.44311468759710654,
+      "original": 0.0005860876421550643
+    },
+    "worst_episode": -0.0036106026958208307
+  },
+  "preserve_all_prior_accepted": true,
+  "ranking_unchanged": true,
+  "independent_holdout": "250 disjoint IDs from two domains usedFIT/CAL, not unseen-domain or opaque foundation proof",
+  "tradeoffs": "One prior CFV14 context and randmask tiny Q regressions retained; see original strict rejects. Aggregate and pairedIDBootstrap positive, freshID confirmation positive. New Linux/A5000 unverified.",
+  "files": {
+    "vreid/refusal_policy_contrast_learned.py": "c0b28c26504c9882b6d3c226b65404e6dd49916a4cd516644294add1cde1fc76",
+    "vreid/refusal_policy_contrast.py": "7d24b0a15a1baf78ffbd6b2794e578bee7abf831bf2cf7df0c2ab6519f8b492d",
+    "var/confidence-domain-20261017/runtime-selection.json": "b68e975609fae4c9e92951a5a051b009edfc8066a83bddb0d13fa13c1e707de7",
+    "var/confidence-contrast-20261017/learned/hgb7.joblib": "a0dd954efc6d06e200be987feacb43982ffb6a5fde854eeeff8f5d6571b08f7d",
+    "var/confidence-contrast-20261017/learned/frozen-before-val.json": "44cb67a8ca5c62816cc28dea1676bb7ed9f8e2afb9735887a97dac7baf940827",
+    "var/confidence-contrast-20261017/comparative.py": "3685fb3046e99366cc2dd1ad7caaff952321dd732686ab5e8e249a39963dbf07",
+    "vreid/partial_hgb.py": "9472bc15333ca6078d4a6ee0802b63e870446c0b93d400f0e02449e20f66c50c",
+    "var/confidence-contrast-20261017/learned/runtime-selection.json": "546a9811b30bce17d0a32114ac145f67a1b1eaa7e883f077e58456f84a6c2e8b",
+    "vreid/refusal_policy_expanded.py": "5d256755f229bff36ac76028afa14bfba5e6056ebca1d49ecc3d8a8275d9c683",
+    "service/robust.py": "731b3802de1aecdc26533b5f7843a6d72f79786974c6430b138d1044a5e576fa",
+    "service/robust_worker.py": "0f87e7f914670b4f40df5326a748e0498beac52d8498517e0c7dee73ae6ef248",
+    "scripts/predict_current_expanded.py": "1b44d3d2a60d5467e0498e607617143f0dfed172b5479eaac517fc5d9db7b7b4",
+    "scripts/run_service_expanded.py": "ddd45fcb4f13052096aaec0a160bc8e051bc0c9b23869e35f9447b2cb31943ed",
+    "var/systematic-ranking-20261017/predict_expanded.py": "6dcd4fe2fa805134f2c891de138733637fc1e4da0954c6ca3d3f1657c4370cdf",
+    "var/systematic-ranking-20261017/expanded-hgb31.joblib": "b573843f45df806690893ff333ee7a622edabfb96e881cdef73b5984e0a7f5bd",
+    "var/systematic-ranking-20261017/fresh-confirmation-decision.json": "6338b35d8d899de8211c992cbc21a6319b258d55f366682f059f23d6e299ca51",
+    "var/systematic-ranking-20261017/expanded-frozen-before-val.json": "2a1fae7cc0f1f719d7e18bed8cfe94e23a054a46015cbbf43cd2d85512354894",
+    "var/systematic-ranking-20261017/expanded-tradeoff-validation.json": "ed202041d9ba793fcdabb26311e7d7b2f54633e777205c677234ec31c22e82ed",
+    "service/static_gallery.py": "8c38e5e75443a1ceaa38b263f33441751e69f27e0185a39947e77dabe934837d"
+  },
+  "validation": {
+    "nativeCLI": "Contest1213x688 and RGBNT100100x50 B16 byteexact all3outputs",
+    "HTTP": "11queries/688gallery coldimport/repeat/restart/persistedgallery and schema parity PASS",
+    "service_tests": "122PASS/2historicalSKIP => harnessBLOCKED; absent original release fixture/PGURL",
+    "new_Linux_A5000": false,
+    "gallery_cache": "18actualcontexts allfields bitexact reverse/singleton/galleryreorder; realHTTP11/repeat/delete/readd/restart PASS; no query/result cache",
+    "current_receipts": [
+      "gallery-cache-actual-verification.json",
+      "http-cached-contest-v1/results.json"
+    ]
+  }
+}

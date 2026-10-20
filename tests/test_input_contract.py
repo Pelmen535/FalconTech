@@ -8,12 +8,74 @@ from vreid.hackathon_data import read_annotations
 from vreid.extract import crop_bbox
 from vreid.submit import write_submission,save_embeddings
 
+
+@pytest.mark.parametrize('option,value', [('--batch-size','0'),('--workers','-1')])
+def test_predict_rejects_invalid_execution_options(tmp_path,monkeypatch,option,value):
+    import sys
+    from vreid import predict
+    output = tmp_path / 'output'
+    monkeypatch.setattr(sys,'argv',['predict','--out',str(output),option,value])
+    with pytest.raises(SystemExit) as exc:
+        predict.main()
+    assert exc.value.code == 2
+    assert not output.exists()
+
+
+def test_predict_rejects_insufficient_eligible_gallery_before_model(tmp_path,monkeypatch):
+    import sys
+    from vreid import predict
+    images=tmp_path/'images';images.mkdir()
+    keys=['shared']+[f'g{i}' for i in range(9)]
+    for key in keys:
+        Image.new('RGB',(20,20)).save(images/f'{key}.jpg')
+    for name,ids in [('test_query.csv',['shared']),('test_gallery.csv',keys)]:
+        (tmp_path/name).write_text('image_id,x,y,w,h\n'+''.join(f'{key},0,0,20,20\n' for key in ids),encoding='utf8')
+    monkeypatch.setattr(predict,'get_backbone',lambda *a,**k:pytest.fail('model must not load'))
+    # Keep the legacy exception contract explicit; root/release now selects v2.
+    release=tmp_path/'legacy-release';release.mkdir()
+    source=Path(__file__).resolve().parents[1]/'release/recipe.json'
+    (release/'recipe.json').write_bytes(source.read_bytes())
+    monkeypatch.setattr(sys,'argv',['predict','--data',str(tmp_path),'--release',str(release),'--out',str(tmp_path/'out')])
+    with pytest.raises(ValueError,match='eligible'):
+        predict.main()
+    assert not list((tmp_path/'out').glob('*'))
+
 def test_strict_parser_rejects_duplicate_frame(tmp_path):
     p=tmp_path/'input.csv'
     with p.open('w',newline='') as f:
         w=csv.writer(f);w.writerow(['image_id','x','y','w','h']);w.writerows([['x',0,0,10,10]]*2)
     with pytest.raises(ValueError,match='unique'):read_annotations(p,tmp_path,strict=True)
     assert len(read_annotations(p,tmp_path))==2  # legacy multi-object research input is explicit
+
+
+@pytest.mark.parametrize('contents',[
+    'image_id,x,y,w\nx,0,0,10\n',
+    'image_id,x,y,w,h,image_id\nx,0,0,10,10,x\n',
+    'image_id,x,y,w,h\nx,0,0,10,10,extra\n',
+    'image_id,x,y,w,h\nx,0,0,10\n',
+])
+def test_strict_parser_rejects_malformed_csv_before_image_loading(tmp_path,contents):
+    p=tmp_path/'input.csv';p.write_text(contents,encoding='utf8')
+    with pytest.raises(ValueError,match='CSV'):
+        read_annotations(p,tmp_path,strict=True)
+
+
+def test_strict_parser_rejects_ambiguous_nested_images(tmp_path):
+    images=tmp_path/'images'
+    for folder in ['camera-a','camera-b']:
+        target=images/folder;target.mkdir(parents=True);Image.new('RGB',(20,20)).save(target/'car.jpg')
+    p=tmp_path/'input.csv';p.write_text('image_id,x,y,w,h\ncar,0,0,10,10\n',encoding='utf8')
+    with pytest.raises(ValueError,match='Ambiguous'):
+        read_annotations(p,images,strict=True)
+    p.write_text('image_id,x,y,w,h\ncamera-a/car.jpg,0,0,10,10\n',encoding='utf8')
+    assert Path(read_annotations(p,images,strict=True)[0].path)==images/'camera-a/car.jpg'
+
+
+def test_strict_parser_rejects_image_path_outside_images(tmp_path):
+    images=tmp_path/'images';images.mkdir();Image.new('RGB',(20,20)).save(tmp_path/'outside.jpg')
+    p=tmp_path/'input.csv';p.write_text('image_id,x,y,w,h\n../outside.jpg,0,0,10,10\n',encoding='utf8')
+    with pytest.raises(ValueError,match='outside images'):
+        read_annotations(p,images,strict=True)
 
 @pytest.mark.parametrize('box', [(0, 0, 0, 2), (0, 0, float('nan'), 2)])
 def test_invalid_bbox_raises(box):

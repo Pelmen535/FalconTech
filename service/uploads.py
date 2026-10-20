@@ -6,7 +6,9 @@ import math
 from pathlib import PurePosixPath
 import warnings
 import zipfile
+import zlib
 from PIL import Image, UnidentifiedImageError
+from .storage import validate_image_id
 
 
 def image_box(content, value, settings):
@@ -29,7 +31,15 @@ def image_box(content, value, settings):
                 if box[0] + box[2] > w + 1e-5 or box[1] + box[3] > h + 1e-5:
                     raise ValueError('bbox выходит за пределы изображения.')
                 im.verify()
-    except (UnidentifiedImageError, OSError, Image.DecompressionBombError, Image.DecompressionBombWarning) as exc:
+            # JPEG verify checks its header but may accept a truncated pixel stream.
+            with Image.open(BytesIO(content)) as im:
+                # Validation still decodes the complete baseline JPEG stream.
+                # Reduced IDCT output avoids a second full-resolution RGB image;
+                # the encoder receives the unchanged original bytes afterwards.
+                if im.format=='JPEG' and im.mode=='RGB' and not im.info.get('progressive'):
+                    im.draft('RGB',(max(1,im.width//8),max(1,im.height//8)))
+                im.load()
+    except (UnidentifiedImageError, OSError, SyntaxError, zlib.error, Image.DecompressionBombError, Image.DecompressionBombWarning) as exc:
         raise ValueError('Не удалось прочитать изображение.') from exc
     except (TypeError, OverflowError) as exc:
         raise ValueError('Некорректный bbox.') from exc
@@ -62,16 +72,19 @@ def gallery_archive(content, settings):
             manifest = manifests[0]
             if names[manifest].file_size > 2 * 1024 * 1024:
                 raise ValueError('Слишком большой CSV.')
-            reader = csv.DictReader(StringIO(z.read(manifest).decode('utf-8-sig')))
-            if not {'image_id', 'x', 'y', 'w', 'h'} <= set(reader.fieldnames or []):
+            reader = csv.DictReader(StringIO(z.read(manifest).decode('utf-8-sig')), strict=True)
+            fields = reader.fieldnames or []
+            if len(fields) != len(set(fields)) or not {'image_id', 'x', 'y', 'w', 'h'} <= set(fields):
                 raise ValueError('CSV: обязательны image_id,x,y,w,h.')
             rows = list(reader)
+            if any(None in row or any(v is None for v in row.values()) for row in rows):
+                raise ValueError('CSV: число полей строки не совпадает с заголовком.')
             if not 1 <= len(rows) <= settings.max_gallery_items:
                 raise ValueError('Недопустимое количество строк галереи.')
             base = PurePosixPath(manifest).parent / 'images'
             result = []; seen = set()
             for row in rows:
-                key = row['image_id']
+                key = validate_image_id(row['image_id'])
                 if not key or key in seen or any(c in key for c in '/\\\\'):
                     raise ValueError('Пустой, повторяющийся или некорректный image_id.')
                 seen.add(key)
@@ -86,6 +99,5 @@ def gallery_archive(content, settings):
                 box = image_box(raw, [row[k] for k in ('x','y','w','h')], settings)
                 result.append(dict(image_id=key, image_bytes=raw, bbox_xywh=box))
             return result
-    except (zipfile.BadZipFile, UnicodeError, RuntimeError) as exc:
+    except (zipfile.BadZipFile, UnicodeError, RuntimeError, csv.Error, zlib.error) as exc:
         raise ValueError('Не удалось прочитать ZIP/CSV.') from exc
-

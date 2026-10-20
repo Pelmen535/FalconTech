@@ -60,7 +60,7 @@
       <label class="radio"><input type="radio" name="mode" value="exact" checked>
         <span><strong>Точный</strong></span></label>
       <label class="radio"><input type="radio" name="mode" value="ann">
-        <span><strong>Быстрый</strong> — для больших галерей</span></label>
+        <span><strong>ANN</strong> — с проверкой полноты результата</span></label>
     </fieldset>
 
     <button class="primary full" type="submit">Найти автомобиль</button>
@@ -140,7 +140,7 @@
       <div id="about-model" class="kv"></div>
       <h3 class="spaced">Как принимается решение</h3>
       <p class="muted">Совпадение выдаётся, если уверенность лучшего кандидата не ниже порога.
-        Номерной знак не используется — только внешний вид автомобиля.</p>
+        Сходство оценивается по изображению автомобиля в выбранной рамке.</p>
     </div>
     <div class="panel">
       <h2>Интерфейсы</h2>
@@ -160,7 +160,7 @@
 
   <div class="panel spaced">
     <h2>Поиск в больших галереях</h2>
-    <p class="muted">Скорость и точность поиска на галереях до миллиона наблюдений.</p>
+    <p class="muted">Показатели и состояние индекса для текущей галереи.</p>
     <div id="index-live" class="kv"></div>
     <h3 class="spaced">Измерения</h3>
     <div id="scale-table"></div>
@@ -175,7 +175,7 @@
     <button class="ghost" value="close" type="submit">Закрыть</button>
   </form>
   <div id="explain-body">
-    <p class="muted">Зелёный — участки, которые совпадают сильнее обычного, красный — слабее.</p>
+    <p class="muted">Зелёный — положительный вклад области в сходство пары, красный — отрицательный.</p>
     <div id="explain-content" class="explain-grid"></div>
   </div>
 </dialog>

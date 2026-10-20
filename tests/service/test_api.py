@@ -54,6 +54,18 @@ def png(marker=1):
     return stream.getvalue()
 
 
+def test_truncated_jpeg_is_rejected_before_encoder(service):
+    client, core, _ = service
+    stream = BytesIO()
+    Image.new('RGB', (32, 24)).save(stream, format='JPEG')
+    response = client.post('/v1/gallery/items',
+                           files={'image': ('broken.jpg', stream.getvalue()[:-10], 'image/jpeg')},
+                           data={'bbox': '[0,0,32,24]', 'image_id': 'broken'})
+    assert response.status_code == 422
+    assert core.encode_calls == []
+    assert client.get('/v1/gallery').json()['count'] == 0
+
+
 def settings_at(tmp_path, **overrides):
     settings = Settings(core_dir=tmp_path / "core", release_dir=tmp_path / "release",
                         data_dir=tmp_path / "data")
@@ -194,6 +206,29 @@ def test_duplicate_single_item_does_not_replace_original(service):
     assert add(client, marker=7).status_code == 409
     assert len(core.encode_calls) == 1
     assert client.get(original["image_url"]).content == png(1)
+
+
+@pytest.mark.parametrize('key',[' padded ','bad\u200bid','x'*129])
+def test_invalid_ids_rejected_before_encoding_for_single_and_zip(service,key):
+    client,core,_=service
+    assert add(client,key=key).status_code==422
+    assert import_zip(client,archive([key])).status_code==422
+    assert core.encode_calls==[]
+    assert client.get('/v1/gallery').json()['count']==0
+
+
+@pytest.mark.parametrize('csv_text',[
+    'image_id,x,y,w,h,image_id\ncar,0,0,20,20,car\n',
+    'image_id,x,y,w,h\ncar,0,0,20,20,extra\n',
+    'image_id,x,y,w,h\n"car,0,0,20,20\n',
+])
+def test_malformed_archive_csv_rejected_without_encoding(service,csv_text):
+    client,core,_=service;buffer=BytesIO()
+    with zipfile.ZipFile(buffer,'w') as z:
+        z.writestr('test_gallery.csv',csv_text);z.writestr('images/car.png',png())
+    assert import_zip(client,buffer.getvalue()).status_code==422
+    assert core.encode_calls==[]
+    assert client.get('/v1/gallery').json()['count']==0
 
 
 def test_zip_import_has_no_partial_writes_on_existing_id(service):

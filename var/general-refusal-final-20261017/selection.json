@@ -1,0 +1,62 @@
+{
+  "status": "FROZEN_BEFORE_NEW52_CONFIRMATION",
+  "winner": {
+    "name": "raw-hgb15",
+    "kind": "raw",
+    "mode": "supplement_source_only",
+    "threshold": 0.9970267855329537,
+    "model_SHA": "2e2bfc313a3d5b7ff97bf627acd5b141e29c18e1874f5a16aafb1cca097723b6",
+    "columns": 93,
+    "mean_domain_Q_gain": 7.182942890107981,
+    "per_domain": {
+      "original": {
+        "Q": 93.2233729941517,
+        "TNR": 96.52103559870551,
+        "Recall": 87.45053702656868,
+        "coverage": 86.91011235955057,
+        "TP": 1547.0,
+        "FP": 54.0,
+        "FN": 222.0,
+        "TN": 1193.0,
+        "FP_unknown": 43.0
+      },
+      "night": {
+        "Q": 82.07366296670031,
+        "TNR": 83.33333333333334,
+        "Recall": 78.90625,
+        "coverage": 77.09923664122137,
+        "TP": 404.0,
+        "FP": 75.0,
+        "FN": 108.0,
+        "TN": 315.0,
+        "FP_unknown": 63.0
+      },
+      "dn": {
+        "Q": 67.00440528634361,
+        "TNR": 100.0,
+        "Recall": 35.92814371257485,
+        "coverage": 35.92814371257485,
+        "TP": 120.0,
+        "FP": 0.0,
+        "FN": 214.0,
+        "TN": 226.0,
+        "FP_unknown": 0.0
+      }
+    },
+    "CAL_new_FP": 0
+  },
+  "protocol_SHA": "a53387fa749baf0a638cc712de431715e57f60c15442cfe389c069fca0adea9b",
+  "feature_code_SHA": "0ef57394255c2933e5a1e5afdd277873c14a8532452a6c6f6aa29f4ac2b48bc2",
+  "policy_code_SHA": "2d13a6fd4bd272ae7ba37ffb58a22ed3127ef2f63261d7123ff8aed787d888cc",
+  "CLI_code_SHA": "93dbab0b8afec0069cff44309a3ac172c1371a0a37609ff6a120fcd65f8402d2",
+  "ranking_unchanged": true,
+  "CFV_used_for_selection": false,
+  "source_variant": "general-refusal-20261017d",
+  "source_selection_SHA": "bcf3dd4a411d61fe79258e18f807fb5d5b6cd695b396410c580675a5862fd142",
+  "final_confirmation_protocol_SHA": "24526309a0c1f8aa23c7f9badc5feb2fef779f0d019d48c0dff79183451f7938",
+  "development_strict_status": "REJECT_TRANSFER",
+  "development_strict_failures": [
+    "CFV-natural-12_TNR_regression",
+    "CFV-removed-07_TNR_regression"
+  ]
+}

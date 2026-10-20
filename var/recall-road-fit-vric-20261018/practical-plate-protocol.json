@@ -1,0 +1,9 @@
+{
+  "status": "FROZEN_BEFORE_PRACTICAL_SELECTION_AND_FINAL661",
+  "created": 1792316004.988679,
+  "requirement_vs_assumption": "Organizers describe additional licenceplate masking and discussion atdefense; no documented halfvehicleblackout budget. Previous strict halfimage rules were internal experimental guards, notprojectrequirements. Their REJECT receipts remain. New prospective rule uses actual existing detectorplate masks/controls forrelative sensitivity, andhalfimage as absolute robustness stress.",
+  "model_grid": "Same4 trainedauthortrain heads, alpha.5/.75/1, no newfit required; oneglobalcutoff. Select only onexposedoldOOF/WMV113/VRIC1800/oldplate cases.",
+  "selection": "OldOOFeachsource Q>=Recall-1/coverage>=-3/TNR>=-3,macroQ>0,coverage>=0. EachroadrawQ>1pp,coverage>2pp,TNR>=-3. Halfimage Q>=baseline andTNR>=baseline-3; no requirement to reproduce rawimprovement under severeocclusion. Sixoldcorrectlylabelledplate/control Q>=baseline-.5/TNR>=baseline-3; meanraw-relativeDeltaQ>=-.5,worst>=-1. These are internal riskguards, not invented organizerlimits.",
+  "prospective_fresh661": "Sameunscored661IDs andfrozenmodel/alpha/cutoff;rawQgain lower95IDbootstrapCI>0,coverage>=Recall,TNR>=Recall-3. Halfimage absoluteQ>=Recall,coverage>=Recall,TNR>=Recall-3; report rawrelative extra effect openly. No tuning on this test. NativeCLIHTTP andscope-qualified checks before technicalqualification.",
+  "limits": "Oldplate positions partialdetectorcoverage; newroadgallery conditions partial, VRICqg samevideo/virtualcam. Official maskandprivatephysicalcamera transfer stillunproved. Localresearchsource rights pending for externaldistribution."
+}

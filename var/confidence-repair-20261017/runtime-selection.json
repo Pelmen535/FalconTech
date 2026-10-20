@@ -1,0 +1,25 @@
+{
+  "profile": "bagged-source-v1",
+  "rerank_profile": "current-query-v1",
+  "status": "READY_LOCAL_WINDOWS",
+  "head": "var/confidence-repair-20261017/extra-leaf16.joblib",
+  "threshold": 0.9958555679148865,
+  "files": {
+    "var/confidence-repair-20261017/extra-leaf16.joblib": "c997236140f612f94ab9905965225819e5637f81e6aba06ba455d0fa287afc36",
+    "vreid/refusal_policy_bagged.py": "e3120917b50f3c034c652dd026d7a19f65c5598386df3b051bb9ee379500a60f",
+    "var/general-refusal-final-20261017/selection.json": "92169795dbbb72aa1d04e842d4bba4d9e778606ce02409ebcf4d90bb83bf05b1",
+    "var/confidence-repair-20261017/forest-conservative-frozen-before-val.json": "2e85e5427e6e233d19037c9bab94964bfdce596482ecb73336c4ebd7eb5d8f88",
+    "vreid/binary_forest.py": "f4bcd9f2e63ed81936b09a2df382557318920f2b394cad8411ee582302a22062"
+  },
+  "ranking_unchanged_from": "current-query-v1",
+  "preserve_all_prior_accepted": true,
+  "independent_holdout": false,
+  "acceptance": [
+    "policy-verification-final.json",
+    "official-verification-final.json",
+    "native-final-verification.json",
+    "http-final-CFV-natural-00/results.json",
+    "fast-forest-verification.json",
+    "plate-replay.json"
+  ]
+}

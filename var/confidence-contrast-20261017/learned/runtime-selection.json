@@ -1,0 +1,25 @@
+{
+  "profile": "contrast-learned-v1",
+  "rerank_profile": "current-query-v1",
+  "scope": "source",
+  "columns": 102,
+  "status": "READY_LOCAL_WINDOWS",
+  "threshold": 0.9992508604107972,
+  "head": "var/confidence-contrast-20261017/learned/hgb7.joblib",
+  "config": {
+    "model": "hgb7",
+    "threshold": 0.9992508604107972,
+    "scope": "source"
+  },
+  "preserve_all_prior_accepted": true,
+  "independent_holdout": false,
+  "files": {
+    "vreid/refusal_policy_contrast_learned.py": "c0b28c26504c9882b6d3c226b65404e6dd49916a4cd516644294add1cde1fc76",
+    "vreid/refusal_policy_contrast.py": "7d24b0a15a1baf78ffbd6b2794e578bee7abf831bf2cf7df0c2ab6519f8b492d",
+    "var/confidence-domain-20261017/runtime-selection.json": "b68e975609fae4c9e92951a5a051b009edfc8066a83bddb0d13fa13c1e707de7",
+    "var/confidence-contrast-20261017/learned/hgb7.joblib": "a0dd954efc6d06e200be987feacb43982ffb6a5fde854eeeff8f5d6571b08f7d",
+    "var/confidence-contrast-20261017/learned/frozen-before-val.json": "44cb67a8ca5c62816cc28dea1676bb7ed9f8e2afb9735887a97dac7baf940827",
+    "var/confidence-contrast-20261017/comparative.py": "3685fb3046e99366cc2dd1ad7caaff952321dd732686ab5e8e249a39963dbf07",
+    "vreid/partial_hgb.py": "9472bc15333ca6078d4a6ee0802b63e870446c0b93d400f0e02449e20f66c50c"
+  }
+}

@@ -119,7 +119,9 @@ def load_recipe(release: str | Path) -> dict:
     return r
 
 def rerank_chunk_size(n_query, n_gallery, budget_gb):
-    """Сколько запросов брать за раз. 0 — ре-ранжирование невозможно в этой памяти.
+    """Сколько запросов брать за раз. 0 — не хватает бюджета рабочего буфера rerank.
+
+    Бюджет не ограничивает всю RAM процесса: входные и итоговые массивы живут отдельно.
 
     В присланной правке здесь был MemoryError с пометкой «no cosine fallback». Падение на целевом
     стенде обрывает весь прогон. Откат к косинусу убрали
@@ -129,7 +131,9 @@ def rerank_chunk_size(n_query, n_gallery, budget_gb):
     режим пишется в run_info.json."""
     if not np.isfinite(budget_gb) or budget_gb <= 0:
         raise ValueError("бюджет памяти должен быть конечным и положительным")
-    available = budget_gb * 1024 ** 3 - 16 * n_query * n_gallery
+    # This is the rerank workspace budget, not a limit on all resident arrays.
+    # Mode must depend on gallery + one query, never on unrelated queries.
+    available = budget_gb * 1024 ** 3 - 16 * n_gallery
     if available < 64 * (n_gallery + 1) ** 2:
         return 0
     return min(max(1, int((available / 64) ** .5) - n_gallery), max(n_query, 1))
@@ -143,6 +147,14 @@ def sha256(path):
 
 
 def main():
+    import sys
+    release_probe=argparse.ArgumentParser(add_help=False)
+    release_probe.add_argument('--release',default='release')
+    release_arg,_=release_probe.parse_known_args()
+    october_release=(Path(release_arg.release)/'runtime-manifest.json').is_file()
+    if '--runtime-manifest' in sys.argv or any(v.startswith('--runtime-manifest=') for v in sys.argv) or october_release:
+        from service.october_cli import main as october_main
+        return october_main()
     ap = argparse.ArgumentParser(description="офлайн-инференс: кропы → эмбеддинги → топ-10 + отказы")
     ap.add_argument("--data", default="/data", help="папка с images/, test_query.csv, test_gallery.csv")
     ap.add_argument("--release", default="release", help="папка с model.pt и recipe.json")
@@ -151,6 +163,8 @@ def main():
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--device", default=None)
     a = ap.parse_args()
+    if a.batch_size < 1 or a.workers < 0:
+        ap.error('--batch-size must be positive and --workers must be nonnegative')
 
     t_start = time.perf_counter()
     data, release, out = Path(a.data), Path(a.release), Path(a.out)
@@ -165,6 +179,8 @@ def main():
     q = Split("query", read_annotations(data / "test_query.csv", images, None, "xywh", strict=True))
     g = Split("gallery", read_annotations(data / "test_gallery.csv", images, None, "xywh", strict=True))
     if len(g)<10:raise ValueError('At least ten gallery entries required')
+    if np.any((~frame_block_mask(q.keys,g.keys)).sum(axis=1)<10):
+        raise ValueError('At least ten eligible gallery entries per query required')
     chunk=rerank_chunk_size(len(q),len(g),float(os.environ.get('VREID_RERANK_GB','12'))) if rec['kr'] else 0
     print(f"[predict] запросов {len(q)}, галерея {len(g)}")
     # Ключ записи = image_id, пока image_id в файле уникален (так у организаторов: один
@@ -286,4 +302,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

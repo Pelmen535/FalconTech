@@ -4,6 +4,13 @@ import pytest
 from vreid.predict import load_recipe,rerank_chunk_size
 from vreid.rerank import k_reciprocal,k_reciprocal_chunked
 
+
+def test_rerank_mode_does_not_change_when_unrelated_queries_are_added():
+    # Gallery plus one query fits, whereas the old query-gallery subtraction
+    # disabled rerank for 10k queries under the same .1 GiB workspace budget.
+    assert rerank_chunk_size(1,750,.1)>0
+    assert rerank_chunk_size(10000,750,.1)>0
+
 def case(seed=18):
     rng=np.random.default_rng(seed)
     norm=lambda x:x/(np.linalg.norm(x,axis=1,keepdims=True)+1e-8)

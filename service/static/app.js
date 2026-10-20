@@ -340,18 +340,20 @@ async function explain(item) {
     content.append(figure);
   }
   const note = element('p', 'summary');
-  note.textContent = 'Уверенность ' + answer.cosine.toFixed(3) + ' при пороге ' +
-    answer.threshold.toFixed(2) + '.';
+  note.textContent = answer.threshold_scale === 'calibrated_acceptance_score'
+    ? 'Сходство пары: ' + answer.cosine.toFixed(3) + '. Карта объясняет сходство; отказ определяется отдельным механизмом уверенности.'
+    : 'Сходство ' + answer.cosine.toFixed(3) + ' при пороге ' + answer.threshold.toFixed(2) + '.';
   content.append(note);
 }
 
 // ----------------------------------------------------------------- выгрузка
 function exportRows() {
-  const rows = [['query_id', 'rank', 'gallery_id', 'cosine', 'accepted', 'threshold', 'search_mode']];
+  const rows = [['query_id', 'rank', 'gallery_id', 'cosine', 'accepted', 'threshold', 'search_mode', 'confidence', 'confidence_scale']];
   const queryId = lastQuery && lastQuery.id ? lastQuery.id : '(загруженный кадр)';
   for (const item of lastResult.ranking) {
     rows.push([queryId, item.rank, item.image_id, item.cosine.toFixed(6),
-               lastResult.accepted, lastResult.threshold, lastResult.search_mode]);
+               lastResult.accepted, lastResult.threshold, lastResult.search_mode,
+               lastResult.confidence ?? '', lastResult.confidence_scale]);
   }
   return rows;
 }
@@ -423,7 +425,7 @@ async function renderAbout() {
   target.replaceChildren();
   const pairs = [
     ['Порог уверенности', Number(model.threshold).toFixed(2)],
-    ['Размер вектора', model.dimension ?? '—'],
+    ['Экспорт эмбеддинга', model.dimension ? model.dimension + 'D' : '—'],
     ['Вычисления', model.device === 'cuda' ? 'GPU' : 'CPU'],
     ['Версия модели', String(model.model_sha256).slice(0, 12)],
   ];
@@ -459,6 +461,7 @@ $('search-form').addEventListener('submit', event => {
     const info = $('result-info');
     info.replaceChildren(element('strong', '', answer.accepted ? 'Совпадение найдено' : 'Совпадение не найдено'));
     const facts = element('div', 'facts');
+    if (answer.confidence !== undefined) facts.append(element('span', '', 'уверенность ' + Number(answer.confidence).toFixed(3)));
     facts.append(element('span', '', 'порог ' + Number(answer.threshold).toFixed(2)));
     facts.append(element('span', '', 'галерея ' + answer.gallery_count));
     facts.append(element('span', '', 'режим ' + (answer.search_mode === 'ann' ? 'быстрый' : 'точный')));
@@ -473,7 +476,7 @@ $('search-form').addEventListener('submit', event => {
     for (const note of answer.notes || []) info.append(element('small', '', note));
     info.className = 'result-status' + (answer.accepted ? '' : ' refused');
 
-    answer.ranking.forEach(item => card(item, $('results'), { explainable: true, accepted: answer.accepted }));
+      answer.ranking.forEach(item => card(item, $('results'), { explainable: answer.supports_explain !== false, accepted: answer.accepted }));
     message('');
     await health();
   });
