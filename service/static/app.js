@@ -314,6 +314,7 @@ async function loadGallery() {
 // ----------------------------------------------------------------- объяснение
 async function explain(item) {
   if (!lastQuery) throw new Error('Сначала выполните поиск: объяснение считается для его запроса.');
+  const decision = lastResult;
   const dialog = $('explain-dialog');
   $('explain-title').textContent = 'Почему похоже';
   $('explain-content').replaceChildren(element('p', 'muted', 'Строим карту сходства…'));
@@ -327,6 +328,9 @@ async function explain(item) {
 
   const content = $('explain-content');
   content.replaceChildren();
+  $('explain-legend').textContent = answer.method === 'independent_occlusion_actual_october_raw_similarity'
+    ? 'Каждую область закрываем серым независимо. Зелёный: сходство снизилось; красный: выросло. Сетка 4 × 4. Карта показывает чувствительность сходства пары, а не вероятность совпадения.'
+    : 'Зелёный — вклад выше среднего по областям, красный — ниже среднего. Карта показывает сходство пары.';
   const titles = { query: 'Запрос', candidate: 'Кандидат № ' + item.rank };
   for (const name of ['query', 'candidate']) {
     const side = answer.sides[name];
@@ -341,7 +345,7 @@ async function explain(item) {
   }
   const note = element('p', 'summary');
   note.textContent = answer.threshold_scale === 'calibrated_acceptance_score'
-    ? 'Сходство пары: ' + answer.cosine.toFixed(3) + '. Карта объясняет сходство; отказ определяется отдельным механизмом уверенности.'
+    ? 'Сходство пары: ' + answer.cosine.toFixed(3) + '. Решение поиска: ' + (decision.accepted ? 'совпадение принято' : 'совпадение отклонено') + '; уверенность ' + decision.confidence.toFixed(3) + ', порог ' + decision.threshold.toFixed(3) + '. Карта не объясняет решение об отказе.'
     : 'Сходство ' + answer.cosine.toFixed(3) + ' при пороге ' + answer.threshold.toFixed(2) + '.';
   content.append(note);
 }

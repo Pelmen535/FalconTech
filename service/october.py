@@ -61,6 +61,7 @@ class OctoberAdapter:
             'threshold':self.spec['public_boundary'],'confidence_kind':self.confidence_scale,
             'confidence_scale':self.confidence_scale,'bbox_format':'xywh','backend':'october',
             'rerank':'current_query_reciprocity_joint25','refusal_profile':'vric-road-verifier-v1',
+            'acceptance_guard':self.spec.get('decision_policy'),
             'storage_embedding_kind':self.spec['storage_embedding_kind'],
             'storage_contract':self.spec.get('storage_contract','legacy_vector_ref'),
             'storage_vector_dimension':None if self.references_only else 512,

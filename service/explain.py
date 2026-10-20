@@ -150,13 +150,14 @@ def heatmap_png(crop, contributions: np.ndarray, alpha: float = 0.6,
     return buffer.getvalue()
 
 
-def top_regions(contributions: np.ndarray, count: int = 3) -> list[dict]:
+def top_regions(contributions: np.ndarray, count: int = 3, *, center: bool = True) -> list[dict]:
     """Клетки с наибольшим отклонением вверх — чтобы ответ был не только картинкой.
 
     Считается по тому же центрированному значению, что и картинка, иначе список
     расходился бы с тем, что видно на экране."""
     values = np.asarray(contributions, dtype=np.float32)
-    values = values - float(values.mean())
+    if center:
+        values = values - float(values.mean())
     grid_h, grid_w = values.shape
     order = np.argsort(-values, axis=None)[:max(0, int(count))]
     regions = []

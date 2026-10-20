@@ -1,11 +1,11 @@
 {
   "schema": 1,
   "profile": "vric-road-verifier-v1/current-query-v1",
-  "status": "RELEASE_V2_A5000_RUNTIME_CHECKED",
+  "status": "V2_0_REFUSAL_HOTFIX_WINDOWS_VALIDATED_LINUX_GPU_NOT_REQUALIFIED",
   "baseline_manifest_SHA256": "a4294b93acd9ddce36c06b03c045aca9667946e879d5ac92a6e61b225d65d220",
   "identity": {
     "model_sha256": "c19438348fa21d9b5aa36e6d7574c455655ec87c74132ce9fc9fb7d264b47a10",
-    "recipe_sha256": "04dcad32e7b43f48772e4951cc47bf32f4645ba99a943c8882c112d94bbdf16f",
+    "recipe_sha256": "40a490c0d056f5403891652e19ca844ba82b24c02e237fb0de0ab3aba0579be2",
     "embedding_sha256": "46787c87d64f449ce77cea9a13b763cc1ebfe9c2d26ac277bf238ed2acaaf1eb"
   },
   "dimension": 512,
@@ -337,33 +337,38 @@
     "cpu": true
   },
   "qualification": {
-    "status": "PASS_TESTED_A5000_CUDA128_RUNTIME",
-    "date": "2026-10-20",
-    "release": "2.0",
-    "qualified_source_manifest_SHA256": "82414983b464ec7f92ec202818413d7d58cd99b25a5b7732b551a27f3b9c7550",
-    "artifact_and_implementation_tables_SHA256": "915d7c0a94cacb498c3d05151cc848fb1674a92f22a09dc37d4f4862e6e3826d",
-    "report": "docs/V2_A5000_REPORT_RU.md",
-    "actual_hardware": "NVIDIA RTX A5000 24GB, driver570.211.01, Ubuntu22.04, CUDA12.8 runtime, TensorRT10.9.0.34",
-    "checks": [
-      "five_native_CLI_contexts_three_outputs_byteexact_to_accepted_A",
-      "six_matched_feature_benchmark_processes",
-      "real_HTTP688G_CLI_B1_parity_ANN_explain_fault_timeout_restart",
-      "five_capture_context_exact_ANN_and_query_subset_order_parity",
-      "real_legacy1536_migration_backup_cold_restore",
-      "CPU16G_2Q_CLI_HTTP_restart",
-      "public_source_Docker_environment_build_pip_check_weight_SHA",
-      "real_localhost_nginx_Postgres20G_restart_readonly_backup_SQLite_and_Postgres_cold_restore"
-    ],
-    "scope_limits": [
-      "not_exact_organizer_CUDA12.2_driver",
-      "not_closed_test_or_new_independent_holdout",
-      "no_universal_plate_ablation_claim",
-      "no_million_gallery_or_all_possible_sparse_multibox_qualification",
-      "GPU_memory_sampled_not_allocator_peak",
-      "CPU_only_small_native_smoke",
-      "full_local_pytest_has_historical_skips"
-    ],
-    "note": "Weights, ranking, heads and thresholds unchanged. Linux native stdout isolation fixed. Qualification metadata changes only; final image replays the frozen code."
+    "status": "WINDOWS_CUDA_HOTFIX_VALIDATED_LINUX_GPU_NOT_REQUALIFIED",
+    "current_report": "docs/REFUSAL_HOTFIX_20261020_RU.md",
+    "previous_Linux_A5000_qualification": {
+      "status": "PASS_TESTED_A5000_CUDA128_RUNTIME",
+      "date": "2026-10-20",
+      "release": "2.0",
+      "qualified_source_manifest_SHA256": "82414983b464ec7f92ec202818413d7d58cd99b25a5b7732b551a27f3b9c7550",
+      "artifact_and_implementation_tables_SHA256": "915d7c0a94cacb498c3d05151cc848fb1674a92f22a09dc37d4f4862e6e3826d",
+      "report": "docs/V2_A5000_REPORT_RU.md",
+      "actual_hardware": "NVIDIA RTX A5000 24GB, driver570.211.01, Ubuntu22.04, CUDA12.8 runtime, TensorRT10.9.0.34",
+      "checks": [
+        "five_native_CLI_contexts_three_outputs_byteexact_to_accepted_A",
+        "six_matched_feature_benchmark_processes",
+        "real_HTTP688G_CLI_B1_parity_ANN_explain_fault_timeout_restart",
+        "five_capture_context_exact_ANN_and_query_subset_order_parity",
+        "real_legacy1536_migration_backup_cold_restore",
+        "CPU16G_2Q_CLI_HTTP_restart",
+        "public_source_Docker_environment_build_pip_check_weight_SHA",
+        "real_localhost_nginx_Postgres20G_restart_readonly_backup_SQLite_and_Postgres_cold_restore"
+      ],
+      "scope_limits": [
+        "not_exact_organizer_CUDA12.2_driver",
+        "not_closed_test_or_new_independent_holdout",
+        "no_universal_plate_ablation_claim",
+        "no_million_gallery_or_all_possible_sparse_multibox_qualification",
+        "GPU_memory_sampled_not_allocator_peak",
+        "CPU_only_small_native_smoke",
+        "full_local_pytest_has_historical_skips"
+      ],
+      "note": "Weights, ranking, heads and thresholds unchanged. Linux native stdout isolation fixed. Qualification metadata changes only; final image replays the frozen code."
+    },
+    "scope": "Weights and ranking unchanged; acceptance policy and map method changed. Prior native Linux measurements remain historical. Current Linux CPU/container checks are separate from GPU qualification."
   },
   "native_environment": {
     "linux": {
@@ -432,8 +437,8 @@
       "SHA256": "7a44144d7d63e6e86636699ddd821adea30ab74e038d7dad308494795e04e203"
     },
     "service/explain.py": {
-      "bytes": 10107,
-      "SHA256": "750903e4cd4aa9317b630d319dbcf352b31b920599be9ec64af8ce1a4ddadac4"
+      "bytes": 10150,
+      "SHA256": "5d083a77715bf8b118de5bb8b695dbc83f432068712b326f4ef21ccf1d6b18a3"
     },
     "service/fast_quality_tail.py": {
       "bytes": 2221,
@@ -524,8 +529,8 @@
       "SHA256": "de70dd224f0e84de074aed75af669cb2635cdfcd0a26a18787eb36862b53d2f1"
     },
     "service/october.py": {
-      "bytes": 11189,
-      "SHA256": "a93942565f915fff1375ccae46a47522395181cb6bb65c3e457262bbd2224617"
+      "bytes": 11255,
+      "SHA256": "f04ca60c48fc018eaae48cced9c7a18a524ee0a102143e2a206aac346d517996"
     },
     "service/october_cli.py": {
       "bytes": 5875,
@@ -540,8 +545,8 @@
       "SHA256": "d04c53f2cc223935411c1b2ecb02cd49e61f4d57f6e522c0fd365c0fb25d32b4"
     },
     "service/october_explain.py": {
-      "bytes": 5192,
-      "SHA256": "71d847ffa6cbd7cb8294460e89dacfd5d672fe23db793b83e41cb844b629c0cb"
+      "bytes": 5239,
+      "SHA256": "286cf6dc2598b605d0477bf24db2ccf156c9c58089db70135f40913c0e73bb0e"
     },
     "service/october_features.py": {
       "bytes": 9134,
@@ -552,8 +557,8 @@
       "SHA256": "a12811f467aa3e9a6be8beaf46492c07ec9a04fa40a84c7288d32a0abf02f2e7"
     },
     "service/october_images.py": {
-      "bytes": 785,
-      "SHA256": "7c0744dc12d5407198d56e4d30286e547b0ffb2796a8704d9fd9cd990adf71cb"
+      "bytes": 1202,
+      "SHA256": "23830466f9bdcf528612da715682ac6fc20258a24dfd4916cee8ba039f9893cd"
     },
     "service/october_linux.py": {
       "bytes": 2274,
@@ -564,8 +569,8 @@
       "SHA256": "2370b134bf5c7d71e6a361ce49dcdce795376f95a83b37511033bac1ba80f2a5"
     },
     "service/october_math.py": {
-      "bytes": 21188,
-      "SHA256": "b9bfd3dfe909ee58b873bac0e44765fa7ab966f7aa58a0e5dddd4569f1fb0412"
+      "bytes": 21496,
+      "SHA256": "acea8724019571d369e15925851524670bb79e3b7d97cf79bb795c1c631b5baf"
     },
     "service/october_native.py": {
       "bytes": 6917,
@@ -692,12 +697,12 @@
       "SHA256": "8f2dc440a39f9163cce059b572075887ef1144806b60891055175a134b6c5b41"
     },
     "service/static/app.js": {
-      "bytes": 26669,
-      "SHA256": "192a13224744d0e172451429f5ecd973a77cb0093a80a1eb4789da015e187dbe"
+      "bytes": 27518,
+      "SHA256": "0456b439ed0257adf6960a7e24a8cf0809fb5cc3018b9f3af415cce2f3e2187c"
     },
     "service/static/index.html": {
-      "bytes": 9479,
-      "SHA256": "c36130e9275d99f485be5c7b452fb23273555bc4213b7aa19245780a4ed553e6"
+      "bytes": 9440,
+      "SHA256": "e3a2d4d7a749ba156f26e0ff00388387e56c230dd4f9bd1997458798c5e1ea16"
     },
     "service/static/vendor/swagger-ui-bundle.js": {
       "bytes": 1303939,
@@ -992,8 +997,8 @@
       "SHA256": "86fbeb1abe407028fe8306c3fc0224fc9f10dd84b996bb479e65e24212741d2e"
     },
     "vreid/shared_refusal.py": {
-      "bytes": 1522,
-      "SHA256": "67d08a4997c833ee116a4d544d29b00f56456e82089a90d14653a9608056089c"
+      "bytes": 2022,
+      "SHA256": "3b49ca495e7a3a4ce49a9a97623731be5966a8aea9f3d54def5fe56967fc940d"
     },
     "vreid/single_local_recall.py": {
       "bytes": 2055,
@@ -1054,6 +1059,10 @@
     "service/publish_directory.py": {
       "bytes": 1128,
       "SHA256": "5205b9d7b3905af9747fc5daccc3a51a292c72eb3950676861498e95d2eab31f"
+    },
+    "service/refusal_guard.py": {
+      "bytes": 888,
+      "SHA256": "65f1ff36dea0824a132f2b8acb3934b329e2ce482ac95b93aac7eb11a062c9fc"
     }
   },
   "cpu_environment": {
@@ -1098,5 +1107,12 @@
   "extractor_backend_identity_before_reference_schema": {
     "cuda": "d85264c8d30fe4e40f265026eb7c7f88ad9f5ded81b387d9d5027d4a1ada254e",
     "cpu": "a31c07ce4b84edc4a15cda1a11d0fd0fb0587dedaa1c026717968811aa55f1d7"
+  },
+  "decision_policy": {
+    "name": "contradictory-road-rescue-v1",
+    "scope": "Final road rescue only",
+    "source_absent_ge": 0.8,
+    "road_probability_lt": 0.8,
+    "raw_pair_cosine_lt": 0.45
   }
 }

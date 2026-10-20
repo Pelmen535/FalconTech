@@ -1,10 +1,10 @@
-"""Measured ordered counterfactual regions of the actual October raw similarity.
+"""Measured independent region occlusion of the actual October raw similarity.
 
 Uses the active encoder and fixed full-gallery transforms. It does not explain
 nonlinear reranking/refusal, use another model, or rescale values to force closure.
 """
 import numpy as np
-from .october_images import crop_image,restoration_path
+from .october_images import crop_image,occlusion_regions
 from .explain import heatmap_png,top_regions
 
 
@@ -64,19 +64,20 @@ def explain_pair(runtime,message):
             if regime is None:
                 raise ValueError('Cannot reproduce selected raw similarity within 1e-6; no heatmap published')
             count,position=regime;values=[]
-            for image in restoration_path(crop,grid):values.append(score(encoded(image,count),name,position))
-            contributions=np.diff(np.asarray(values,np.float64)).reshape(grid,grid)
-            constant=float(values[0]);total=float(contributions.sum());error=abs(constant+total-target)
-            if error>1e-6:raise ValueError('Counterfactual reconstruction exceeds 1e-6; no heatmap published')
+            reference=score(encoded(crop,count),name,position)
+            for image in occlusion_regions(crop,grid):
+                values.append(score(encoded(image,count),name,position))
+            contributions=(reference-np.asarray(values,np.float64)).reshape(grid,grid)
             display=crop.copy();display.thumbnail((960,960))
-            sides[name]={'png':heatmap_png(display,contributions),'display_size':list(display.size),'grid':[grid,grid],
-                         'constant':constant,'patch_sum':total,'reconstruction_error':error,
-                         'contributions':contributions.tolist(),'top_regions':top_regions(contributions,message.get('regions',3)),
+            sides[name]={'png':heatmap_png(display,contributions,center=False),'display_size':list(display.size),'grid':[grid,grid],
+                         'reference_score':reference,'occluded_scores':np.asarray(values).reshape(grid,grid).tolist(),
+                         'contributions':contributions.tolist(),'top_regions':top_regions(contributions,message.get('regions',3),center=False),
                          'encoder_batch_size':count,'encoder_position':position,'endpoint_error':endpoint_error,
-                         'baseline':'RGB127 crop','restoration_order':'row-major, 16 regions'}
+                         'baseline':'One RGB127 region on the original crop',
+                         'attribution_kind':'independent_occlusion_delta','additive':False,'color_centered':False}
         return {'cosine':target,'threshold':math.boundary,'threshold_scale':'calibrated_acceptance_score',
-                'method':'ordered_counterfactual_regions_actual_october_raw_similarity',
+                'method':'independent_occlusion_actual_october_raw_similarity',
                 'explained_score':'mean cosine of gallery-adapted DINO and CNN branches',
-                'scope':'Fixed full-gallery raw similarity only; does not decompose nonlinear reranking or refusal. Ordered path is not Shapley attribution.',
+                'scope':'Each region is masked independently with fixed gallery transforms. Values are raw-similarity deltas, are not additive and do not explain nonlinear reranking or refusal.',
                 'gallery_generation':math.generation,'sides':sides}
     finally:native.batch_size=previous

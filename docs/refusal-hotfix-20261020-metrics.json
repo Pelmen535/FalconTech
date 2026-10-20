@@ -1,0 +1,131 @@
+{
+  "rule": {
+    "scope": "Final road rescue only",
+    "source_absent_ge": 0.8,
+    "road_probability_lt": 0.8,
+    "raw_pair_cosine_lt": 0.45
+  },
+  "confirmation": [
+    {
+      "context": "contest-full/full",
+      "queries": 1213,
+      "gallery": 688,
+      "known": 970,
+      "unknown": 243,
+      "old": {
+        "TP": 800,
+        "FP": 159,
+        "FN": 170,
+        "TN": 233,
+        "Recall": 82.47422680412372,
+        "TNR": 95.88477366255144,
+        "Precision": 83.42022940563086,
+        "F1": 82.9445308449974
+      },
+      "new": {
+        "TP": 800,
+        "FP": 159,
+        "FN": 170,
+        "TN": 233,
+        "Recall": 82.47422680412372,
+        "TNR": 95.88477366255144,
+        "Precision": 83.42022940563086,
+        "F1": 82.9445308449974
+      },
+      "removed_false_accepts": 0,
+      "lost_correct_accepts": 0,
+      "seconds": 8.66476109996438
+    },
+    {
+      "context": "contest-full/removed",
+      "queries": 1213,
+      "gallery": 326,
+      "known": 459,
+      "unknown": 754,
+      "old": {
+        "TP": 415,
+        "FP": 113,
+        "FN": 44,
+        "TN": 676,
+        "Recall": 90.41394335511983,
+        "TNR": 89.65517241379311,
+        "Precision": 78.59848484848484,
+        "F1": 84.09321175278622
+      },
+      "new": {
+        "TP": 414,
+        "FP": 102,
+        "FN": 45,
+        "TN": 687,
+        "Recall": 90.19607843137256,
+        "TNR": 91.11405835543766,
+        "Precision": 80.23255813953489,
+        "F1": 84.92307692307692
+      },
+      "removed_false_accepts": 11,
+      "lost_correct_accepts": 1,
+      "seconds": 6.882534700038377
+    },
+    {
+      "context": "VRIC661-full/full",
+      "queries": 661,
+      "gallery": 750,
+      "known": 495,
+      "unknown": 166,
+      "old": {
+        "TP": 125,
+        "FP": 61,
+        "FN": 370,
+        "TN": 140,
+        "Recall": 25.252525252525253,
+        "TNR": 84.33734939759036,
+        "Precision": 67.20430107526882,
+        "F1": 36.71071953010279
+      },
+      "new": {
+        "TP": 121,
+        "FP": 61,
+        "FN": 374,
+        "TN": 140,
+        "Recall": 24.444444444444443,
+        "TNR": 84.33734939759036,
+        "Precision": 66.48351648351648,
+        "F1": 35.745937961595274
+      },
+      "removed_false_accepts": 0,
+      "lost_correct_accepts": 4,
+      "seconds": 5.8804665000061505
+    },
+    {
+      "context": "VRIC661-full/removed",
+      "queries": 661,
+      "gallery": 364,
+      "known": 229,
+      "unknown": 432,
+      "old": {
+        "TP": 66,
+        "FP": 78,
+        "FN": 163,
+        "TN": 367,
+        "Recall": 28.820960698689955,
+        "TNR": 84.95370370370371,
+        "Precision": 45.833333333333336,
+        "F1": 35.388739946380696
+      },
+      "new": {
+        "TP": 63,
+        "FP": 71,
+        "FN": 166,
+        "TN": 373,
+        "Recall": 27.510917030567686,
+        "TNR": 86.3425925925926,
+        "Precision": 47.014925373134325,
+        "F1": 34.710743801652896
+      },
+      "removed_false_accepts": 7,
+      "lost_correct_accepts": 3,
+      "seconds": 4.008214000030421
+    }
+  ],
+  "scope": "Historical Windows saved encoder captures; no new Linux GPU qualification; correlated episodes"
+}

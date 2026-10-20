@@ -81,7 +81,7 @@ class OctoberMath:
         self.hits = 0
         from vreid.refusal_policy_vric_road import VricRoadRefusalPolicy
         from vreid.shared_refusal import SharedVricRoadPolicy
-        self.refusal = SharedVricRoadPolicy(VricRoadRefusalPolicy.load(self.root))
+        self.refusal = SharedVricRoadPolicy(VricRoadRefusalPolicy.load(self.root), rescue_guard=True)
 
     def teacher(self, raw):
         result = transform({'emb': raw}, self.source)['emb']
@@ -359,9 +359,14 @@ class OctoberMath:
             raise ValueError('Unexpected legacy confidence classes')
         night=np.asarray(result['query_night'],dtype=bool)
         legacy=np.empty(len(night),dtype=float)
+        absent=np.empty(len(night),dtype=float)
         for mask,head,cut in [(night,self.night_head,recipe['night_threshold']),
                               (~night,self.source_head,recipe['source_threshold'])]:
-            if mask.any():legacy[mask]=adjusted(odds(head,result['X20'][mask]),cut)
+            if mask.any():
+                probability=head.predict_proba(result['X20'][mask])
+                absent[mask]=probability[:,0]
+                ratio=probability[:,2]/np.maximum(probability[:,0]+probability[:,2],1e-15)
+                legacy[mask]=adjusted(ratio,cut)
         if public_only and len(legacy)==1 and legacy[0]>=self.boundary:
             from vreid.shared_refusal import SharedVricRoadPolicy
             from vreid.refusal_policy_vric_road import VricRoadRefusalPolicy
@@ -370,7 +375,7 @@ class OctoberMath:
             # Full diagnostics still use confidence(..., public_only=False).
             if type(self.refusal) is SharedVricRoadPolicy and type(self.refusal.original) is VricRoadRefusalPolicy:
                 return {'confidence':legacy,'accepted':np.ones(1,dtype=bool)}
-        return self.refusal.predict(result, legacy, self.boundary)
+        return self.refusal.predict({**result,'legacy_absent_probability':absent}, legacy, self.boundary)
 
     def confidence_public(self,result):
         return self.confidence(result,public_only=True)

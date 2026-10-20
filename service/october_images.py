@@ -16,3 +16,14 @@ def restoration_path(crop,grid=4):
         for col in range(grid):
             box=(col*crop.width//grid,row*crop.height//grid,(col+1)*crop.width//grid,(row+1)*crop.height//grid)
             base.paste(crop.crop(box),box);yield base.copy()
+
+
+def occlusion_regions(crop, grid=4):
+    """Mask one region of the original crop at a time; no accumulated edits."""
+    for row in range(grid):
+        for col in range(grid):
+            image=crop.copy()
+            box=(col*crop.width//grid,row*crop.height//grid,
+                 (col+1)*crop.width//grid,(row+1)*crop.height//grid)
+            image.paste((127,127,127),box)
+            yield image
