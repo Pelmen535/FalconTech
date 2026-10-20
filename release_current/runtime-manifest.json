@@ -396,8 +396,8 @@
       "SHA256": "b22ee2b3fe8734d54ecbf464bb97e66fced5b388255f92c2fcbe2e59f7141228"
     },
     "scripts/run_service.py": {
-      "bytes": 6495,
-      "SHA256": "4933a76ed1074bc26a56b7547f47a3c9f85ae0f383c2c62ff0aac2c00a77de57"
+      "bytes": 6482,
+      "SHA256": "f5f98ff5ac8eec0edbd186d7d87874f93e42a0b0d5641664b9dee308cac690c8"
     },
     "scripts/run_service_october.py": {
       "bytes": 320,
@@ -412,8 +412,8 @@
       "SHA256": "067ee7daf2e1c1d5bce42047fb4a315afaacfc4b27b0616e416fc287dd0d133f"
     },
     "service/app.py": {
-      "bytes": 33693,
-      "SHA256": "636a5fe46c4f3d9ef848561310d7b0dd7b8d38dee026300aa463971be0d3c11d"
+      "bytes": 33682,
+      "SHA256": "1cb5c808fb3ade8c72bc5472f1b292b71a9e989bb55ee9b6cd14941d9c72b037"
     },
     "service/config.py": {
       "bytes": 2983,

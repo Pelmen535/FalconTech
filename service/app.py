@@ -95,7 +95,7 @@ def create_app(settings=None, core=None):
             'Объяснение показывает вклад областей в сходство пары, отдельно от ранжирования и отказа. '
             'Фактическая доступность функций указана в /v1/model. Порог заморожен в конфигурации модели.')
     app = FastAPI(title='Скованные одной цепью · ReID API', version=('1.4.0' if settings.backend == 'release' else
-                            'october-20261019' if settings.backend == 'october' else 'robust-20261017'),
+                            '2.0.0' if settings.backend == 'october' else 'robust-20261017'),
                   description=description, openapi_tags=TAGS, lifespan=lifespan,
                   docs_url=None, redoc_url=None)
     app.state.core = core

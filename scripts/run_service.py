@@ -35,7 +35,7 @@ def main() -> int:
                         help='постоянное хранилище галереи')
     parser.add_argument('--device', default=defaults.device, help='cpu или cuda')
     parser.add_argument('--backend', choices=['release', 'robust', 'october'], default=defaults.backend,
-                        help='release — сохранённый v1.4; robust — проверенный DINOv3/CNN best (Windows CUDA)')
+                        help='october — v2.0 DINOv3 + CNN (Linux); release — v1.4; robust — Windows research backend')
     parser.add_argument('--runtime-manifest', type=Path, default=defaults.runtime_manifest,
                         help='единый manifest October runtime (--backend october)')
     parser.add_argument('--host', default='127.0.0.1')

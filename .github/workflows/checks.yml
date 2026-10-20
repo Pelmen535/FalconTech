@@ -7,6 +7,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   tests:
     name: тесты и проверки формата
@@ -47,15 +50,36 @@ jobs:
       # бесплатной квоты Git LFS (1 ГБ трафика в месяц) хватило бы на одно клонирование.
       # Этот шаг заодно проверяет, что скрипт скачивания рабочий и суммы сходятся.
       - name: веса из релиза
-        run: python scripts/fetch_weights.py
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json, os, shutil, subprocess, tempfile
+          from pathlib import Path
+          from scripts.fetch_weights import records
+          rows = records(Path.cwd())
+          with tempfile.TemporaryDirectory() as directory:
+              subprocess.run([
+                  'gh', 'release', 'download', 'v2.0',
+                  '--repo', os.environ['GITHUB_REPOSITORY'],
+                  '--dir', directory,
+              ], check=True)
+              for row in rows:
+                  target = Path(row['path'])
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  if target.exists():
+                      raise RuntimeError('Unexpected existing weight: ' + str(target))
+                  shutil.move(Path(directory) / target.name, target)
+          PY
+          python scripts/fetch_weights.py --verify-only
       # Образ собирается ровно той командой, что указана в README. Внутри сборки
       # работают pip check, инвентаризация весов против лимита 2 ГБ и разбор рецепта,
       # поэтому успешная сборка — это уже содержательная проверка, а не формальность.
       - name: docker build
-        run: docker build -t vreid:1.0 .
+        run: docker build -t falcontech:2.0 .
       - name: что реально установлено в образе
-        run: docker run --rm --entrypoint python vreid:1.0 /app/scripts/image_report.py
+        run: docker run --rm --entrypoint python falcontech:2.0 /app/scripts/image_report.py
       # Образ веб-сервиса собирается с аргументами по умолчанию, как у docker compose up --build
       # на чистой машине: его pip check ловит расхождения версий в requirements-service.txt.
       - name: docker build (веб-сервис)
-        run: docker build -f Dockerfile.service -t vreid-api:1.1 .
+        run: docker build -f Dockerfile.service -t falcontech-api:2.0 .

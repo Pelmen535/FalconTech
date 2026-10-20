@@ -264,8 +264,18 @@
     "memory_scope": "sampled nvidia-smi whole dedicated GPU and process RSS, not allocator peak"
   },
   "tests": {
+    "pytest_pass": 261,
+    "pytest_skip": 2,
+    "scope": "Current source with real disposable PostgreSQL; missing legacy checkpoint/submission fixture and organizer example_submission.zip"
+  },
+  "server_work_complete": true,
+  "original_image_tests": {
     "pytest_pass": 260,
     "pytest_skip": 3
   },
-  "server_work_complete": true
+  "current_source_metadata": {
+    "api_version": "2.0.0",
+    "runtime_manifest_SHA256": "8ac81cbb7d542eb3814d4aca23b0b841d681a39252e414bfcb061af13e65db8a",
+    "changes_since_GPU_image": "API version display and CLI help only; model, recipe, embeddings, thresholds and numerical runtime unchanged"
+  }
 }
